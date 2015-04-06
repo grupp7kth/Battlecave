@@ -3,6 +3,9 @@
 int main()
 {
     
+    int a = 10;
+    
+    
 	printf("Hello world\n");
     printf("Bye bye world");
     printf("Zimeon was here.\n");
