@@ -2,13 +2,18 @@
 
 int main()
 {
+<<<<<<< HEAD
     
-    int a = 10;
+    int b = 10;
     
     
+=======
+	int a=20;
+>>>>>>> origin/master
 	printf("Hello world\n");
-    printf("Bye bye world");
-    printf("Zimeon was here.\n");
+	printf("Bye bye world");
+	printf("Zimeon was here.\n");
+	
     
     return 0;
 }
