@@ -21,7 +21,7 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
     {
         if(!checkConnection(SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH)))
         {
-            SDLNet_TCP_Close(clients[clientId]);
+            SDLNet_TCP_Close(clientTCPsockets[clientId]);
             activeClients = SDLNet_TCP_DelSocket(socketSet,clients[clientId]);
             break;
         }

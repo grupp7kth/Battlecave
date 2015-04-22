@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "chattserverfunction.h"
+//#include "chattserverfunction.h"
 #include "allvariables.h"
 
 #define SERVER_IP "193.10.39.101"
@@ -13,13 +13,37 @@
 
 SDL_Thread *clientThreads[MAX_CLIENTS];
 IPaddress serverIP;
-
+TCPsocket serverTCPsocket;
 
 int main(int argc, char* args[]){
     
+    int clientID = 0;
+    for (int i; i<MAX_CLIENTS; i++) {
+        clients[i] = createClient(NULL,NULL,NULL);
+    }
     
     
+    SDL_Init(SDL_INIT_EVERYTHING);
+    SDLNet_Init();
     
+    SDLNet_ResolveHost(&serverIP, NULL, 3445);
+    serverTCPsocket = SDLNet_TCP_Open(&serverIP);
+    socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS); if (!socketSet) {printf("%s\n", SDLNet_GetError());}
+    
+    UDPsocketIN = SDLNet_UDP_Open(0);
+    UDPsocketOUT = SDLNet_UDP_Open(0);
+    
+    printf("Waiting for connection...\n");
+    
+    while (true) {
+        
+        if (clientID<MAX_CLIENTS) {
+            
+            clients[clientID].TCPsocket = SDLNet_TCP_Accept(serverTCPsocket);
+            
+        
+        }
+    }
     
     
     
