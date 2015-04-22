@@ -1,10 +1,13 @@
 #ifndef ALVARIABLES_H_   /* Include guard */
 #define ALVARIABLES_H_
 
-extern SDL_Thread *client_thread[MAX_CLIENTS];
-extern SDLNet_SocketSet socketSet;
-extern TCPsocket clientTCPsocket[MAX_CLIENTS];
-extern UDPsocket clientUDPsocket[MAX_CLIENTS];
-extern int activeClients;
 
-#endif // FOO_H_
+typedef struct Client client;
+client createClient(TCPsocket clientTCPsocket,char name[LENGTH],int score);
+extern SDLNet_SocketSet socketSet;
+extern UDPsocket UDPsocketIN;
+extern UDPsocket UDPsocketOUT;
+extern int activeClients;
+extern client clients[MAX_CLIENTS];
+
+#endif // ALLVARIABLES_H_

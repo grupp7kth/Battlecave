@@ -5,10 +5,25 @@
 #include "allvariables.h"
 
 #define MAX_CLIENTS 10
+#define LENGTH 100
+struct Client
+{
+    TCPsocket TCPsocket;
+    char name[LENGTH];
+    int score;
 
+};
+client createClient(TCPsocket clientTCPsocket,char name[LENGTH],int score)
+{
+    client c;
+    c.clientTCPsocket=clientTCPsocket;
+    strcpy(c.name,name);
+    c.score=score;
+    return c;
+}
 
-SDL_Thread *client_thread[MAX_CLIENTS];
+client clients[MAX_CLIENTS];
 SDLNet_SocketSet socketSet;
-TCPsocket clientTCPsocket[MAX_CLIENTS];
-UDPsocket clientUDPsocket[MAX_CLIENTS];
+UDPsocket UDPsocketIN;
+UDPsocket UDPsocketOUT;
 int activeClients;
