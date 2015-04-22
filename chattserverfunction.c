@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include "foo.h"  /* Include the header (not strictly necessary here) */
 
 bool checkConnection(int cRecv);
@@ -6,6 +7,7 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
 {
     int clientId;
     char UDPtext[]; char TCPtext[];
+    
 
     clientId = currentClientId;
 
@@ -19,7 +21,16 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
         }
         for(int i=0;i<activeClients;i++)
         {
+<<<<<<< HEAD
             if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
+=======
+        
+            SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH);
+            for(int i=0;i<activeClients;i++)
+            {
+                if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
+            }
+>>>>>>> origin/master
         }
     }
     return;
@@ -39,3 +50,12 @@ bool checkConnection(int cRecv)
     }
     return connection;
 }
+
+    
+    clientid = currentclientid;
+    
+    while(){
+        
+        ;
+    }
+
