@@ -8,7 +8,7 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
 {
     int clientId;
     char UDPtext[]; char TCPtext[];
-    
+
 
     clientId = currentClientId;
 
@@ -25,7 +25,7 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
 <<<<<<< HEAD
             if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
 =======
-        
+
             SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH);
             for(int i=0;i<activeClients;i++)
             {
