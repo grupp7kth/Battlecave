@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-//#include "chattserverfunction.h"
+#include "chattserverfunction.h"
 #include "allvariables.h"
 
 #define SERVER_IP "193.10.39.101"
@@ -40,7 +40,7 @@ int main(int argc, char* args[]){
         
         if (clientID<MAX_CLIENTS) {
             
-            clients[clientID].TCPsocket = SDLNet_TCP_Accept(serverTCPsocket);
+            clients[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
         }
     }
     

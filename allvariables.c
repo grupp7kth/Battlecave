@@ -12,7 +12,7 @@ struct client createClient(TCPsocket clientTCPsocket,char name[LENGTH],int score
 {
     struct client c;
     
-    c.TCPsocket=clientTCPsocket;
+    c.socket=clientTCPsocket;
     strcpy(c.name,name);
     c.score=score;
     

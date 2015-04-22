@@ -1,9 +1,9 @@
-#ifndef ALVARIABLES_H_   /* Include guard */
-#define ALVARIABLES_H_
+#ifndef ALLVARIABLES_H_   /* Include guard */
+#define ALLVARIABLES_H_
 #define LENGTH 100
 #define MAX_CLIENTS 8
 struct client{
-    TCPsocket TCPsocket;
+    TCPsocket socket;
     char name[LENGTH];
     int score;
 };
