@@ -6,6 +6,7 @@
 #include "allvariables.h"
 
 #define MAX_LENGTH 100
+#define MAX_CLIENTS 8
 
 bool checkConnection(int cRecv);
 
