@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2_net/SDL_net.h>
 #include "foo.h"  /* Include the header (not strictly necessary here) */
 
 bool checkConnection(int clientId);
@@ -16,7 +17,7 @@ SDL_TreadFunction *chattserverfunction(int currentClientId)    /* Function defin
         if(!checkConnection(clients[clientId]))
         {
             SDLNet_TCP_Close(clients[clientId]);
-            activeClients=SDLNet_TCP_DelSocket(socketSet,clients[clientId]);
+            activeClients = SDLNet_TCP_DelSocket(socketSet,clients[clientId]);
             break;
         }
         else
@@ -32,6 +33,7 @@ SDL_TreadFunction *chattserverfunction(int currentClientId)    /* Function defin
 
     return;
 }
+
 
 bool checkConnection(int clientId)
 {
