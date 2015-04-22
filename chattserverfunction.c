@@ -22,27 +22,18 @@ SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function defi
         }
         for(int i=0;i<activeClients;i++)
         {
-<<<<<<< HEAD
             if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
-=======
 
             SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH);
             for(int i=0;i<activeClients;i++)
             {
                 if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
             }
->>>>>>> origin/master
         }
     }
     return;
 }
-
-<<<<<<< HEAD
-
-bool checkConnection(int clientId)
-=======
 bool checkConnection(int cRecv)
->>>>>>> origin/master
 {
     bool connection;
     int check = cRecv;
