@@ -16,10 +16,7 @@ struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int s
     return c;
 }
 
-struct client clients[8];
 SDLNet_SocketSet socketSet;
 UDPsocket UDPsocketIN;
 UDPsocket UDPsocketOUT;
 int activeClients;
-
-

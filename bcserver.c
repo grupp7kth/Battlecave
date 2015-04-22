@@ -14,12 +14,13 @@ SDL_Thread *clientThreads[MAX_CLIENTS];
 IPaddress serverIP;
 TCPsocket serverTCPsocket;
 TCPsocket playerSocket;
+struct client players[MAX_CLIENTS];
 
 int main(int argc, char* args[]){
 
     int clientID = 0;
     for (int i; i<MAX_CLIENTS; i++) {
-        clients[i] = createClient(NULL,NULL,0);
+        players[i] = createClient(NULL,NULL,0);
     }
     
     
@@ -39,7 +40,7 @@ int main(int argc, char* args[]){
         
         if (clientID<MAX_CLIENTS) {
             
-            clients[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
+            players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
         }
     }
     return 0;
