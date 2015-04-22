@@ -1,8 +1,8 @@
 #include "foo.h"  /* Include the header (not strictly necessary here) */
 
-bool checkConnection(int clientId);
+bool checkConnection(int cRecv);
 
-SDL_TreadFunction *chattserverfunction(int currentClientId)    /* Function definition */
+SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function definition */
 {
     int clientId;
     char UDPtext[]; char TCPtext[];
@@ -11,30 +11,25 @@ SDL_TreadFunction *chattserverfunction(int currentClientId)    /* Function defin
 
     while(1)
     {
-        if(!checkConnection(clients[clientId]))
+        if(!checkConnection(SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH)))
         {
             SDLNet_TCP_Close(clients[clientId]);
             activeClients=SDLNet_TCP_DelSocket(socketSet,clients[clientId]);
             break;
         }
-        else
+        for(int i=0;i<activeClients;i++)
         {
-            SDLNet_TCP_Recv(clients[clientId],TCPtext,MAX_LENGTH);
-            for(int i=0;i<activeClients;i++)
-            {
-                if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
-            }
+            if(i!=clientId) SDLNet_TCP_Send(clients[i],TCPtext,MAX_LENGTH);
         }
     }
-
     return;
 }
 
-bool checkConnection(int clientId)
+bool checkConnection(int cRecv)
 {
     bool connection;
-
-    if(SDLNet_TCP_Recv(clients[clientId]) <= 0)
+    int check = cRecv;
+    if(check<=0)
     {
         connection=false;
     }
