@@ -6,7 +6,7 @@
 
 #define SCREENHEIGHT 600
 #define SCREENWIDTH 800
-
+//twest
 SDL_Window* ram;
 SDL_Renderer* raster;
 SDL_Texture* rittextur;
