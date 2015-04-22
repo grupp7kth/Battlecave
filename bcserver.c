@@ -8,8 +8,7 @@
 #include "allvariables.h"
 
 #define SERVER_IP "193.10.39.101"
-#define MAX_LENGTH 100
-#define MAX_CLIENTS 8
+
 
 SDL_Thread *clientThreads[MAX_CLIENTS];
 IPaddress serverIP;
@@ -17,10 +16,10 @@ TCPsocket serverTCPsocket;
 TCPsocket playerSocket;
 
 int main(int argc, char* args[]){
-    
+
     int clientID = 0;
     for (int i; i<MAX_CLIENTS; i++) {
-        clients[i] = createClient(playerSocket, name, 0);
+        clients[i] = createClient(NULL,NULL,0);
     }
     
     
@@ -43,12 +42,5 @@ int main(int argc, char* args[]){
             clients[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
         }
     }
-    
-    
-    
-    
-    
-    
-    
     return 0;
 }

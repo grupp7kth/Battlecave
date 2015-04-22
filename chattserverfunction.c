@@ -5,9 +5,6 @@
 #include "chattserverfunction.h"  /* Include the header (not strictly necessary here) */
 #include "allvariables.h"
 
-#define MAX_LENGTH 100
-#define MAX_CLIENTS 8
-
 bool checkConnection(int cRecv);
 
 SDL_ThreadFunction *chattfunction(int currentClientId)    /* Function definition */
@@ -16,7 +13,8 @@ SDL_ThreadFunction *chattfunction(int currentClientId)    /* Function definition
     SDLNet_Init();
     
     int clientId;
-    char UDPtext[MAX_LENGTH]; char TCPtext[MAX_LENGTH];
+    //char UDPtext[MAX_LENGTH];
+    char TCPtext[MAX_LENGTH];
 
 
     clientId = currentClientId;

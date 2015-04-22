@@ -5,10 +5,7 @@
 #include <SDL2_net/SDL_net.h>
 #include "allvariables.h"
 
-
-#define MAX_CLIENTS 8
-#define LENGTH 100
-struct client createClient(TCPsocket clientTCPsocket,char name[LENGTH],int score)
+struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int score)
 {
     struct client c;
     
@@ -19,10 +16,10 @@ struct client createClient(TCPsocket clientTCPsocket,char name[LENGTH],int score
     return c;
 }
 
-struct client clients[MAX_CLIENTS];
+struct client clients[8];
 SDLNet_SocketSet socketSet;
 UDPsocket UDPsocketIN;
 UDPsocket UDPsocketOUT;
 int activeClients;
-char name[LENGTH]={ "Player" };
+
 
