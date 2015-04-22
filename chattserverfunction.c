@@ -1,13 +1,18 @@
 #include <SDL2/SDL.h>
 #include <SDL2_net/SDL_net.h>
-#include "foo.h"  /* Include the header (not strictly necessary here) */
+#include <stdio.h>
+#include <stdbool.h>
+#include "chattserverfunction.h"  /* Include the header (not strictly necessary here) */
+#include "allvariables.h"
+
+#define MAX_LENGTH 100
 
 bool checkConnection(int cRecv);
 
 SDL_ThreadFunction *chattserverfunction(int currentClientId)    /* Function definition */
 {
     int clientId;
-    char UDPtext[]; char TCPtext[];
+    char UDPtext[MAX_LENGTH]; char TCPtext[MAX_LENGTH];
 
 
     clientId = currentClientId;
