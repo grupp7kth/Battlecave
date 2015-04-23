@@ -5,12 +5,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include "chattserverfunction.h"
+#include "serverclientthreadfunc.h"
 #include "allvariables.h"
 
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
-SDL_Thread *clientThreads[MAX_CLIENTS];
+SDL_Thread* clientThreads[MAX_CLIENTS];
 IPaddress serverIP;
 TCPsocket serverTCPsocket;
 TCPsocket playerSocket;
@@ -31,8 +32,8 @@ int main(int argc, char* args[]){
     serverTCPsocket = SDLNet_TCP_Open(&serverIP);
     socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS); if (!socketSet) {printf("%s\n", SDLNet_GetError());}
     
-    UDPsocketIN = SDLNet_UDP_Open(0);
-    UDPsocketOUT = SDLNet_UDP_Open(0);
+    //UDPsocketIN = SDLNet_UDP_Open(0);
+    //UDPsocketOUT = SDLNet_UDP_Open(0);
     
     printf("Waiting for connection...\n");
     
@@ -42,9 +43,10 @@ int main(int argc, char* args[]){
             
             players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
             if (players[clientID].socket) {
-                
+                printf("Connect...\n");
+                activeClients = SDLNet_TCP_AddSocket(socketSet, players[clientID].socket);
                 players[clientID].ID = clientID;
-                clientThreads[clientID] = SDL_CreateThread(*chattserverfunction(), "clientThread", &players[clientID]);
+                clientThreads[clientID] = SDL_CreateThread(*clientThreadFunction(), "clientThread", &players[clientID]);
                 clientID ++; 
             }
         }
