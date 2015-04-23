@@ -12,7 +12,8 @@ struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int s
     c.socket=clientTCPsocket;
     strcpy(c.name,name);
     c.score=score;
-    
+    c.ID = 0;
+   
     return c;
 }
 

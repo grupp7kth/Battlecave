@@ -9,23 +9,21 @@ bool checkConnection(int cRecv);
 
 SDL_ThreadFunction *chattserverfunction(struct client players[])    /* Function definition */
 {
-    
- 
-    int clientId;
+    int clientID = players[];
     //char UDPtext[MAX_LENGTH];
     char TCPtext[MAX_LENGTH];
 
     while(1)
     {
-        if(!checkConnection(SDLNet_TCP_Recv(players[clientId].socket,TCPtext,MAX_LENGTH)))
+        if(!checkConnection(SDLNet_TCP_Recv(players[clientID].socket,TCPtext,MAX_LENGTH)))
         {
-            SDLNet_TCP_Close(players[clientId].socket);
-            activeClients = SDLNet_TCP_DelSocket(socketSet,players[clientId].socket);
+            SDLNet_TCP_Close(players[clientID].socket);
+            activeClients = SDLNet_TCP_DelSocket(socketSet,players[clientID].socket);
             break;
         }
         for(int i=0;i<activeClients;i++)
         {
-            if(i!=clientId) SDLNet_TCP_Send(players[i].socket,TCPtext,MAX_LENGTH);
+            if(i!=clientID) SDLNet_TCP_Send(players[i].socket,TCPtext,MAX_LENGTH);
         }
     }
     return 0;

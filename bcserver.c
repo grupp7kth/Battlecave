@@ -8,7 +8,7 @@
 #include "allvariables.h"
 
 #define SERVER_IP "193.10.39.101"
-
+#define PLAYER  "Player"
 
 SDL_Thread *clientThreads[MAX_CLIENTS];
 IPaddress serverIP;
@@ -20,7 +20,7 @@ int main(int argc, char* args[]){
 
     int clientID = 0;
     for (int i; i<MAX_CLIENTS; i++) {
-        players[i] = createClient(NULL,NULL,0);
+        players[i] = createClient(NULL,PLAYER,0);
     }
     
     
@@ -41,7 +41,44 @@ int main(int argc, char* args[]){
         if (clientID<MAX_CLIENTS) {
             
             players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
+            if (players[clientID].socket) {
+                
+                players[clientID].ID = clientID;
+                clientThreads[clientID] = SDL_CreateThread(*chattserverfunction(), "clientThread", &players[clientID]);
+                clientID ++; 
+            }
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
