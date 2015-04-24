@@ -14,9 +14,9 @@ int chattserverfunction(struct client* p)    /* Function definition */
     struct client* player=(struct client*) p;
     
     char TCPtext[MAX_LENGTH];
-    int connectionCheck, playerIndex=0,i;
+    int connectionCheck;
 
-    printf("ClientThread:CHATT, clientID: %d\n", player->ID);
+    printf("ClientID: %d    ClientThread:CHATT\n", player->ID);
 
     
     

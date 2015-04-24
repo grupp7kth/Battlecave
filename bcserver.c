@@ -7,7 +7,6 @@
 #include "chattserverfunction.h"
 #include "serverclientthreadfunc.h"
 #include "allvariables.h"
-
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
@@ -18,18 +17,13 @@ IPaddress serverIP;
 TCPsocket serverTCPsocket;
 TCPsocket incomming = NULL;
 
-
-
-
-int main(int argc, char* args[]){
-    
-  
-    int clientID = 0, clientThr1 = 0, clientThr2 = 0, freeID;
+int main(int argc, char* args[])
+{
+    int clientThr1 = 0, clientThr2 = 0, freeID;
     
     for (int i=0; i<MAX_CLIENTS; i++) {
         players[i] = createClient(playerSocket[i],"Player",0);
     }
-    
     
     SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
@@ -40,17 +34,15 @@ int main(int argc, char* args[]){
     
     
     printf("Waiting for connection...\n");
-    
     while (true){
-        
-        while ((incomming = SDLNet_TCP_Accept(serverTCPsocket)) == 0x0 );
-        if ((freeID = getFreeClientID())<0) { printf("Too many users! \n"); }
+        while ((incomming = SDLNet_TCP_Accept(serverTCPsocket)) == 0x0 );       // Väntar in connections
+        if ((freeID = getFreeClientID())<0) {printf("Too many users! \n");}     // Ger uppkopplad kient ett ledigt clientID
         else{
             
             players[freeID].socket = incomming;
             players[freeID].ID = freeID;
             activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
-            printf("ClientID %d connected...\nClient socket after accept: %p\n", players[freeID].ID, &players[freeID].socket);
+            printf("ClientID: %d    Connected\n", players[freeID].ID);
             
             clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "ClientMainThread", &players[freeID]);
             clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
@@ -64,11 +56,10 @@ int main(int argc, char* args[]){
     SDL_Quit();
     return 0;
 }
-int getFreeClientID(){
+
+int getFreeClientID(){ // Letar upp en ledig clientplats och returnerar ett clientID
     for (int i=0; i<MAX_CLIENTS; i++) {
-        if (!players[i].active) {
-            return i;
-        }
+        if (!players[i].active) return i;
     }
     return -1;
 }
