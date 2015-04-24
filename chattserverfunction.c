@@ -7,10 +7,12 @@
 
 bool checkConnection(int cRecv);
 void cleanMessage(char message[]);
-SDL_ThreadFunction *chattserverfunction(int clientID)    /* Function definition */
+SDL_ThreadFunction *chattserverfunction(struct client* player)    /* Function definition */
 {
-    int ID = clientID;
-    printf("ClientThread:CHATT, clientID: %d\n", clientID);
+    struct client* p=(struct client*) player;
+    
+    int ID;
+    printf("ClientThread:CHATT, clientID: %d\n", player->ID);
 
     
     char TCPtext[MAX_LENGTH];
@@ -18,10 +20,10 @@ SDL_ThreadFunction *chattserverfunction(int clientID)    /* Function definition 
 
     while(1){
             cleanMessage(TCPtext);
-            SDLNet_TCP_Recv(players[ID].socket,TCPtext,MAX_LENGTH);
+            SDLNet_TCP_Recv(player->socket,TCPtext,MAX_LENGTH);
         
         for(int i=0;i<activeClients;i++){
-            if(i!=ID)SDLNet_TCP_Send(players[i].socket, TCPtext, MAX_LENGTH);
+            if(i!=player->ID)SDLNet_TCP_Send(players[i].socket, TCPtext, MAX_LENGTH);
         }
     }
     return 0;

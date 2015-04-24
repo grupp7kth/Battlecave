@@ -43,15 +43,17 @@ int main(int argc, char* args[]){
         if (clientID<MAX_CLIENTS) {
             
             players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
-            //printf("socket after accept: %p\n", &players[clientID].socket);
             if (players[clientID].socket) {
-                printf("Connect...\n");
-                printf("socket after accept: %p\n", &players[clientID].socket);
-                
+                printf("Client connected...\nClient socket after accept: %p\n", &players[clientID].socket);
+            
                 activeClients = SDLNet_TCP_AddSocket(socketSet, players[clientID].socket);
+                
                 players[clientID].ID = clientID;
                 
                 clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "clientThread", clientID);
+                
+                
+                
                 
                 clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "chattserverfunc", clientID);
 

@@ -7,7 +7,7 @@
 #include "allvariables.h"
 
 
-SDL_ThreadFunction *clientThreadFunction(int clientID)    /* Function definition */
+int clientThreadFunction(int clientID)    /* Function definition */
 {
     int ID = clientID;
     printf("ClientThread:GAME, clientID: %d\n",ID);
