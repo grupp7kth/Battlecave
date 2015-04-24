@@ -11,17 +11,17 @@
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
-SDL_Thread* clientThreads[MAX_CLIENTS];
+SDL_Thread* clientThreads[MAX_CLIENTS*2];
 IPaddress serverIP;
 TCPsocket serverTCPsocket;
-TCPsocket playerSocket;
-struct client players[MAX_CLIENTS];
 
 int main(int argc, char* args[]){
-
-    int clientID = 0;
-    for (int i; i<MAX_CLIENTS; i++) {
-        players[i] = createClient(NULL,PLAYER,0);
+    
+  
+    int clientID = 0, clientThr1 = 0, clientThr2 = 0;
+    
+    for (int i=0; i<MAX_CLIENTS; i++) {
+        players[i] = createClient(playerSocket[i],"Player",0);
     }
     
     
@@ -31,6 +31,7 @@ int main(int argc, char* args[]){
     SDLNet_ResolveHost(&serverIP, NULL, 3445);
     serverTCPsocket = SDLNet_TCP_Open(&serverIP);
     socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS); if (!socketSet) {printf("%s\n", SDLNet_GetError());}
+    
     
     //UDPsocketIN = SDLNet_UDP_Open(0);
     //UDPsocketOUT = SDLNet_UDP_Open(0);
@@ -42,12 +43,19 @@ int main(int argc, char* args[]){
         if (clientID<MAX_CLIENTS) {
             
             players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
+            //printf("socket after accept: %p\n", &players[clientID].socket);
             if (players[clientID].socket) {
                 printf("Connect...\n");
+                printf("socket after accept: %p\n", &players[clientID].socket);
+                
                 activeClients = SDLNet_TCP_AddSocket(socketSet, players[clientID].socket);
                 players[clientID].ID = clientID;
-                clientThreads[clientID] = SDL_CreateThread(*clientThreadFunction(), "clientThread", &players[clientID]);
-                clientID ++; 
+                
+                clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "clientThread", clientID);
+                
+                clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "chattserverfunc", clientID);
+
+                clientID ++;
             }
         }
     }

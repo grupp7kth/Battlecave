@@ -23,6 +23,7 @@ int main( int argc, char* args[] )
     SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
     char text[MAX_LENGTH];
+    char endOfmessage[MAX_LENGTH]={"..."};
     
     SDLNet_ResolveHost(&ip, LOOPBACK, SERVER_PORT);
     client=SDLNet_TCP_Open(&ip);
@@ -37,7 +38,6 @@ int main( int argc, char* args[] )
             printf("> ");
             fgets(text,MAX_LENGTH,stdin);
             SDLNet_TCP_Send(client,text,MAX_LENGTH);
-            
             
             if(strstr(text,"q")!=0)
             {
@@ -56,9 +56,12 @@ SDL_ThreadFunction *recvThread(int a)
     while(1)
     {
         cleancomand(ans);
-        SDLNet_TCP_Recv(client,ans,MAX_LENGTH);
-        printf("< %s",ans);
+        while (strstr(ans, "...")==0) {
+            
+            SDLNet_TCP_Recv(client,ans,MAX_LENGTH);
+            printf("< %s",ans);
         
+        }
     }
 }
 void cleancomand(char comand[]){
