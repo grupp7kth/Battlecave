@@ -11,14 +11,20 @@
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
+int getFreeClientID();
+
 SDL_Thread* clientThreads[MAX_CLIENTS*2];
 IPaddress serverIP;
 TCPsocket serverTCPsocket;
+TCPsocket incomming = NULL;
+
+
+
 
 int main(int argc, char* args[]){
     
   
-    int clientID = 0, clientThr1 = 0, clientThr2 = 0;
+    int clientID = 0, clientThr1 = 0, clientThr2 = 0, freeID;
     
     for (int i=0; i<MAX_CLIENTS; i++) {
         players[i] = createClient(playerSocket[i],"Player",0);
@@ -33,37 +39,39 @@ int main(int argc, char* args[]){
     socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS); if (!socketSet) {printf("%s\n", SDLNet_GetError());}
     
     
-    //UDPsocketIN = SDLNet_UDP_Open(0);
-    //UDPsocketOUT = SDLNet_UDP_Open(0);
-    
     printf("Waiting for connection...\n");
     
-    while (true) {
+    while (true){
         
-        if (clientID<MAX_CLIENTS) {
+        while ((incomming = SDLNet_TCP_Accept(serverTCPsocket)) == 0x0 );
+        if ((freeID = getFreeClientID())<0) { printf("Too many users! \n"); }
+        else{
             
-            players[clientID].socket = SDLNet_TCP_Accept(serverTCPsocket);
-            if (players[clientID].socket) {
-                printf("Client connected...\nClient socket after accept: %p\n", &players[clientID].socket);
+            players[freeID].socket = incomming;
+            players[freeID].ID = freeID;
+            activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
+            printf("ClientID %d connected...\nClient socket after accept: %p\n", players[freeID].ID, &players[freeID].socket);
             
-                activeClients = SDLNet_TCP_AddSocket(socketSet, players[clientID].socket);
-                
-                players[clientID].ID = clientID;
-                
-                clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "clientThread", clientID);
-                
-                
-                
-                
-                clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "chattserverfunc", clientID);
-
-                clientID ++;
-            }
+            clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "ClientMainThread", &players[freeID]);
+            clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
+            
+            incomming = NULL;
         }
     }
+    
+    SDLNet_TCP_Close(serverTCPsocket);
+    SDLNet_Quit();
+    SDL_Quit();
     return 0;
 }
-
+int getFreeClientID(){
+    for (int i=0; i<MAX_CLIENTS; i++) {
+        if (!players[i].active) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 
 

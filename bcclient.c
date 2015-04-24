@@ -23,9 +23,9 @@ int main( int argc, char* args[] )
     SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
     char text[MAX_LENGTH];
-    char endOfmessage[MAX_LENGTH]={"..."};
+    //char endOfmessage[MAX_LENGTH]={"..."};
     
-    SDLNet_ResolveHost(&ip, SERVER_IP, SERVER_PORT);
+    SDLNet_ResolveHost(&ip, LOOPBACK, SERVER_PORT);
     client=SDLNet_TCP_Open(&ip);
     
     if(client)

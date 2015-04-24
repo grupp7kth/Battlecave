@@ -7,9 +7,10 @@
 #include "allvariables.h"
 
 
-int clientThreadFunction(int clientID)    /* Function definition */
+int clientThreadFunction(struct client* p)    /* Function definition */
 {
-    int ID = clientID;
+    struct client* player=(struct client*) p;
+    int ID = player->ID;
     printf("ClientThread:GAME, clientID: %d\n",ID);
   
 
