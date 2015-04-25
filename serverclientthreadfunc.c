@@ -10,8 +10,7 @@
 int clientThreadFunction(struct client* p)    /* Function definition */
 {
     struct client* player=(struct client*) p;
-    int ID = player->ID;
-    printf("ClientID: %d    ClientThread:GAME\n",ID);
+    printf("GameThread created by ClientID: %d\n",player->ID);
   
 
     while(1)

@@ -2,6 +2,6 @@
 #define chattserverfunction_H_
 
 int chattserverfunction();  /* An example function declaration */
-bool checkConnection(int cRecv);
+void clearString(char message[]);
 
 #endif// chattserverfunction_H_

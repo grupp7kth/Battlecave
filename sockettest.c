@@ -44,7 +44,7 @@ int checkClients(client kli[10]) {
 // Tr}dfunktion som l{ser av klientens socket f|r ett meddelande, l{gger till klientens namn till meddelandet
 // och sen skickar ut till alla andra klienter.
 int klientTrad(void* data) {
-	client* jag; // Skapa en klient och kasta om den vois-pekare som kom in, till en client-pekare.
+	client* jag; // Skapa en klient och kasta om den void-pekare som kom in, till en client-pekare.
 	jag = (client*)data; 
 	char meddelande[MAX_LENGTH]; // Det meddelande som kommer in.
 	char full[MAX_LENGTH]; // Det meddelande som ska ut (namn+": "+meddelande)
