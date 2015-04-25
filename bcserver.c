@@ -48,7 +48,8 @@ int main(int argc, char* args[])
             clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
             SDL_DetachThread(clientThreads[clientThr1]);
             SDL_DetachThread(clientThreads[clientThr2]);
-            
+            clientThr1 ++;
+            clientThr2 ++;
             incomming = NULL;
         }
     }
