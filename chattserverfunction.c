@@ -37,9 +37,9 @@ int chattserverfunction(struct client* p)    /* Function definition */
     printf("%s has connected.\n", player->name);
 
     strcat(connected, player->name);                // kommer att skickas till de andra klienterna vid en connect
-    strcat(connected, " has connected!!! :D ");
+    strcat(connected, " has connected!!! :D \n");
     strcat(disconnected, player->name);             // Kommer att skickas till de andra klienterna vid en disconnect
-    strcat(disconnected, " has disconnected...");
+    strcat(disconnected, " has disconnected...\n");
     
     // Meddelar alla om att jag har connectat till chatten
     for(int i=0;i<activeClients;i++){
