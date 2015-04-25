@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
 	serverip.port = 69;
 	TCPsocket serversocket;
 
-	SDLNet_ResolveHost(&serverip,namn,4444); // Vet inte riktigt vad den h{r har f|r funktion.
+	SDLNet_ResolveHost(&serverip,NULL,4444); // Vet inte riktigt vad den h{r har f|r funktion.
 	printf("Serverns ip (nu) {r %d och port %d\n",serverip.host,serverip.port);
 	serversocket = SDLNet_TCP_Open(&serverip); // \ppna socketen.
 	printf("Serverns ip (efter open) {r %d och port %d\nWaiting...\n",serverip.host,serverip.port);
