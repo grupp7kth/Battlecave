@@ -21,9 +21,9 @@ int main(int argc, char* args[])
 {
     int clientThr1 = 0, clientThr2 = 0, freeID;
     
-    for (int i=0; i<MAX_CLIENTS; i++) {
+    /*for (int i=0; i<MAX_CLIENTS; i++) {
         players[i] = createClient(playerSocket[i],"Player",0);
-    }
+    }*/
     
     SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
@@ -41,6 +41,7 @@ int main(int argc, char* args[])
             
             players[freeID].socket = incomming;
             players[freeID].ID = freeID;
+            players[freeID].active = true;
             activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
             printf("ClientID: %d    Connected\n", players[freeID].ID);
             

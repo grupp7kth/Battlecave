@@ -9,6 +9,7 @@ bool checkConnection(int cRecv);
 void cleanMessage(char message[]);
 
 
+
 int chattserverfunction(struct client* p)    /* Function definition */
 {
     struct client* player=(struct client*) p;
@@ -16,34 +17,53 @@ int chattserverfunction(struct client* p)    /* Function definition */
     
     char TCPtextIN[MAX_LENGTH];
     char TCPtextOUT[MAX_LENGTH];
+    char connected[MAX_LENGTH];
     char disconnected[MAX_LENGTH];
     clearString(TCPtextIN);
     clearString(TCPtextOUT);
     clearString(disconnected);
+    clearString(connected);
     int connectionCheck = 1, i;
     
     
-    while(!strlen(TCPtextIN))                       // Lystnar på socketen till att något kommer in, i detta fall klientens nickname
-        SDLNet_TCP_Recv(player->socket, TCPtextIN, MAX_LENGTH);
-    
-    for(i=0;i<MAX_LENGTH;i++)                      // Tar bort meddelandets enterslag
-        { if(TCPtextIN[i] == '\n') TCPtextIN[i] = '\0'; }
+    while(!strlen(TCPtextIN)) SDLNet_TCP_Recv(player->socket, TCPtextIN, MAX_LENGTH);
+    // Lystnar på socketen till att något kommer in, i detta fall klientens nickname
+
+    for(i=0;i<MAX_LENGTH;i++){ if(TCPtextIN[i] == '\n') TCPtextIN[i] = '\0'; }
+    // Tar bort meddelandets enterslag
     
     stringCopy(TCPtextIN, player->name);
     
     printf("%s has connected.\n", player->name);
 
+    strcat(connected, player->name);                // kommer att skickas till de andra klienterna vid en connect
+    strcat(connected, " has connected!!! :D ");
     strcat(disconnected, player->name);             // Kommer att skickas till de andra klienterna vid en disconnect
     strcat(disconnected, " has disconnected...");
+    
+    // Meddelar alla om att jag har connectat till chatten
+    for(int i=0;i<activeClients;i++){
+        if(players[i].active && player->socket != players[i].socket)
+            SDLNet_TCP_Send(players[i].socket, connected, MAX_LENGTH); }
+    
+    
     
     clearString(TCPtextIN);
     while(true){                                    // Lystnar på socketen så tills att något kommer in
         while(!strlen(TCPtextIN) && connectionCheck)  connectionCheck = SDLNet_TCP_Recv(player->socket,TCPtextIN,MAX_LENGTH);
         
                             // Om TCP_Recv returnerar o, betyder det ätt klienten har kopplat ner och den infon skickas till de andra klienterna
-        if(!connectionCheck){ printf("ClientID: %d has disconnected\n", player->ID); sendMessage(player->ID, disconnected); break; }
+        if(!connectionCheck){       printf("ClientID: %d has disconnected...\n", player->ID);
+                for(int i=0;i<activeClients;i++){
+                    if(players[i].active && player->socket != players[i].socket)
+                        SDLNet_TCP_Send(players[i].socket, disconnected, MAX_LENGTH);};break;}
         
-        if(strstr(TCPtextIN, "&&&")){ printf("ClientID: %d has disconnected\n", player->ID); sendMessage(player->ID, disconnected); break; }
+        if(strstr(TCPtextIN, "&&&")){   printf("ClientID: %d has disconnected...\n", player->ID);
+                for(int i=0;i<activeClients;i++){
+                    if(players[i].active && player->socket != players[i].socket)
+                        SDLNet_TCP_Send(players[i].socket, disconnected, MAX_LENGTH);};break;}
+        
+        
         
         printf("%s: %s", player->name, TCPtextIN);
         TCPtextOUT[0] = '\0';
@@ -51,13 +71,12 @@ int chattserverfunction(struct client* p)    /* Function definition */
         strcat(TCPtextOUT, ": ");           // genom att klippa och klistra lite
         strcat(TCPtextOUT, TCPtextIN);
         
-        //sendMessage(player->ID, TCPtextOUT);
+        
         TCPtextIN[0] = '\0';
         
         for(int i=0;i<activeClients;i++){
             if(players[i].active && player->socket != players[i].socket)   // Skickar meddelandet ut till de andra klienterna och hoppar över sig själv
-                SDLNet_TCP_Send(players[i].socket, TCPtextOUT, MAX_LENGTH);
-        }
+                SDLNet_TCP_Send(players[i].socket, TCPtextOUT, MAX_LENGTH); }
     }
     
     // Stänger socketen och återställer klient-structen
