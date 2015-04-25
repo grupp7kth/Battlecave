@@ -51,13 +51,13 @@ int chattserverfunction(struct client* p)    /* Function definition */
         strcat(TCPtextOUT, ": ");           // genom att klippa och klistra lite
         strcat(TCPtextOUT, TCPtextIN);
         
-        sendMessage(player->ID, TCPtextOUT);
+        //sendMessage(player->ID, TCPtextOUT);
         TCPtextIN[0] = '\0';
         
-        /*for(int i=0;i<activeClients;i++){
+        for(int i=0;i<activeClients;i++){
             if(players[i].active && player->socket != players[i].socket)   // Skickar meddelandet ut till de andra klienterna och hoppar över sig själv
                 SDLNet_TCP_Send(players[i].socket, TCPtextOUT, MAX_LENGTH);
-        }*/
+        }
     }
     
     // Stänger socketen och återställer klient-structen
