@@ -37,12 +37,12 @@ int main( int argc, char* args[] )
             cleancomand(text);
             printf("> ");
             fgets(text,MAX_LENGTH,stdin);
-            SDLNet_TCP_Send(client,text,MAX_LENGTH);
-            
             if(strstr(text,"q")!=0)
             {
                 break;
             }
+            SDLNet_TCP_Send(client,text,MAX_LENGTH);
+
         }
     }
     SDLNet_TCP_Close(client);
