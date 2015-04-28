@@ -1,7 +1,4 @@
-#include <SDL2/SDL.h>
-#include <SDL2_net/SDL_net.h>
-#include <stdio.h>
-#include <stdbool.h>
+#include "bcheaders.h"
 #ifndef chattserverfunction_H_   /* Include guard */
 #define chattserverfunction_H_
 

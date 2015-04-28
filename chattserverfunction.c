@@ -1,6 +1,6 @@
+#include "bcheaders.h"
+  /* Include the header (not strictly necessary here) */
 
-#include "chattserverfunction.h"  /* Include the header (not strictly necessary here) */
-#include "allvariables.h"
 
 bool checkConnection(int cRecv);
 void cleanMessage(char message[]);

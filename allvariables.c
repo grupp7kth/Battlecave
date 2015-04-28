@@ -1,5 +1,5 @@
 #include "bcheaders.h"
-#include "allvariables.h"
+
 
 struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int score)
 {

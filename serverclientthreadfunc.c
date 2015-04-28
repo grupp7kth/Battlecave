@@ -1,7 +1,4 @@
-#include "serverclientthreadfunc.h"
-#include "chattserverfunction.h" /* Include the header (not strictly necessary here) */
-#include "allvariables.h"
-
+#include "bcheaders.h"
 
 int clientThreadFunction(struct client* p)    /* Function definition */
 {

@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <SDL2/SDL.h>
-#include <SDL2_net/SDL_net.h>
+#include "bcheaders.h"
 #ifndef ALLVARIABLES_H_   /* Include guard */
 #define ALLVARIABLES_H_
 #define MAX_LENGTH 100

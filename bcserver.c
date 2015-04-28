@@ -1,6 +1,4 @@
-#include "chattserverfunction.h"
-#include "serverclientthreadfunc.h"
-#include "allvariables.h"
+#include "bcheaders.h"
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
