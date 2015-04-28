@@ -1,7 +1,4 @@
-#include <SDL2/SDL.h>
-#include <SDL2_net/SDL_net.h>
-#include <stdio.h>
-#include <stdbool.h>
+
 #include "chattserverfunction.h"  /* Include the header (not strictly necessary here) */
 #include "allvariables.h"
 
