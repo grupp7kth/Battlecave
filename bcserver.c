@@ -4,7 +4,7 @@
 
 int getFreeClientID();
 
-SDL_Thread* clientThreads[MAX_CLIENTS*2];
+SDL_Thread* clientThreads[MAX_LENGTH];
 IPaddress serverIP;
 TCPsocket serverTCPsocket;
 TCPsocket incomming = NULL;
@@ -27,6 +27,10 @@ int main(int argc, char* args[])
     
     printf("Waiting for connection...\n");
     while (true){
+        //incomming = SDLNet_TCP_Accept(serverTCPsocket) == 0x0;
+       // if (incomming<0) {
+            
+        //}
         while ((incomming = SDLNet_TCP_Accept(serverTCPsocket)) == 0x0 );       // Väntar in connections
         if ((freeID = getFreeClientID())<0) {printf("Too many users! \n");}     // Ger uppkopplad kient ett ledigt clientID
         else{

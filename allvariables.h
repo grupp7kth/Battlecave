@@ -10,6 +10,7 @@ struct client{
     int score;
     int ID;
     bool active;
+    bool ready;
 };
 extern struct client players[MAX_CLIENTS];
 struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int score);
@@ -20,6 +21,6 @@ extern int activeClients;
 extern char name[MAX_LENGTH];
 extern TCPsocket playerSocket[MAX_CLIENTS];
 extern int clientList[1000];
-
+extern char clientListId[MAX_CLIENTS];
 
 #endif // ALLVARIABLES_H_

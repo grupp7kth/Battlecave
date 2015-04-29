@@ -10,6 +10,7 @@ struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int s
     c.score=score;
     c.ID = 0;
     c.active = false;
+    c.ready = false;
    
     return c;
 }
