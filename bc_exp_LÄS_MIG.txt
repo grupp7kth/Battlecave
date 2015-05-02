@@ -1,0 +1,26 @@
+Angående filerna:
+
+Nu funkar det! Jag har förstås bara kunnat testa på min egna dator, så risk för att det kan vara knackigt på flera. Dessutom måste man förstås skriva in en annan adress som klienterna ska koppla upp sig på om man vill testa det. Har heller inte kunnat testa på en Windows-maskin. Manual:
+
+Servern måste ha
+bc_exp_serverheader.h
+bc_exp_gameserver.c
+bc_exp_genericFunctions.c
+cave.png
+skepp.png
+och kompileras med följande kommando:
+gcc -framework SDL2 -framework SDL2_Net -framework SDL2_Image -o gameserver bc_exp_genericFunctions.c bc_exp_gameserver.c
+
+Det är bara att köra programmet och vänta.
+
+Klienten/rna ska ha:
+bc_exp_clientheader.h
+bc_exp_gameclient.c
+bc_exp_genericFunctions.c
+cave.png
+skepp.png
+och kompileras med följande kommando:
+gcc -framework SDL2 -framework SDL2_Net -framework SDL2_Image -o gameclient bc_exp_genericFunctions.c bc_exp_gameclient.c
+
+Starta klienten; den ber om namn. När man skrivit in namn ska servern svara på anropet och skicka tillbaka ID och UDP-port. Sen kan man skriva något som börjar på stort K för att starta spelet. Eller så kan man vänta och logga in en till klient. Är fler inloggade kommer servern att vänta tills alla har svarat att de är klara genom att skicka ett K.
+Sen ska det funka! Det gör det med två klienter på min burk i alla fall. Känns lite surrealistiskt att det äntligen gick.
