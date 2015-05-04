@@ -3,6 +3,7 @@
 /** R{knar om grader till radianer.
  @var a: vinkeln i grader.
  @return vinkeln i radianer.
+ */
 double getRadians(int a) {
 	return (a+90)*3.14159265/180;
 }
