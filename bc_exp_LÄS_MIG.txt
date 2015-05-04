@@ -24,3 +24,8 @@ gcc -framework SDL2 -framework SDL2_Net -framework SDL2_Image -o gameclient bc_e
 
 Starta klienten; den ber om namn. När man skrivit in namn ska servern svara på anropet och skicka tillbaka ID och UDP-port. Sen kan man skriva något som börjar på stort K för att starta spelet. Eller så kan man vänta och logga in en till klient. Är fler inloggade kommer servern att vänta tills alla har svarat att de är klara genom att skicka ett K.
 Sen ska det funka! Det gör det med två klienter på min burk i alla fall. Känns lite surrealistiskt att det äntligen gick.
+
+edit(av CJ)
+Kontroller 
+Z och X svänger man med.
+- = gas och höger shift skjuter man med
