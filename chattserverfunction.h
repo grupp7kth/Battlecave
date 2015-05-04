@@ -1,5 +1,4 @@
 #include "bcheaders.h"
-
 #ifndef chattserverfunction_H_   /* Include guard */
 #define chattserverfunction_H_
 
@@ -8,7 +7,8 @@ void clearString(char message[]);
 void sendMessageAll(char TCPtextOUT[]);
 void sendMessageExc(char TCPtexOUT[], int ID);
 void stringCopy(char* source, char* dest);
-void activePlayers();
+void activePlayers(char playerReady[]);
+void activePlayersReady();
 void disconnect(int ID);
 
 #endif// chattserverfunction_H_

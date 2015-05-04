@@ -1,14 +1,13 @@
 #include "bcheaders.h"
 
 
-struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int score)
+struct client createClient(TCPsocket clientTCPsocket,int clientID)
 {
     struct client c;
     
     c.socket=clientTCPsocket;
-    strcpy(c.name,name);
-    c.score=score;
-    c.ID = 0;
+    c.score=0;
+    c.ID = clientID;
     c.active = false;
     c.ready = false;
    

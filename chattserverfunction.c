@@ -9,20 +9,23 @@ int chattserverfunction(struct client* p)    /* Function definition */
 
 // ---------------------------------------------------------------------------------------------------------------------
     
+    int connectionCheck = 1, i;
     char TCPtextIN[MAX_LENGTH];     clearString(TCPtextIN);
     char TCPtextOUT[MAX_LENGTH];    clearString(TCPtextOUT);
     char TCPidOUT[MAX_LENGTH];      clearString(TCPidOUT);
     char connected[MAX_LENGTH];     clearString(connected);
     char disconnected[MAX_LENGTH];  clearString(disconnected);
-    char clientId[MAX_LENGTH];      clearString(clientId);
+    char clientId[MAX_LENGTH];      clearString(clientId);      sprintf(clientId, "%d", player->ID);
+    char playerReady[MAX_LENGTH];   clearString(playerReady);
+    char ready[MAX_LENGTH];         clearString(ready);         sprintf(ready, "%d", READY);
+    char nready[MAX_LENGTH];        clearString(nready);        sprintf(nready, "%d", NOT_READY);
     
-    int connectionCheck = 1, i;
 // ---------------------------------------------------------------------------------------------------------------------
     
-    sprintf(clientId, "%d", player->ID);
     strcat(TCPidOUT, "%");                                                              // Skapar ett meddelande med playerns ID
     strcat(TCPidOUT, clientId);
     for(i=0;i<MAX_LENGTH;i++){ if(TCPidOUT[i] == '\n') TCPidOUT[i] = '\0'; }
+    
 // ---------------------------------------------------------------------------------------
     
     while(!strlen(TCPtextIN)) SDLNet_TCP_Recv(player->socket, TCPtextIN, MAX_LENGTH);   // Tar emot klientens nickname
@@ -39,47 +42,66 @@ int chattserverfunction(struct client* p)    /* Function definition */
 // ---- Skapar diverse meddelanden som ska skickas i olika scenarion
 // ---------------------------------------------------------------------------------------------------------------------
     
-    strcat(connected, "$");
+    strcat(connected, PREAMBLE_CHAT);
     strcat(connected, player->name);
     strcat(connected, " has connected!!! :D \n");   // Skapar meddelande om att Jag har kopplat upp till servern
     for(i=0;i<MAX_LENGTH;i++){ if(connected[i] == '\n') connected[i] = '\0'; }
     
-    strcat(disconnected, "$");
+    strcat(disconnected, PREAMBLE_CHAT);
     strcat(disconnected, player->name);
-    strcat(disconnected, " has disconnected...\n"); // Skapar meddelande om att Jag har kopplat ner från servern
+    strcat(disconnected, " has disconnected... :(\n"); // Skapar meddelande om att Jag har kopplat ner från servern
     for(i=0;i<MAX_LENGTH;i++){ if(disconnected[i] == '\n') disconnected[i] = '\0'; }
     
+    
+    
+    for(i=0;i<MAX_LENGTH;i++){ if(disconnected[i] == '\n') disconnected[i] = '\0'; }
+
 // ---------------------------------------------------------------------------------------------------------------------
     
-    
     sendMessageExc(connected, player->ID);          // Skickar meddelande om Jag har kopplat upp till servern
-    activePlayers();                                // Skickar meddelande om samtliga spelare som är uppkopplade till servern
+    activePlayers(playerReady);                                // Skickar meddelande om samtliga spelare som är uppkopplade till servern
     
-    clearString(TCPtextIN);
-
 // ---------------------------------------------------------------------------------------------------------------------
 // ---- Här startar komunikationen mellan användarna
 // ---------------------------------------------------------------------------------------------------------------------
+    clearString(TCPtextIN);
     while(true){
         // Lystnar på socketen så tills att något kommer in
         while(!strlen(TCPtextIN) && connectionCheck)
             connectionCheck = SDLNet_TCP_Recv(player->socket,TCPtextIN,MAX_LENGTH);
         
         // Meddelanden som startar med # innebär att clienten är redo att köra
-        if(TCPtextIN[0] == '#'){
+        if(TCPtextIN[0] == PREAMBLE_READY){
             player->ready = !player->ready;
+            
+            strcat(playerReady, "#");
+            strcat(playerReady, clientId);
+            if(player->ready){
+                strcat(playerReady, ready);
+            }
+            else{
+                strcat(playerReady, nready);
+            }
+            sendMessageAll(playerReady);
+            clearString(playerReady);
             clearString(TCPtextIN);
         }
         
         // OM connnectioCheck är lika med noll ElLer om meddelandet som kommer in startar med '-'
         // så innebär det att spelaren inte längre är uppkopplad
-        else if(!connectionCheck || TCPtextIN[0] == '-'){printf("ClientID: %d has disconnected...\n", player->ID);player->active = false;  //
-                                sendMessageAll(disconnected);   disconnect(player->ID);break;}
+        else if(!connectionCheck || TCPtextIN[0] == '-'){printf("ClientID: %d has disconnected...\n",player->ID);
+            player->active = false;
+            player->ready = false;
+            sendMessageAll(disconnected);
+            activePlayers(playerReady);
+            disconnect(player->ID);
+            break;}
+        
         else {
             
             printf("%s: %s", player->name, TCPtextIN);
             clearString(TCPtextOUT);
-            strcat(TCPtextOUT, "$");
+            strcat(TCPtextOUT, PREAMBLE_CHAT);
             strcat(TCPtextOUT, player->name);   // Kopplar ihop meddelandet med Namnet
             strcat(TCPtextOUT, ": ");           // genom att klippa och klistra lite
             strcat(TCPtextOUT, TCPtextIN);
@@ -102,23 +124,26 @@ int chattserverfunction(struct client* p)    /* Function definition */
 
 void sendMessageAll(char TCPtextOUT[])
 {
-    for(int i=0;i<activeClients;i++){
+    for(int i=0;i<MAX_CLIENTS;i++){
         if(players[i].active)   // Skickar meddelandet ut till de andra klienterna och hoppar över sig själv
             SDLNet_TCP_Send(players[i].socket, TCPtextOUT, MAX_LENGTH);
     }
 }
 void sendMessageExc(char TCPtextOUT[], int ID)
 {
-    for(int i=0;i<activeClients;i++){
+    for(int i=0;i<MAX_CLIENTS;i++){
         if(players[i].active && i != ID)   // Skickar meddelandet ut till de andra klienterna och hoppar över sig själv
             SDLNet_TCP_Send(players[i].socket, TCPtextOUT, MAX_LENGTH);}
 
 }
     
-void activePlayers()
+void activePlayers(char playerReady[])
 {
+
     char TCPtextOUT[MAX_LENGTH];
     char charid[MAX_LENGTH];
+    char ready[MAX_LENGTH];      clearString(ready);     sprintf(ready, "%d", READY);
+    char nready[MAX_LENGTH];     clearString(nready);    sprintf(nready, "%d", NOT_READY);
     clearString(TCPtextOUT);
     for(int i=0; i<MAX_CLIENTS;i++)
     {
@@ -133,7 +158,23 @@ void activePlayers()
             clearString(TCPtextOUT);
         }
     }
-    printf("Nu har jag skickat alla namn\n");
+    clearString(TCPtextOUT);
+    for(int i=0; i<MAX_CLIENTS;i++)
+    {
+        
+        
+        strcat(TCPtextOUT, "#");
+        sprintf(charid, "%d", players[i].ID);
+        strcat(TCPtextOUT, charid);
+        if (players[i].ready) {
+            strcat(TCPtextOUT, ready);
+        }
+        else{
+            strcat(TCPtextOUT, nready);
+        }
+        sendMessageAll(TCPtextOUT);
+        clearString(TCPtextOUT);
+    }
 }
 void disconnect(int ID)
 {

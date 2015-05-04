@@ -13,7 +13,7 @@ struct client{
     bool ready;
 };
 extern struct client players[MAX_CLIENTS];
-struct client createClient(TCPsocket clientTCPsocket,char name[MAX_LENGTH],int score);
+struct client createClient(TCPsocket clientTCPsocket,int clientID);
 extern SDLNet_SocketSet socketSet;
 extern UDPsocket UDPsocketIN;
 extern UDPsocket UDPsocketOUT;

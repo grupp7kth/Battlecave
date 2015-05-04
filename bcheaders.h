@@ -11,8 +11,12 @@
 #include "serverclientthreadfunc.h"
 #define MAX_LENGTH 100
 #define MAX_CLIENTS 8
-
-
-
+#define PREAMBLE_CHAT "$"
+#define PREAMBLE_PLAYERS '@'
+#define PREAMBLE_READY '#'
+#define PREAMBLE_ID '%'
+#define PREAMBLE_DISCONNECT '-'
+#define READY 1
+#define NOT_READY 0
 
 #endif // ALLVARIABLES_H_

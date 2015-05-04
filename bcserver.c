@@ -13,10 +13,9 @@ int main(int argc, char* args[])
 {
     int clientThr1 = 0, clientThr2 = 0, freeID;
     
-    /*for (int i=0; i<MAX_CLIENTS; i++) {
-        players[i] = createClient(playerSocket[i],"Player",0);
-    }*/
-    
+    for (int i=0; i<MAX_CLIENTS; i++){
+        players[i] = createClient(playerSocket[i],i);
+    }
     SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
     
@@ -27,12 +26,16 @@ int main(int argc, char* args[])
     
     printf("Waiting for connection...\n");
     while (true){
-        //incomming = SDLNet_TCP_Accept(serverTCPsocket) == 0x0;
-       // if (incomming<0) {
+        /*incomming = SDLNet_TCP_Accept(serverTCPsocket) == 0x0;
+        if (incomming<0) {
             
         //}
+            
+        */
         while ((incomming = SDLNet_TCP_Accept(serverTCPsocket)) == 0x0 );       // Väntar in connections
+        
         if ((freeID = getFreeClientID())<0) {printf("Too many users! \n");}     // Ger uppkopplad kient ett ledigt clientID
+        
         else{
             
             players[freeID].socket = incomming;
