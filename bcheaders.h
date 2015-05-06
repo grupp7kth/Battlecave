@@ -16,9 +16,10 @@
 #define PREAMBLE_CHAT "$"
 #define PREAMBLE_PLAYERS '@'
 #define PREAMBLE_READY '#'
-#define PREAMBLE_ID '%'
+#define PREAMBLE_READYS "#"
+#define PREAMBLE_ID "%"
 #define PREAMBLE_DISCONNECT '-'
-#define READY 1
-#define NOT_READY 0
+#define READY "1"
+#define NOT_READY "0"
 
 #endif // ALLVARIABLES_H_

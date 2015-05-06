@@ -2,6 +2,9 @@
 #define SERVER_IP "193.10.39.101"
 #define PLAYER  "Player"
 
+
+void acceptConnections();
+void closeServer();
 int getFreeClientID();
 bool allActiveClientsAreReady();
 bool initSDL();
@@ -25,89 +28,68 @@ TCPsocket incomming = NULL;
 
 int main(int argc, char* args[])
 {
-    int clientThr1 = 0, clientThr2 = 0, freeID;
+    int i;
     
-    for (int i=0; i<MAX_CLIENTS; i++){
-        players[i] = createClient(playerSocket[i],i);
-    }
-    if (!initSDL() || !loadServerMedia()) {
-        puts("Det gick }t skogen.");
-        return 1;
-    }
-    puts("initaliserad.");
+    for (int i=0; i<MAX_CLIENTS; i++){ players[i] = createClient(playerSocket[i],i); }
+    
+    if (!initSDL() || !loadServerMedia()) { puts("Could not load media or failed to initSDL."); return 1; }
+    
     SDLNet_Init();
     
     udpSendSock = SDLNet_UDP_Open(0);
     udpRecvSock = SDLNet_UDP_Open(0);
     if (udpSendSock == NULL || udpRecvSock == NULL) {
-        printf("UDP-socketarna kunde inte |ppnas: %s\n",SDLNet_GetError());}   else puts("UDP-socketarna |ppna.");
+        printf("UDP-sockets could not open: %s\n",SDLNet_GetError());}   else puts("UDP-sockets are open.");
     
     SDLNet_ResolveHost(&serverIP, NULL, 4444);
     serverTCPsocket = SDLNet_TCP_Open(&serverIP);
     socketSet = SDLNet_AllocSocketSet(MAX_CLIENTS); if (!socketSet) {printf("%s\n", SDLNet_GetError());}
     
+    // Waitin for connections....
     
-    printf("Waiting for connection...\n");
-    while (!(allActiveClientsAreReady())){
-        incomming = SDLNet_TCP_Accept(serverTCPsocket);
-        if (incomming !=0x0) {
-            if ((freeID = getFreeClientID())<0) {printf("Too many users! \n");}     // Ger uppkopplad kient ett ledigt clientID
-            else{
-            
-                players[freeID].socket = incomming;
-                players[freeID].ID = freeID;
-                players[freeID].active = true;
-                players[freeID].ipadress = SDLNet_TCP_GetPeerAddress(incomming)->host;
-                
-                activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
-                printf("ClientID: %d    Connected\n", players[freeID].ID);
-            
-                //clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "ClientMainThread", &players[freeID]);
-                clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
-                //SDL_DetachThread(clientThreads[clientThr1]);
-                SDL_DetachThread(clientThreads[clientThr2]);
-                clientThr1 ++;
-                clientThr2 ++;
-                incomming = NULL;
+    while (true) {
+        acceptConnections();
+        
+        puts("All clients are ready. Sending GO to all clients and starting the game.");
+        for (i=0; i<MAX_CLIENTS; i++) { if (players[i].active) SDLNet_TCP_Send(players[i].socket,"!GO",4); } // !GO senare
+
+        if (!setStartingPositions()) { puts("Fuck..."); return 1;} puts("Startingpositions are set.");
+        
+        puts("Starting the game.");
+        speletPagar = true;
+        
+        UDPListener = SDL_CreateThread(udpListener,"UDP listen",NULL);
+        SDL_DetachThread(UDPListener);
+        
+        skraddarsyttPaket = SDLNet_AllocPacket(940);
+        
+        paketnummer=0;
+        SDL_Event e;
+        while (speletPagar) {
+            moveShips(serverSkepp);
+            moveBullets(serverSkott);
+            createAndSendUDPPackets(serverSkepp, serverSkott);
+            SDL_Delay(20);
+            while (SDL_PollEvent(&e) > 0) {
+                if (e.type == SDL_QUIT) speletPagar=false;
             }
         }
-        SDL_Delay(1000);
     }
-    
-    // H{r har (f|rhoppningsvis) alla klienter sagt att de {r redo.
-    puts("Alla klienter }r klara. Skickar ett OK till alla och startar spelet.");
-    
-    int i;
-    for (i=0; i<MAX_CLIENTS; i++) {
-        if (players[i].active) SDLNet_TCP_Send(players[i].socket,"GO",4); // !GO senare
-    }
-    
-    if (!setStartingPositions()) {
-        puts("Det gick }t skogen."); return 1;} puts("Startpositioner satta.");
-    
-    puts("Startar spelet.");
-    speletPagar = true;
-    UDPListener = SDL_CreateThread(udpListener,"UDP listen",NULL);
-    SDL_DetachThread(UDPListener);
-    
-    skraddarsyttPaket = SDLNet_AllocPacket(940);
+    closeServer();
+}
 
-    paketnummer=0;
-    SDL_Event e;
-    while (speletPagar) {
-        moveShips(serverSkepp);
-        moveBullets(serverSkott);
-        createAndSendUDPPackets(serverSkepp, serverSkott);
-        SDL_Delay(20);
-        while (SDL_PollEvent(&e) > 0) {
-            if (e.type == SDL_QUIT) speletPagar=false;
-        }
-    }
 
+void closeServer(){
+    SDL_FreeSurface(serverBakgrund);
+    for (int i=0; i<MAX_CLIENTS; i++) {
+        SDL_FreeSurface(serverSkepp[i].bild);
+    }
     SDLNet_TCP_Close(serverTCPsocket);
-    SDLNet_Quit();
+    SDLNet_UDP_Close(udpRecvSock);
+    SDLNet_UDP_Close(udpSendSock);
     SDL_Quit();
-    return 0;
+    SDLNet_Quit();
+    IMG_Quit();
 }
 
 int getFreeClientID(){ // Letar upp en ledig clientplats och returnerar ett clientID
@@ -117,7 +99,51 @@ int getFreeClientID(){ // Letar upp en ledig clientplats och returnerar ett clie
     return -1;
 }
 
-
+void acceptConnections(){
+    
+    int clientThr1 = 0, clientThr2 = 0, freeID;
+    char starts[]={"$GO!"};
+    char startsInOne[]={"$Game starts in 1 second"};
+    char startsInTwo[]={"$Game starts in 2 seconds"};
+    char startsInThree[]={"$Game starts in 3 seconds"};
+    
+    printf("Waiting for connections ...\n");
+    while (true){
+        incomming = SDLNet_TCP_Accept(serverTCPsocket);
+        if (incomming !=0x0) {
+            if ((freeID = getFreeClientID())<0) {printf("Too many users! \n");}     // Ger uppkopplad kient ett ledigt clientID
+            else{
+                
+                players[freeID].socket = incomming;
+                players[freeID].ID = freeID;
+                players[freeID].active = true;
+                players[freeID].ipadress = SDLNet_TCP_GetPeerAddress(incomming)->host;
+                printf("ClientID: %d    Connected\n", players[freeID].ID);
+                
+                activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
+                
+                clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
+                SDL_DetachThread(clientThreads[clientThr2]);
+                clientThr1 ++;
+                clientThr2 ++;
+                incomming = NULL;
+            }
+        }
+        if (allActiveClientsAreReady()) {
+            sendMessageAll(startsInThree); puts("Skicakt 3"); SDL_Delay(1000);
+            if (allActiveClientsAreReady()) {
+                sendMessageAll(startsInTwo); puts("Skickat 2"); SDL_Delay(1000);
+                if (allActiveClientsAreReady()) {
+                    sendMessageAll(startsInOne); puts("Skickat 1"); SDL_Delay(1000);
+                    if (allActiveClientsAreReady()) {
+                        sendMessageAll(starts); SDL_Delay(1000); break;
+                    }
+                }
+            }
+        }
+        SDL_Delay(500);
+    }
+}
 
 
 
@@ -176,10 +202,10 @@ bool loadServerMedia() {
     // Ladda serverBakgrundens grafik
     serverBakgrund=IMG_Load("cave.png");
     if (serverBakgrund==NULL) {
-        printf("Lyckades inte ladda serverBakgrund: %s",IMG_GetError());
+        printf("Could not load serverBakgrund: %s",IMG_GetError());
     }
     SDL_SetColorKey(serverBakgrund,SDL_TRUE,SDL_MapRGB(serverBakgrund->format,255,255,255));
-    puts ("Laddat bakrunden.");
+    puts ("Background loaded.");
     
     // Ladda serverSkeppens grafik
     int i;
@@ -188,10 +214,10 @@ bool loadServerMedia() {
         if (serverSkepp[i].bild==NULL) {
             printf("Lyckades inte ladda Skepp: %s",IMG_GetError());
         }
-        printf("Laddat skepp %d\n",i);
+        
         SDL_SetColorKey(serverSkepp[i].bild,SDL_TRUE,SDL_MapRGB(serverSkepp[i].bild->format,255,255,255));
     }
-    
+    printf("Ships 0-7 loaded\n");
     return true;
 }
 
