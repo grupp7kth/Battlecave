@@ -62,9 +62,9 @@ int main(int argc, char* args[])
                 activeClients = SDLNet_TCP_AddSocket(socketSet, players[freeID].socket);
                 printf("ClientID: %d    Connected\n", players[freeID].ID);
             
-                clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "ClientMainThread", &players[freeID]);
+                //clientThreads[clientThr1] = SDL_CreateThread(clientThreadFunction, "ClientMainThread", &players[freeID]);
                 clientThreads[clientThr2] = SDL_CreateThread(chattserverfunction, "ClientChattThread", &players[freeID]);
-                SDL_DetachThread(clientThreads[clientThr1]);
+                //SDL_DetachThread(clientThreads[clientThr1]);
                 SDL_DetachThread(clientThreads[clientThr2]);
                 clientThr1 ++;
                 clientThr2 ++;
