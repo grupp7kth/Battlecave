@@ -14,13 +14,13 @@
 1430230172 c:\users\johan\documents\sdl_projects\battlecave\chatrecieve.h
 	"globalvariables.h"
 
-1430928105 c:\users\johan\documents\sdl_projects\battlecave\globalvariables.h
+1431091043 c:\users\johan\documents\sdl_projects\battlecave\globalvariables.h
 	<SDL.h>
 	<SDL_net.h>
 	<stdbool.h>
 	"definitions.h"
 
-1430927761 c:\users\johan\documents\sdl_projects\battlecave\definitions.h
+1431091990 c:\users\johan\documents\sdl_projects\battlecave\definitions.h
 
 1430923204 c:\users\johan\documents\sdl_projects\battlecave\clearstrings.h
 	"definitions.h"
@@ -29,7 +29,7 @@
 	"clearstrings.h"
 	"globalvariables.h"
 
-1430928105 source:c:\users\johan\documents\sdl_projects\battlecave\globalvariables.c
+1431090478 source:c:\users\johan\documents\sdl_projects\battlecave\globalvariables.c
 	"globalvariables.h"
 
 1430924324 source:c:\users\johan\documents\sdl_projects\battlecave\renderscreen.c
@@ -72,7 +72,7 @@
 	<stdio.h>
 	"definitions.h"
 
-1430928263 source:c:\users\johan\documents\sdl_projects\battlecave\settext.c
+1431090008 source:c:\users\johan\documents\sdl_projects\battlecave\settext.c
 	<stdio.h>
 	<SDL.h>
 	<SDL_ttf.h>
@@ -87,7 +87,7 @@
 
 1430923205 c:\users\johan\documents\sdl_projects\battlecave\setwindows.h
 
-1430925476 source:c:\users\johan\documents\sdl_projects\battlecave\main.c
+1431088532 source:c:\users\johan\documents\sdl_projects\battlecave\main.c
 	<stdio.h>
 	<stdbool.h>
 	<stdlib.h>
@@ -104,7 +104,7 @@
 1430923204 c:\users\johan\documents\sdl_projects\battlecave\inputhandler.h
 	"definitions.h"
 
-1431082353 source:c:\users\johan\documents\sdl_projects\battlecave\inputhandler.c
+1431097706 source:c:\users\johan\documents\sdl_projects\battlecave\inputhandler.c
 	<stdio.h>
 	<stdbool.h>
 	<stdlib.h>
@@ -114,12 +114,13 @@
 	"definitions.h"
 	"clearstrings.h"
 	"globalvariables.h"
-	"tcprecieve.h"
+	"tcphandler.h"
+	"udphandler.h"
 
 1430923205 c:\users\johan\documents\sdl_projects\battlecave\tcprecieve.h
 	"globalvariables.h"
 
-1430928105 source:c:\users\johan\documents\sdl_projects\battlecave\tcprecieve.c
+1431088841 source:c:\users\johan\documents\sdl_projects\battlecave\tcprecieve.c
 	<SDL.h>
 	<SDL_net.h>
 	<stdio.h>
@@ -233,4 +234,27 @@
 	"clearstrings.h"
 	"globalvariables.h"
 	"tcprecieve.h"
+
+1431091069 c:\users\johan\documents\sdl_projects\battlecave\tcphandler.h
+	"globalvariables.h"
+
+1431095668 source:c:\users\johan\documents\sdl_projects\battlecave\tcphandler.c
+	<SDL.h>
+	<SDL_net.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"tcphandler.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+
+1431096947 c:\users\johan\documents\sdl_projects\battlecave\udphandler.h
+	<stdio.h>
+	<SDL_net.h>
+	"globalvariables.h"
+
+1431096109 source:c:\users\johan\documents\sdl_projects\battlecave\udphandler.c
+	"udphandler.h"
 

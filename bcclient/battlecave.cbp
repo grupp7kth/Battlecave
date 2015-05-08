@@ -63,10 +63,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="setwindows.h" />
-		<Unit filename="tcprecieve.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="tcprecieve.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

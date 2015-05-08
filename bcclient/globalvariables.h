@@ -55,7 +55,8 @@ extern char playerReadyStr[2];
 extern SDL_Rect readyIcon;
 //char name[MAX_NAME_LENGTH]; *********************************************************************
 
-extern SDL_Thread* chatRecv;
+extern SDL_Thread* TCPthread;
+extern SDL_Thread* UDPthread;
 extern IPaddress ip;                           // Contains the information (host + port) for the server to connect to
 
 #endif // GLBALVARIABLES

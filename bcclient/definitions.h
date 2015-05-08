@@ -1,6 +1,8 @@
 #ifndef MODEDEFINITIONS
 #define MODEDEFINITIONS
 
+#define CLIENT_VERSION "v 0.51"
+
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
 
@@ -44,7 +46,7 @@
 #define PREAMBLE_CHAT '$'
 #define PREAMBLE_PLAYERS '@'
 #define PREAMBLE_READY '#'
-#define PREAMBLE_ID '%'
+//#define PREAMBLE_XXXX '%'   // FREE FOR USE
 #define PREAMBLE_DISCONNECT '-'
 #define PREAMBLE_GAMESTART '!'
 
