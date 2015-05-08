@@ -63,6 +63,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="setwindows.h" />
+		<Unit filename="tcphandler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tcphandler.h" />
+		<Unit filename="udphandler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="udphandler.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

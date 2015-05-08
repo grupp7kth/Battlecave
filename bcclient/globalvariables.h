@@ -38,6 +38,7 @@ typedef struct{
 extern GameBackground gameBackground;
 
 extern int mode;                               // Modes as specified in "definitions.h"
+extern int keyboardMode;
 
 extern bool isConnected;                       // True when connected to a lobby or game
 
@@ -58,5 +59,12 @@ extern SDL_Rect readyIcon;
 extern SDL_Thread* TCPthread;
 extern SDL_Thread* UDPthread;
 extern IPaddress ip;                           // Contains the information (host + port) for the server to connect to
+
+extern bool throttle;
+extern bool right;
+extern bool left;
+extern bool shooting;
+extern Uint8 pressedButtons;
+extern UDPpacket* outPacket;
 
 #endif // GLBALVARIABLES
