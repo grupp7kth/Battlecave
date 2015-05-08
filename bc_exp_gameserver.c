@@ -435,7 +435,7 @@ int handshakeClient(void* data) {
 	SDLNet_TCP_Close(dennaKlient->tcpSocket);
 	dennaKlient->aktiv=false;
 	bool test = false;
-	for (int i=0; i<MAX_CLIENTS; i++) {
+	for (i=0; i<MAX_CLIENTS; i++) {
 		if (klienter[i].aktiv) test = true;
 	}
 	if (!test) speletPagar=false;

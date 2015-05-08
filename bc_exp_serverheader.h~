@@ -9,10 +9,6 @@
  #include <SDL2/SDL.h>
  #include <SDL2_Image/SDL_Image.h>
  #include <SDL2_Net/SDL_Net.h>
-#else
- #include <SDL2/SDL.h>
- #include <SDL2/SDL_image.h>
- #include <SDL2/SDL_net.h>
 #endif
 
 #define STAGE_HEIGHT 1600
