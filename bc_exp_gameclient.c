@@ -1,9 +1,5 @@
 #include "bc_exp_clientheader.h"
 
- #include <SDL2/SDL.h>
- #include <SDL2/SDL_image.h>
- #include <SDL2/SDL_net.h>
-
 bool initSDL();
 bool initializeClientMedia();
 SDL_Texture* laddaTextur();
