@@ -1,0 +1,236 @@
+# depslib dependency file v1.0
+1430328207 source:c:\users\johan\documents\sdl_projects\battlecave\chatrecieve.c
+	<SDL.h>
+	<SDL_net.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"chatrecieve.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+
+1430230172 c:\users\johan\documents\sdl_projects\battlecave\chatrecieve.h
+	"globalvariables.h"
+
+1430928105 c:\users\johan\documents\sdl_projects\battlecave\globalvariables.h
+	<SDL.h>
+	<SDL_net.h>
+	<stdbool.h>
+	"definitions.h"
+
+1430927761 c:\users\johan\documents\sdl_projects\battlecave\definitions.h
+
+1430923204 c:\users\johan\documents\sdl_projects\battlecave\clearstrings.h
+	"definitions.h"
+
+1430927850 source:c:\users\johan\documents\sdl_projects\battlecave\clearstrings.c
+	"clearstrings.h"
+	"globalvariables.h"
+
+1430928105 source:c:\users\johan\documents\sdl_projects\battlecave\globalvariables.c
+	"globalvariables.h"
+
+1430924324 source:c:\users\johan\documents\sdl_projects\battlecave\renderscreen.c
+	<stdio.h>
+	<stdlib.h>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"globalvariables.h"
+	"renderscreen.h"
+	"setbuttons.h"
+	"settext.h"
+	"definitions.h"
+
+1430923204 c:\users\johan\documents\sdl_projects\battlecave\renderscreen.h
+	"definitions.h"
+
+1430923204 c:\users\johan\documents\sdl_projects\battlecave\setbuttons.h
+
+1430923268 c:\users\johan\documents\sdl_projects\battlecave\settext.h
+	<SDL.h>
+	"definitions.h"
+
+1430236986 source:c:\users\johan\documents\sdl_projects\battlecave\resolveipportfromstrings.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<SDL.h>
+	<SDL_net.h>
+	"resolveipportfromstrings.h"
+	"definitions.h"
+	"globalvariables.h"
+
+1430236937 c:\users\johan\documents\sdl_projects\battlecave\resolveipportfromstrings.h
+	<SDL_net.h>
+	"definitions.h"
+
+1431082601 source:c:\users\johan\documents\sdl_projects\battlecave\setbuttons.c
+	<SDL.h>
+	<stdio.h>
+	"definitions.h"
+
+1430928263 source:c:\users\johan\documents\sdl_projects\battlecave\settext.c
+	<stdio.h>
+	<SDL.h>
+	<SDL_ttf.h>
+	"settext.h"
+	"definitions.h"
+	"globalvariables.h"
+
+1430923789 source:c:\users\johan\documents\sdl_projects\battlecave\setwindows.c
+	<SDL.h>
+	"setwindows.h"
+	"definitions.h"
+
+1430923205 c:\users\johan\documents\sdl_projects\battlecave\setwindows.h
+
+1430925476 source:c:\users\johan\documents\sdl_projects\battlecave\main.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	<SDL.h>
+	<SDL_net.h>
+	"globalvariables.h"
+	"renderscreen.h"
+	"inputhandler.h"
+	"definitions.h"
+	"setwindows.h"
+	"settext.h"
+	"clearstrings.h"
+
+1430923204 c:\users\johan\documents\sdl_projects\battlecave\inputhandler.h
+	"definitions.h"
+
+1431082353 source:c:\users\johan\documents\sdl_projects\battlecave\inputhandler.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	<string.h>
+	<SDL.h>
+	"inputhandler.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+	"tcprecieve.h"
+
+1430923205 c:\users\johan\documents\sdl_projects\battlecave\tcprecieve.h
+	"globalvariables.h"
+
+1430928105 source:c:\users\johan\documents\sdl_projects\battlecave\tcprecieve.c
+	<SDL.h>
+	<SDL_net.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"tcprecieve.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+
+1430308981 source:c:\users\marthin\desktop\battlecave\clearstrings.c
+	"clearstrings.h"
+	"globalvariables.h"
+
+1430304379 c:\users\marthin\desktop\battlecave\clearstrings.h
+	"definitions.h"
+
+1430833160 c:\users\marthin\desktop\battlecave\definitions.h
+
+1430918593 c:\users\marthin\desktop\battlecave\globalvariables.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_net.h>
+	<stdbool.h>
+	"definitions.h"
+
+1430833739 source:c:\users\marthin\desktop\battlecave\globalvariables.c
+	"globalvariables.h"
+
+1430918789 source:c:\users\marthin\desktop\battlecave\main.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_net.h>
+	"globalvariables.h"
+	"renderscreen.h"
+	"inputhandler.h"
+	"definitions.h"
+	"setwindows.h"
+	"settext.h"
+	"clearstrings.h"
+
+1430236891 c:\users\marthin\desktop\battlecave\renderscreen.h
+	"definitions.h"
+
+1430820381 c:\users\marthin\desktop\battlecave\inputhandler.h
+	"definitions.h"
+
+1429993390 c:\users\marthin\desktop\battlecave\setwindows.h
+
+1430918794 c:\users\marthin\desktop\battlecave\settext.h
+	<SDL2/SDL.h>
+	"definitions.h"
+
+1430919013 source:c:\users\marthin\desktop\battlecave\renderscreen.c
+	<stdio.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_ttf.h>
+	"globalvariables.h"
+	"renderscreen.h"
+	"setbuttons.h"
+	"settext.h"
+	"definitions.h"
+
+1430075470 c:\users\marthin\desktop\battlecave\setbuttons.h
+
+1430230649 source:c:\users\marthin\desktop\battlecave\setbuttons.c
+	<SDL.h>
+	<stdio.h>
+	"definitions.h"
+
+1430918905 source:c:\users\marthin\desktop\battlecave\settext.c
+	<stdio.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_ttf.h>
+	"settext.h"
+	"definitions.h"
+	"globalvariables.h"
+
+1430820578 source:c:\users\marthin\desktop\battlecave\setwindows.c
+	<SDL.h>
+	"setwindows.h"
+	"definitions.h"
+
+1430918911 source:c:\users\marthin\desktop\battlecave\tcprecieve.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_net.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"tcprecieve.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+
+1430230172 c:\users\marthin\desktop\battlecave\tcprecieve.h
+	"globalvariables.h"
+
+1430920051 source:c:\users\marthin\desktop\battlecave\inputhandler.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	<string.h>
+	<SDL2/SDL.h>
+	"inputhandler.h"
+	"definitions.h"
+	"clearstrings.h"
+	"globalvariables.h"
+	"tcprecieve.h"
+
