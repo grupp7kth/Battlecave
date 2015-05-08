@@ -16,7 +16,7 @@ SDL_Renderer* raster;
 clientBullet skott[300];
 background klientBakgrund;
 clientShip klientSkepp[8];
-Uint8 minAktivitet;
+// Uint8 minAktivitet;
 Uint8 *gameData;
 
 TCPsocket tcpSocket;
@@ -44,6 +44,11 @@ int main(int argc, char* arg[]) {
 	char input[MESSAGE_MAX_LENGTH];
 	puts("Skriv in ditt namn:");
 	fgets(input,16,stdin);
+
+	if (!initSDL()) {
+		puts("Det gick }t skogen.");
+		return 1;
+	}
 	
 	udpRecvSock = SDLNet_UDP_Open(0);
 //	Uint16 minUDPport = (SDLNet_UDP_GetPeerAddress(jag.udpRecvSock,-1))->port;
@@ -93,10 +98,11 @@ int main(int argc, char* arg[]) {
 		
 		puts("Startar spelet.");
 
-		if (!initSDL() || !initializeClientMedia()) {
+		if (!initializeClientMedia()) {
 			puts("Det gick }t skogen.");
 			return 1;
 		}
+		puts("Initaliserat.");
 		
 		sandpaket = SDLNet_AllocPacket(1);
 		sandpaket->address.host = (SDLNet_TCP_GetPeerAddress(tcpSocket))->host;
@@ -112,6 +118,7 @@ int main(int argc, char* arg[]) {
 		SDL_DetachThread(taEmotUDPTrad);
 		puts("Startar spelloopen");
 		bool vanster, hoger,gasar,skjuter;
+		Uint8 minAktivitet = 0;
 		while (!quit) {
 			while (SDL_PollEvent(&e) > 0) {
 				if (e.type == SDL_QUIT) quit=true;
@@ -191,11 +198,13 @@ bool initSDL() {
 		printf("SDL fejlade: %s/n",SDL_GetError());
 		return false;
 	}
+	puts("SDL init.");
 	int initFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(initFlags) & initFlags)) {
 		printf("SDL Image fejlade: %s\n",IMG_GetError());
 		return false;
 	}
+	puts("IMG init.");
 	return true;
 }
 
@@ -203,20 +212,23 @@ bool initSDL() {
  @return: true om det gick bra, annars false.
  */
 bool initializeClientMedia() {
-	ram = SDL_CreateWindow("BattleCave",200,0,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
+	ram = SDL_CreateWindow("BattleCave",200,100,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
 	if (ram == NULL) {
 		printf("SDL kunde inte skapa f|nstret: %s\n",SDL_GetError());
 		return false;
 	}
+	puts("Window created.");
 	raster = SDL_CreateRenderer(ram,-1,SDL_RENDERER_ACCELERATED);
 	if (raster == NULL) {
 		printf("SDL kunde inte skapa rastret: %s\n",SDL_GetError());
 		return false;
 	}
+	puts("Renderer created.");
 	if (SDLNet_Init()<0) {
 		printf("SDL Net fejlade %s/n",SDL_GetError());
 		return false;
 	}
+	puts("Net init.");
 	
 	skottrekt.w=2;
 	skottrekt.h=2;

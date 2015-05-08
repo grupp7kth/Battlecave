@@ -263,18 +263,22 @@ bool initSDL() {
 		printf("SDL fejlade: %s/n",SDL_GetError());
 		return false;
 	}
+	puts("SDL init.");
 	int initFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(initFlags) & initFlags)) {
 		printf("SDL Image fejlade: %s\n",IMG_GetError());
 		return false;
 	}
+	puts("IMG init.");
 	if (SDLNet_Init() <0) {
 		printf("SDL_Net fejlade: %s\n",SDL_GetError());
 		return false;
 	}
+	puts("NET init.");
 	return true;
 	SDL_Window *ram;
 	ram = SDL_CreateWindow("Server dummy",10,10,10,10,SDL_WINDOW_SHOWN);
+	puts("Window created.");
 }
 
 /** Laddar bakgrundgrafiken och skeppens grafik. Dess beh|vs i stort sett endast f|r
@@ -286,6 +290,7 @@ bool loadServerMedia() {
 	if (serverBakgrund==NULL) {
 		printf("Lyckades inte ladda serverBakgrund: %s",IMG_GetError());
 	}
+	puts("Background loaded.");
 	SDL_SetColorKey(serverBakgrund,SDL_TRUE,SDL_MapRGB(serverBakgrund->format,255,255,255));
 	puts ("Laddat bakrunden.");
 
@@ -299,6 +304,7 @@ bool loadServerMedia() {
 		printf("Laddat skepp %d\n",i);
 		SDL_SetColorKey(serverSkepp[i].bild,SDL_TRUE,SDL_MapRGB(serverSkepp[i].bild->format,255,255,255));
 	}
+	puts("Ships loaded.");
 
 	return true;
 }
@@ -480,6 +486,11 @@ int main(int argc, char* arg[]) {
 	char meddelande[MESSAGE_MAX_LENGTH];
 	printf("Meddelandel{ngd %lu\n",strlen(meddelande));
 	IPaddress serverip;
+	
+	if (!initSDL()) {
+		puts("Det gick }t skogen.");
+		return 1;
+	}
 
 	udpSendSock = SDLNet_UDP_Open(0);
 	udpRecvSock = SDLNet_UDP_Open(0);
@@ -520,7 +531,7 @@ int main(int argc, char* arg[]) {
 		if (klienter[i].aktiv) SDLNet_TCP_Send(klienter[i].tcpSocket,"GO",3);
 	}
 
-	if (!initSDL() || !loadServerMedia()) {
+	if (!loadServerMedia()) {
 		puts("Det gick }t skogen.");
 		return 1;
 	}
