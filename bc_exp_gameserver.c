@@ -1,5 +1,10 @@
 #include "bc_exp_serverheader.h"
 
+ #include <SDL2/SDL.h>
+ #include <SDL2/SDL_image.h>
+ #include <SDL2/SDL_net.h>
+
+
 bool initSDL();
 bool loadServerMedia();
 bool setStartingPositions();
@@ -47,28 +52,35 @@ int clientIDfromPort(Uint16 port) {
  @return: en dummy-int som inte anv{nds. Loopen stannar aldrig.
  */
 int udpListener(void* data) {
-	
+
 	// H{r ska den l{sa in fr{n UDP, l{gga den i 'inkommandeData' (en Uint8), identifiera VEM som skickade,
 	// och lagra detta i klientID (en int). D} kommer denna klients skepp att s{ttas till r{tt v{rden.
 	// Som synes, s} Šr klientID nu alltid 0, och 'inkommandeData' {r alltid 'minAktivitet'.
 	// Tittar ni i gameclient.c, ser ni att 'minAktivitet' {r den Uint8 som s{tts till olika v{rden
 	// beroende p} vilken knapp man trycker ner.
 	UDPpacket *inkommandepaket;
-	inkommandepaket = SDLNet_AllocPacket(1);
-	short klientID, siffranSomKomIn;
+	inkommandepaket = SDLNet_AllocPacket(16);
+	short klientID=0, siffranSomKomIn=0;
 	puts("udplistener startad.");
-	
+	//printf("data:%d\n",inkommandepaket->data[0]);
 	int check;
+//	while(1){
+//        if(SDLNet_UDP_Recv(udpRecvSock,inkommandepaket)) {
+//
+//            printf("data:%d\n",inkommandepaket->data[0]);
+//
+//        }
+//    }
 	while (1) {
 		check = SDLNet_UDP_Recv(udpRecvSock,inkommandepaket);
 		if (!check) continue;
-//		printf("Fick in ett UDP-paket fr}n port %d: %d\n",inkommandepaket->address.port,siffranSomKomIn);
+		printf("Fick in ett UDP-paket fr}n port %d: %d\n",inkommandepaket->address.port,inkommandepaket->data[0]);
 		if ((klientID = clientIDfromPort(inkommandepaket->address.port)) < 0 ) {
 			printf("Fel! paket fr}n ok{nt klient, port %d\n",inkommandepaket->address.port);
 			exit(1);
 		}
 		siffranSomKomIn = inkommandepaket->data[0];
-		
+        //printf("klientid: %d\n siffransomkomin: %d\n", klientID,siffranSomKomIn);
 		if ((siffranSomKomIn & 3) == 1) serverSkepp[klientID].vinkelHast=5;
 		else if ((siffranSomKomIn & 3) == 2) serverSkepp[klientID].vinkelHast=-5;
 		else serverSkepp[klientID].vinkelHast = 0;
@@ -115,7 +127,7 @@ void createAndSendUDPPackets(serverShip skeppen[8],bullet skotten[MAX_BULLETS]) 
 	Uint32 tempint;
 
 	paketnummer++; // Det h{r {r tidsangivelsen. Den b|rjar p} 0 och |kar med 1 f|r varje paket.
-	
+
 	for (i=0; i<4; i++) {
 		dataToClient[i] = paketnummer >> i*8;
 	}
@@ -147,9 +159,9 @@ void createAndSendUDPPackets(serverShip skeppen[8],bullet skotten[MAX_BULLETS]) 
 		else if (skeppen[player].yPos > STAGE_HEIGHT-SCREEN_HEIGHT/2)
 			viewport.y=STAGE_HEIGHT-SCREEN_HEIGHT;
 		else viewport.y=skeppen[player].yPos-SCREEN_HEIGHT/2;
-		
+
 		// Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
-		
+
 		for (secondary=0, counter=0; secondary<MAX_BULLETS; secondary++) {
 			if (serverSkott[secondary].on && isInside((int)serverSkott[secondary].xPos, (int)serverSkott[secondary].yPos, &viewport)) {
 				tempint=0;
@@ -168,7 +180,7 @@ void createAndSendUDPPackets(serverShip skeppen[8],bullet skotten[MAX_BULLETS]) 
 		skraddarsyttPaket->address.port=klienter[player].udpRecvPort;
 		SDLNet_UDP_Send(udpSendSock,-1,skraddarsyttPaket);
 //		printf("Skickade paket till %s\n",klienter[player].namn);
-		
+
 	}
 }
 
@@ -188,7 +200,7 @@ int findFreeBullet(bullet skotten[MAX_BULLETS]) {
  * Fult nog {r arrayen 'serverSkott' global.
  @var skeppet: Det serverShip som just skjutit.
  */
- 
+
 void addBullet(serverShip* skeppet) {
 	int ledigPlats = findFreeBullet(serverSkott);
 	if (ledigPlats <0) {
@@ -263,22 +275,18 @@ bool initSDL() {
 		printf("SDL fejlade: %s/n",SDL_GetError());
 		return false;
 	}
-	puts("SDL init.");
 	int initFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(initFlags) & initFlags)) {
 		printf("SDL Image fejlade: %s\n",IMG_GetError());
 		return false;
 	}
-	puts("IMG init.");
 	if (SDLNet_Init() <0) {
 		printf("SDL_Net fejlade: %s\n",SDL_GetError());
 		return false;
 	}
-	puts("NET init.");
 	return true;
 	SDL_Window *ram;
 	ram = SDL_CreateWindow("Server dummy",10,10,10,10,SDL_WINDOW_SHOWN);
-	puts("Window created.");
 }
 
 /** Laddar bakgrundgrafiken och skeppens grafik. Dess beh|vs i stort sett endast f|r
@@ -290,7 +298,6 @@ bool loadServerMedia() {
 	if (serverBakgrund==NULL) {
 		printf("Lyckades inte ladda serverBakgrund: %s",IMG_GetError());
 	}
-	puts("Background loaded.");
 	SDL_SetColorKey(serverBakgrund,SDL_TRUE,SDL_MapRGB(serverBakgrund->format,255,255,255));
 	puts ("Laddat bakrunden.");
 
@@ -304,7 +311,6 @@ bool loadServerMedia() {
 		printf("Laddat skepp %d\n",i);
 		SDL_SetColorKey(serverSkepp[i].bild,SDL_TRUE,SDL_MapRGB(serverSkepp[i].bild->format,255,255,255));
 	}
-	puts("Ships loaded.");
 
 	return true;
 }
@@ -402,14 +408,14 @@ int handshakeClient(void* data) {
 	dennaKlient->udpSendPort = atoi(meddelande);
 	printf("%s kommer att skicka ifr}n port %d\n",dennaKlient->namn,dennaKlient->udpSendPort);
 	clearString(meddelande);
-	
+
 	// Skicka spelarens ID.
 	char sms[6];
 	sms[0]=dennaKlient->ID+'0';
 	sms[1]='\0';
 	printf("Skickar spelarens ID: %d\n",dennaKlient->ID);
 	SDLNet_TCP_Send(dennaKlient->tcpSocket,sms,6);
-	
+
 	// Skicka den egna UDP-porten.
 	itoa((SDLNet_UDP_GetPeerAddress(udpRecvSock,-1))->port,sms,10);
 	printf("Skickar att serverns UDP-ta-emot {r %s\n",sms);
@@ -482,15 +488,10 @@ int main(int argc, char* arg[]) {
 	SDL_Thread* klienttradar[MAX_CLIENTS];
 	SDL_Thread *UDPlyssnartrad;
 	int freeID;
-
+	SDLNet_Init();
 	char meddelande[MESSAGE_MAX_LENGTH];
 	printf("Meddelandel{ngd %lu\n",strlen(meddelande));
 	IPaddress serverip;
-	
-	if (!initSDL()) {
-		puts("Det gick }t skogen.");
-		return 1;
-	}
 
 	udpSendSock = SDLNet_UDP_Open(0);
 	udpRecvSock = SDLNet_UDP_Open(0);
@@ -498,7 +499,7 @@ int main(int argc, char* arg[]) {
 		printf("UDP-socketarna kunde inte |ppnas: %s\n",SDLNet_GetError());
 	}
 	else puts("UDP-socketarna |ppna.");
-	
+
 	SDLNet_ResolveHost(&serverip,NULL,4444);
 	serversocket = SDLNet_TCP_Open(&serverip);
 	printf("Serverns ip {r %d och port %d\nWaiting...\n",serverip.host,serverip.port);
@@ -531,7 +532,7 @@ int main(int argc, char* arg[]) {
 		if (klienter[i].aktiv) SDLNet_TCP_Send(klienter[i].tcpSocket,"GO",3);
 	}
 
-	if (!loadServerMedia()) {
+	if (!initSDL() || !loadServerMedia()) {
 		puts("Det gick }t skogen.");
 		return 1;
 	}
@@ -541,7 +542,7 @@ int main(int argc, char* arg[]) {
 		return 1;
 	}
 	puts("Startpositioner satta.");
-	
+
 	puts("Startar spelet.");
 	speletPagar = true;
 	UDPlyssnartrad = SDL_CreateThread(udpListener,"UDP listen",NULL);

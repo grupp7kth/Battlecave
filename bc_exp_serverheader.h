@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#ifdef _WIN32 
- #include <SDL.h> 
- #include <SDL_image.h>
- #include <SDL_net.h>
+#ifdef _WIN32
+ #include <SDL2/SDL.h>
+ #include <SDL2/SDL_image.h>
+ #include <SDL2/SDL_net.h>
 #elif __APPLE__
  #include <SDL2/SDL.h>
  #include <SDL2_Image/SDL_Image.h>
