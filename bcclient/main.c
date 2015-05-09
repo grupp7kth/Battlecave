@@ -33,10 +33,10 @@ int main(int argc, char* args[]){
     loadMedia();
     initModeMaxButtons(modeMaxButtons);
     setWindows(windowPlacement);
-    clearTextStrings(6);
+    clearTextStrings(11);
     //SDL_StartTextInput();
 
-    strcpy(defaultIP, "130.229.153.245");
+    strcpy(defaultIP, "127.0.0.1");
     strcpy(defaultPort, "4444");
 
     while(!quit){

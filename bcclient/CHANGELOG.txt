@@ -1,0 +1,10 @@
+0.62 : 
+* Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
+
+0.61 : 
+* Each player now has a color assigned to them, this color is linked to their ID assigned by the server. 
+  The colors are displayed by their messages while chatting and on their name-slots in the lobby screen.
+
+0.60 : 
+* Added UDP support, implemented keypress tarnsmissions from clients to server.
+* Added chat support in-game (Still needs artwork to go with it).

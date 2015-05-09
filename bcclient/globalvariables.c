@@ -9,10 +9,9 @@ int mode;                               // Modes as specified in "definitions.h"
 int keyboardMode;
 bool isConnected;                       // True when connected to a lobby or game
 
-char textString[6][STRINGLENGTH];       // Used for both chat messages and for example IP addresses and ports
-int textStringColor[6];                 // Decides clors for text messages
-int textStringCurrent[6];               // Which index in the string are we currently addressing?
-int tempColor;
+char textString[11][STRINGLENGTH];      // Used for both chat messages and for example IP addresses and ports
+int textStringColor[11];                // Decides colors for text messages
+int textStringCurrent[11];              // Which index in the string are we currently addressing?
 
 char defaultIP[15];                     // The IP and port used to connect to the default server
 char defaultPort[5];

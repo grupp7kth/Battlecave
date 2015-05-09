@@ -42,10 +42,9 @@ extern int keyboardMode;
 
 extern bool isConnected;                       // True when connected to a lobby or game
 
-extern char textString[6][STRINGLENGTH];       // Used for both chat messages and for example IP addresses and ports
-extern int textStringColor[6];                 // Decides clors for text messages
-extern int textStringCurrent[6];               // Which index in the string are we currently addressing?
-extern int tempColor;
+extern char textString[11][STRINGLENGTH];      // Used for both chat messages and for example IP addresses and ports
+extern int textStringColor[11];                // Decides colors for text messages
+extern int textStringCurrent[11];              // Which index in the string are we currently addressing?
 
 extern char defaultIP[15];                     // The IP and port used to connect to the default server
 extern char defaultPort[5];

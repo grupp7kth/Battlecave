@@ -110,7 +110,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = ENTERING_TEXT;
 
-                if(i == 2)                 // Ready
+                if(i == 2)                  // Ready
                     SDLNet_TCP_Send(client.TCPSock, "#", strlen("#"));
                 else if(i == 1){            // Leave
                     isConnected = false;
@@ -122,7 +122,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     for(int i=0; i < MAX_PLAYERS; i++)
                         playerReady[i] = 0;
 
-                    clearTextStrings(6);
+                    clearTextStrings(11);
                     printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
                     *mode = FIND_SERVERS;
                 }                           // (ELSE: Enter Chat Message Window Pressed)
@@ -160,7 +160,7 @@ static void checkMouseMode5(SDL_Event *event, SDL_Point *currentMouseLocation, S
                 else if(i == 3){    // Close
                     *mode = FIND_SERVERS;
                 }
-                else{    // Enter IP _OR_ Port _OR_ Name Field
+                else{               // Enter IP _OR_ Port _OR_ Name Field
                     *select = i;
                     *keyboardMode = ENTERING_TEXT;
                     *match = true;
