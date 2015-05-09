@@ -1,0 +1,67 @@
+# depslib dependency file v1.0
+1431105875 source:c:\users\marthin\documents\development\server\server.c
+	"serverheader.h"
+
+1431105297 c:\users\marthin\documents\development\server\serverheader.h
+	<stdio.h>
+	<stdbool.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_net.h>
+	<SDL2/SDL.h>
+	<SDL2_Image/SDL_Image.h>
+	<SDL2_Net/SDL_Net.h>
+
+1431105338 source:c:\users\marthin\documents\development\server\lobby.c
+	"serverheader.h"
+
+1431103955 source:c:\users\marthin\documents\development\server\game.c
+	"serverheader.h"
+
+1430917904 source:d:\dokument\dev\server\game.c
+	"serverheader.h"
+
+1430927754 d:\dokument\dev\server\serverheader.h
+	<stdio.h>
+	<stdbool.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_net.h>
+	<SDL2/SDL.h>
+	<SDL2_Image/SDL_Image.h>
+	<SDL2_Net/SDL_Net.h>
+
+1431007411 source:d:\dokument\dev\server\server.c
+	"serverheader.h"
+
+1431007295 source:d:\dokument\dev\server\lobby.c
+	"serverheader.h"
+
+1431103956 source:c:\users\johan\documents\sdl_projects\server\game.c
+	"serverheader.h"
+
+1431179805 c:\users\johan\documents\sdl_projects\server\serverheader.h
+	<stdio.h>
+	<stdbool.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_net.h>
+	<SDL2/SDL.h>
+	<SDL2_Image/SDL_Image.h>
+	<SDL2_Net/SDL_Net.h>
+
+1431184995 source:c:\users\johan\documents\sdl_projects\server\lobby.c
+	"serverheader.h"
+
+1431186180 source:c:\users\johan\documents\sdl_projects\server\server.c
+	"serverheader.h"
+
