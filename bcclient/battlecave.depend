@@ -344,7 +344,7 @@
 	<stdio.h>
 	"definitions.h"
 
-1431186428 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
+1431254972 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
 	<stdio.h>
 	<SDL.h>
 	<SDL_ttf.h>

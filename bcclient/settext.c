@@ -135,14 +135,14 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
 
     TTF_CloseFont(font);
     font = TTF_OpenFont("resources/fonts/arial.ttf", 25);
+
     // Names of connected players
     textPlacement->x = 190;
     textPlacement->y = 120;
-
     for(int i=0; i < MAX_PLAYERS; i++){
         gTempTextMessage = TTF_RenderText_Solid(font, playerName[i], colors[i+6]);
         renderText(textPlacement, gRenderer);
-        textPlacement->y += 64;
+        textPlacement->y += 65;
     }
 
     TTF_CloseFont(font);
