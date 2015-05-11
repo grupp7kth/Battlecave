@@ -1,5 +1,6 @@
 0.63 : 
 * The client no longer spams empty messages if the user holds down RETURN.
+* Fixed a bug where names appeared incorrectly when players leave and rejoin a lobby.
 
 0.62 : 
 * Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
