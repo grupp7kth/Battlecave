@@ -130,7 +130,7 @@ void clearString(char message[]) {
 }
 bool checkConnection(int id,char TCPrecv[]) {
     if ((SDLNet_TCP_Recv(clients[id].socket,TCPrecv,MAX_LENGTH))<=0) return false;
-    else if(strcmp(TCPrecv,PREAMBLE_DISCONNECT)==0) return false;
+    else if(strcmp(TCPrecv,PREAMBLE_DISCONNECT)==0) {return false;
     return true;
 }
 void disconnect(int id) {
