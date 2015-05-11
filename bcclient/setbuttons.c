@@ -1,4 +1,13 @@
+<<<<<<< Updated upstream
 #include "includes.h"
+=======
+#include <SDL2/SDL.h>
+#include <SDL2_Image/SDL_Image.h>
+#include <SDL2_Net/SDL_Net.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <stdio.h>
+#include "definitions.h"
+>>>>>>> Stashed changes
 
 static void setButtonsMode0(SDL_Rect buttonPlacement[]);
 static void setButtonsMode1(SDL_Rect buttonPlacement[]);

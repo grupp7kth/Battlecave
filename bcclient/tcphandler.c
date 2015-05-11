@@ -1,4 +1,19 @@
+<<<<<<< Updated upstream
 #include "includes.h"
+=======
+#include <SDL2/SDL.h>
+#include <SDL2_Image/SDL_Image.h>
+#include <SDL2_Net/SDL_Net.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "tcphandler.h"
+#include "definitions.h"
+#include "clearstrings.h"
+#include "globalvariables.h"
+>>>>>>> Stashed changes
 
 void handleChat(char TCPTextIn[]);
 void handleNames(char TCPTextIn[]);
