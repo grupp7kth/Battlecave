@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include "globalvariables.h"
-#include "renderscreen.h"
-#include "setbuttons.h"
-#include "settext.h"
-#include "definitions.h"
+#include "includes.h"
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;

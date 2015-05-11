@@ -323,20 +323,11 @@
 1431352229 source:c:\users\johan\documents\github\battlecave\bcclient\setwindows.c
 	"includes.h"
 
-1431331702 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
-	<SDL.h>
-	<SDL_net.h>
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<stdbool.h>
-	"tcphandler.h"
-	"definitions.h"
-	"clearstrings.h"
-	"globalvariables.h"
+1431352232 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
+	"includes.h"
 
-1431104598 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
-	"udphandler.h"
+1431352524 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
+	"includes.h"
 
 1431352092 c:\users\johan\documents\github\battlecave\bcclient\includes.h
 	<SDL.h>
