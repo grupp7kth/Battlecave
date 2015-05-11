@@ -63,37 +63,41 @@ typedef struct _Bullet {
     bool active;
 }Bullet;
 
-bool init();
-bool initGame();
-void closeServer();
-void acceptConnection();
-int getClientId();
-bool ClientsAreReady();
-void SendAndgetPort(int id);
-int Lobby (void * data);
-bool checkConnection(int id, char TCPrecv[]);
-void clearString(char message[]);
-void Broadcast(char TCPsend[]);
-void clearReturn(char message[]);
-void sendMessageExc(char TCPsend[], int id);
-void activePlayers();
-void disconnect(int id);
-double getRadians(int a);
-int IdFromPort(Uint16 port);
-bool isInside(int x, int y, SDL_Rect* r);
-int udpListener(void* data);
+extern bool init();
+extern bool initGame();
+extern void closeServer();
+extern void acceptConnection();
+extern int getClientId();
+extern bool ClientsAreReady();
+extern void SendAndgetPort(int id);
+extern int Lobby (void * data);
+extern bool checkConnection(int id, char TCPrecv[]);
+extern void clearString(char message[]);
+extern void Broadcast(char TCPsend[]);
+extern void clearReturn(char message[]);
+extern void sendMessageExc(char TCPsend[], int id);
+extern void activePlayers();
+extern void disconnect(int id);
+extern double getRadians(int a);
+extern int IdFromPort(Uint16 port);
+extern bool isInside(int x, int y, SDL_Rect* r);
+extern int udpListener(void* data);
 
-UDPsocket udpSendSock, udpRecvSock;
-Client clients[MAX_CLIENTS];
-Bullet bullets[MAX_BULLETS];
-Ship ships[MAX_CLIENTS];
-SDL_Surface* background;
+extern UDPsocket udpSendSock, udpRecvSock;
+extern Client clients[MAX_CLIENTS];
+extern Bullet bullets[MAX_BULLETS];
+extern Ship ships[MAX_CLIENTS];
+extern SDL_Surface* background;
 
+extern UDPsocket udpSendSock, udpRecvSock;
+extern Client clients[MAX_CLIENTS];
+extern Bullet bullets[MAX_BULLETS];
+extern Ship ships[MAX_CLIENTS];
+extern SDL_Surface* background;
 //byt från globala!!
-UDPpacket *packetOut;
-Uint8 gmaeData[1000];
-int packetID;
-bool gameIsActive;
-
+extern UDPpacket *packetOut;
+extern Uint8 gmaeData[1000];
+extern int packetID;
+extern bool gameIsActive;
 
 #endif // SERVERHEADER_H_INCLUDED
