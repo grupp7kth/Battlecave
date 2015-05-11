@@ -15,13 +15,24 @@ int main(int argc, char *argv[]) {
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
-        if(!initGame())puts("failed to init game");
+        if(!initGame())puts("Failed to init game");
+        else puts("Game initialized");
         
-        printf("Game initialized");
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
-        while(true);
-        //nytråd udp
-        //starta spel
+        
+        packetOut = SDLNet_AllocPacket(940);
+        
+        packetID=0;
+        SDL_Event e;
+        while (gameIsActive) {
+            moveShips(ships);
+            moveBullets(bullets);
+            createAndSendUDPPackets(ships, bullets);
+            SDL_Delay(20);
+            while (SDL_PollEvent(&e) > 0) {
+                if (e.type == SDL_QUIT) gameIsActive=false;
+            }
+        }
     }
     closeServer();
     return 0;

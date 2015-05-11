@@ -83,6 +83,13 @@ extern int IdFromPort(Uint16 port);
 extern bool isInside(int x, int y, SDL_Rect* r);
 extern int udpListener(void* data);
 
+extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
+extern void moveBullets(Bullet bullets[MAX_BULLETS]);
+extern void moveShips(Ship ships[MAX_CLIENTS]);
+extern void updateShip(Ship* ship);
+extern void addBullet(Ship* ship);
+extern int findFreeBullet(Bullet bullets[MAX_BULLETS]);
+
 extern UDPsocket udpSendSock, udpRecvSock;
 extern Client clients[MAX_CLIENTS];
 extern Bullet bullets[MAX_BULLETS];
@@ -96,8 +103,9 @@ extern Ship ships[MAX_CLIENTS];
 extern SDL_Surface* background;
 //byt från globala!!
 extern UDPpacket *packetOut;
-extern Uint8 gmaeData[1000];
+extern Uint8 gameData[1000];
 extern int packetID;
 extern bool gameIsActive;
+
 
 #endif // SERVERHEADER_H_INCLUDED

@@ -20,6 +20,13 @@ int IdFromPort(Uint16 port);
 bool isInside(int x, int y, SDL_Rect* r);
 int udpListener(void* data);
 
+void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
+void moveBullets(Bullet bullets[MAX_BULLETS]);
+void moveShips(Ship ships[MAX_CLIENTS]);
+void updateShip(Ship* ship);
+void addBullet(Ship* ship);
+int findFreeBullet(Bullet bullets[MAX_BULLETS]);
+
 UDPsocket udpSendSock, udpRecvSock;
 Client clients[MAX_CLIENTS];
 Bullet bullets[MAX_BULLETS];
@@ -28,6 +35,6 @@ SDL_Surface* background;
 
 //byt från globala!!
 UDPpacket *packetOut;
-Uint8 gmaeData[1000];
+Uint8 gameData[1000];
 int packetID;
 bool gameIsActive;
