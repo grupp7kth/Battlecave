@@ -30,7 +30,7 @@ int main(int argc, char* args[])
 {
     int i;
     
-    for (int i=0; i<MAX_CLIENTS; i++){ players[i] = createClient(playerSocket[i],i); }
+    for (int i=0; i<MAX_CLIENTS; i++){ clien[i] = createClient(playerSocket[i],i); }
     
     if (!initSDL() || !loadServerMedia()) { puts("Could not load media or failed to initSDL."); return 1; }
     
