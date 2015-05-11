@@ -20,6 +20,15 @@ void clearTextString(int id){
     return;
 }
 
+void clearAllPlayerNameStrings(int total){
+    for(int i = 0; i < MAX_PLAYERS; i++){
+        for(int j = 0; j < MAX_NAME_LENGTH; j++){
+            playerName[i][j] = '\0';
+        }
+    }
+    return;
+}
+
 void clearPlayerNameString(int id){
     for(int i = 0; i < MAX_NAME_LENGTH; i++){
         playerName[id][i] = '\0';

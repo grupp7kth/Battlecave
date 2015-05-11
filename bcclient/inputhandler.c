@@ -112,7 +112,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     for(int i=0; i < MAX_PLAYERS; i++)
                         playerReady[i] = 0;
 
-                    clearPlayerNameString(8);
+                    clearAllPlayerNameStrings(8);
                     clearTextStrings(11);
                     printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
                     *mode = FIND_SERVERS;
