@@ -1,18 +1,4 @@
-<<<<<<< Updated upstream
 #include "includes.h"
-=======
-#include <stdio.h>
-#include <stdlib.h>
-#include <SDL2/SDL.h>
-#include <SDL2_Image/SDL_Image.h>
-#include <SDL2_Net/SDL_Net.h>
-#include <SDL2_ttf/SDL_ttf.h>
-#include "globalvariables.h"
-#include "renderscreen.h"
-#include "setbuttons.h"
-#include "settext.h"
-#include "definitions.h"
->>>>>>> Stashed changes
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;

@@ -1,13 +1,4 @@
-<<<<<<< Updated upstream
 #include "includes.h"
-=======
-#include <SDL2/SDL.h>
-#include <SDL2_Image/SDL_Image.h>
-#include <SDL2_Net/SDL_Net.h>
-#include <SDL2_ttf/SDL_ttf.h>
-#include "setwindows.h"
-#include "definitions.h"
->>>>>>> Stashed changes
 
 void setWindows(SDL_Rect windowPlacement[]){
     windowPlacement[0].x = SCREENWIDTH/2 - 150;        // 0 = IP / Port Window  (For joining custom server)

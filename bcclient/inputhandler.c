@@ -1,19 +1,4 @@
-<<<<<<< Updated upstream
 #include "includes.h"
-=======
-<<<<<<< Updated upstream
-=======
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <SDL2/SDL.h>
-#include <SDL2_Image/SDL_Image.h>
-#include <SDL2_Net/SDL_Net.h>
-#include <SDL2_ttf/SDL_ttf.h>
->>>>>>> Stashed changes
-#include "inputhandler.h"
->>>>>>> Stashed changes
 
 static void checkMouseMode0(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, bool *quit);
 static void checkMouseMode1(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match);

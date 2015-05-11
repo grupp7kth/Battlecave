@@ -1,15 +1,4 @@
-<<<<<<< Updated upstream
 #include "includes.h"
-=======
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2_Image/SDL_Image.h>
-#include <SDL2_Net/SDL_Net.h>
-#include <SDL2_ttf/SDL_ttf.h>
-#include "settext.h"
-#include "definitions.h"
-#include "globalvariables.h"
->>>>>>> Stashed changes
 
 SDL_Surface* gTempTextMessage;
 SDL_Texture* mText = NULL;
