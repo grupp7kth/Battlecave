@@ -102,10 +102,10 @@ int getFreeClientID(){ // Letar upp en ledig clientplats och returnerar ett clie
 void acceptConnections(){
     
     int clientThr1 = 0, clientThr2 = 0, freeID;
-    char starts[]={"$GO!"};
-    char startsInOne[]={"$Game starts in 1 second"};
-    char startsInTwo[]={"$Game starts in 2 seconds"};
-    char startsInThree[]={"$Game starts in 3 seconds"};
+    char starts[]={"$4GO!"};
+    char startsInOne[]={"$4Game starts in 1 second"};
+    char startsInTwo[]={"$4Game starts in 2 seconds"};
+    char startsInThree[]={"$4Game starts in 3 seconds"};
     
     printf("Waiting for connections ...\n");
     while (true){
@@ -141,7 +141,7 @@ void acceptConnections(){
                 }
             }
         }
-        SDL_Delay(500);
+        //SDL_Delay(500);
     }
 }
 

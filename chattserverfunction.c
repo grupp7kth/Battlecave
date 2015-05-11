@@ -51,21 +51,18 @@ int chattserverfunction(struct client* p)    /* Function definition */
     clearString(TCPtextIN);
     */
     
-    
-    
-    
 // ---------------------------------------------------------------------------------------------------------------------
 // ---- Skapar diverse meddelanden som ska skickas i olika scenarion
 // ---------------------------------------------------------------------------------------------------------------------
     
-    strcat(connected, PREAMBLE_CHAT);
+    strcat(connected, PREAMBLE_CONNECT);
     strcat(connected, player->name);
     strcat(connected, " has connected :D");   // Skapar meddelande om att Jag har kopplat upp till servern
     for(i=0;i<MAX_LENGTH;i++){ if(connected[i] == '\n') connected[i] = '\0'; }
     
-    strcat(disconnected, PREAMBLE_CHAT);
+    strcat(disconnected, PREAMBLE_DISC);
     strcat(disconnected, player->name);
-    strcat(disconnected, " has disconnected f:("); // Skapar meddelande om att Jag har kopplat ner från servern
+    strcat(disconnected, " has disconnected :("); // Skapar meddelande om att Jag har kopplat ner från servern
     for(i=0;i<MAX_LENGTH;i++){ if(disconnected[i] == '\n') disconnected[i] = '\0'; }
     
 // ---------------------------------------------------------------------------------------------------------------------

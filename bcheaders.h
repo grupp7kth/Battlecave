@@ -13,7 +13,9 @@
 #define MAX_LENGTH 100
 #define MAX_CLIENTS 8
 #define MAX_BULLETS 1000
-#define PREAMBLE_CHAT "$"
+#define PREAMBLE_CHAT "$5"
+#define PREAMBLE_DISC "$1"
+#define PREAMBLE_CONNECT "$3"
 #define PREAMBLE_PLAYERS '@'
 #define PREAMBLE_READY '#'
 #define PREAMBLE_READYS "#"
