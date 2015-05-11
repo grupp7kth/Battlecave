@@ -259,7 +259,7 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
                     right = false;
                 else if(event->key.keysym.sym == SDLK_SPACE)
                     shooting = false;
-                 else if(event->key.keysym.sym == SDLK_RETURN)
+                else if(event->key.keysym.sym == SDLK_RETURN)
                     keyboardMode = ENTERING_TEXT;
             }
             pressedButtons = ((int)right | (int)left << 1 | (int)throttle << 2 | (int)shooting << 3);
@@ -371,10 +371,12 @@ void handleChatInput(SDL_Event* event){
     if(event->key.keysym.sym == SDLK_BACKSPACE)
         handleBackspace(PLAYER_MESSAGE_WRITE);
     else if(event->key.keysym.sym == SDLK_RETURN){
-        SDLNet_TCP_Send(client.TCPSock, textString[PLAYER_MESSAGE_WRITE], STRINGLENGTH);
-        clearTextString(PLAYER_MESSAGE_WRITE);
-        if(mode == IN_GAME)
-            keyboardMode = PLAYING;
+        if(strlen(textString[PLAYER_MESSAGE_WRITE]) > 0){
+            SDLNet_TCP_Send(client.TCPSock, textString[PLAYER_MESSAGE_WRITE], STRINGLENGTH);
+            clearTextString(PLAYER_MESSAGE_WRITE);
+            if(mode == IN_GAME)
+                keyboardMode = PLAYING;
+        }
     }
     else
         addCharToString(PLAYER_MESSAGE_WRITE, 40, event);

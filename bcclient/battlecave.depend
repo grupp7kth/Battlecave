@@ -259,25 +259,25 @@
 1431104598 source:c:\users\johan\documents\sdl_projects\battlecave\udphandler.c
 	"udphandler.h"
 
-1431177931 source:c:\users\johan\documents\github\battlecave\bcclient\clearstrings.c
+1430927850 source:c:\users\johan\documents\github\battlecave\bcclient\clearstrings.c
 	"clearstrings.h"
 	"globalvariables.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
+1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-1431186910 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
+1431346690 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
 
-1431186468 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
+1431331702 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	<SDL.h>
 	<SDL_net.h>
 	<stdbool.h>
 	"definitions.h"
 
-1431186453 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
+1431331702 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
 	"globalvariables.h"
 
-1431183997 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
+1431346584 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
 	<stdio.h>
 	<stdbool.h>
 	<stdlib.h>
@@ -290,18 +290,18 @@
 	"tcphandler.h"
 	"udphandler.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\inputhandler.h
+1431104805 c:\users\johan\documents\github\battlecave\bcclient\inputhandler.h
 	"definitions.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\tcphandler.h
+1431091069 c:\users\johan\documents\github\battlecave\bcclient\tcphandler.h
 	"globalvariables.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\udphandler.h
+1431096947 c:\users\johan\documents\github\battlecave\bcclient\udphandler.h
 	<stdio.h>
 	<SDL_net.h>
 	"globalvariables.h"
 
-1431181468 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
+1431331702 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
 	<stdio.h>
 	<stdbool.h>
 	<stdlib.h>
@@ -316,16 +316,16 @@
 	"settext.h"
 	"clearstrings.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\renderscreen.h
+1430923204 c:\users\johan\documents\github\battlecave\bcclient\renderscreen.h
 	"definitions.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\setwindows.h
+1430923205 c:\users\johan\documents\github\battlecave\bcclient\setwindows.h
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\settext.h
+1430923268 c:\users\johan\documents\github\battlecave\bcclient\settext.h
 	<SDL.h>
 	"definitions.h"
 
-1431177931 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
+1431106680 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
 	<stdio.h>
 	<stdlib.h>
 	<SDL.h>
@@ -337,14 +337,14 @@
 	"settext.h"
 	"definitions.h"
 
-1431177080 c:\users\johan\documents\github\battlecave\bcclient\setbuttons.h
+1430923204 c:\users\johan\documents\github\battlecave\bcclient\setbuttons.h
 
-1431177931 source:c:\users\johan\documents\github\battlecave\bcclient\setbuttons.c
+1431082601 source:c:\users\johan\documents\github\battlecave\bcclient\setbuttons.c
 	<SDL.h>
 	<stdio.h>
 	"definitions.h"
 
-1431254972 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
+1431331702 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
 	<stdio.h>
 	<SDL.h>
 	<SDL_ttf.h>
@@ -352,12 +352,12 @@
 	"definitions.h"
 	"globalvariables.h"
 
-1431177931 source:c:\users\johan\documents\github\battlecave\bcclient\setwindows.c
+1430923789 source:c:\users\johan\documents\github\battlecave\bcclient\setwindows.c
 	<SDL.h>
 	"setwindows.h"
 	"definitions.h"
 
-1431185878 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
+1431331702 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
 	<SDL.h>
 	<SDL_net.h>
 	<stdio.h>
@@ -369,6 +369,6 @@
 	"clearstrings.h"
 	"globalvariables.h"
 
-1431177931 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
+1431104598 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
 	"udphandler.h"
 

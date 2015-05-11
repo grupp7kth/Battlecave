@@ -1,3 +1,6 @@
+0.63 : 
+* The client no longer spams empty messages if the user holds down RETURN.
+
 0.62 : 
 * Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
 
