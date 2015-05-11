@@ -1,5 +1,4 @@
-#include "clearstrings.h"
-#include "globalvariables.h"
+#include "includes.h"
 
 void clearTextStrings(int total){
     for(int i = 0; i < total; i++){

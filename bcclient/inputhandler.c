@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <SDL.h>
 #include "inputhandler.h"
-#include "definitions.h"
-#include "clearstrings.h"
-#include "globalvariables.h"
-#include "tcphandler.h"
-#include "udphandler.h"
 
 static void checkMouseMode0(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, bool *quit);
 static void checkMouseMode1(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match);

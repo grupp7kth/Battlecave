@@ -1,13 +1,4 @@
-#include <SDL.h>
-#include <SDL_net.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include "tcphandler.h"
-#include "definitions.h"
-#include "clearstrings.h"
-#include "globalvariables.h"
+#include "includes.h"
 
 void handleChat(char TCPTextIn[]);
 void handleNames(char TCPTextIn[]);

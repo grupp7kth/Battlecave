@@ -1,4 +1,4 @@
-#include "globalvariables.h"
+#include "includes.h"
 
 Client client;
 GameBackground gameBackground;

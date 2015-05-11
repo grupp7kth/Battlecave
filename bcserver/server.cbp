@@ -40,6 +40,9 @@
 		<Unit filename="server.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="serverheader.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="serverheader.h" />
 		<Extensions>
 			<code_completion />

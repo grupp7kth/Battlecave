@@ -1,6 +1,4 @@
-#include <SDL.h>
-#include <stdio.h>
-#include "definitions.h"
+#include "includes.h"
 
 static void setButtonsMode0(SDL_Rect buttonPlacement[]);
 static void setButtonsMode1(SDL_Rect buttonPlacement[]);

@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <SDL.h>
-#include <SDL_net.h>
-#include "globalvariables.h"
-#include "renderscreen.h"
-#include "inputhandler.h"
-#include "definitions.h"
-#include "setwindows.h"
-#include "settext.h"
-#include "clearstrings.h"
+#include "includes.h"
 
 int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], int *keyboardMode, bool *quit);
 void initModeMaxButtons(int modeMaxButtons[]);
@@ -36,7 +24,7 @@ int main(int argc, char* args[]){
     clearTextStrings(11);
     //SDL_StartTextInput();
 
-    strcpy(defaultIP, "127.0.0.1");
+    strcpy(defaultIP, "130.229.139.84");
     strcpy(defaultPort, "4444");
 
     while(!quit){

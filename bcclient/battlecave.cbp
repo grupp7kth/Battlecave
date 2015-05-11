@@ -34,12 +34,11 @@
 		<Unit filename="clearstrings.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="clearstrings.h" />
 		<Unit filename="definitions.h" />
 		<Unit filename="globalvariables.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="globalvariables.h" />
+		<Unit filename="includes.h" />
 		<Unit filename="inputhandler.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -50,27 +49,21 @@
 		<Unit filename="renderscreen.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="renderscreen.h" />
 		<Unit filename="setbuttons.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="setbuttons.h" />
 		<Unit filename="settext.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="settext.h" />
 		<Unit filename="setwindows.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="setwindows.h" />
 		<Unit filename="tcphandler.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="tcphandler.h" />
 		<Unit filename="udphandler.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="udphandler.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

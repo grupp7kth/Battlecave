@@ -1,6 +1,4 @@
-#include <SDL.h>
-#include "setwindows.h"
-#include "definitions.h"
+#include "includes.h"
 
 void setWindows(SDL_Rect windowPlacement[]){
     windowPlacement[0].x = SCREENWIDTH/2 - 150;        // 0 = IP / Port Window  (For joining custom server)

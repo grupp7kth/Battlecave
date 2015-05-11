@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include "settext.h"
-#include "definitions.h"
-#include "globalvariables.h"
+#include "includes.h"
 
 SDL_Surface* gTempTextMessage;
 SDL_Texture* mText = NULL;
