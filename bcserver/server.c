@@ -15,7 +15,8 @@ int main(int argc, char *argv[]) {
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
-        initGame();
+        if(!initGame())puts("failed to init game");
+        
         printf("Game initialized");
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
         while(true);

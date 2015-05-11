@@ -64,28 +64,27 @@ int udpListener(void* data) {
 
         }
     }
-//	while (1) {
-//        if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
-//            if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
-//                printf("error packet/client conflict");
-//            }
-//
-//            key = packetIn->data[0];
-//            if ((key & 3) == 1) ships[clientId].angleVel=5;
-//            else if ((key & 3) == 2) ships[clientId].angleVel=-5;
-//            else ships[clientId].angleVel = 0;
-//            if ((key & 4) == 4) ships[clientId].acceleration=true;
-//            else ships[clientId].acceleration=false;
-//            if ((key & 8) == 8) ships[clientId].shooting=true;
-//            else ships[clientId].shooting=false;
-//
-//        }
-//		SDL_Delay(5);
-//	}
+    while (1) {
+        if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
+            if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
+                printf("error packet/client conflict");
+            }
+
+            key = packetIn->data[0];
+            if ((key & 3) == 1) ships[clientId].angleVel=5;
+            else if ((key & 3) == 2) ships[clientId].angleVel=-5;
+            else ships[clientId].angleVel = 0;
+            
+            if ((key & 4) == 4) ships[clientId].acceleration=true;
+            else ships[clientId].acceleration=false;
+            
+            if ((key & 8) == 8) ships[clientId].shooting=true;
+            else ships[clientId].shooting=false;
+        }
+		SDL_Delay(5);
+	}
 	return 0;
 }
-
-
 
 //int findFreeBullet(bullet skotten[MAX_BULLETS])
 //void updateShip(serverShip* skeppet)
