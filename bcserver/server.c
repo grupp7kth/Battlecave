@@ -11,7 +11,9 @@ int main(int argc, char *argv[]) {
     else {
         printf("initialized\n");
     }
-
+    
+    for (int i=0; i<MAX_CLIENTS; i++){ clients[i].id = i; }
+    
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
@@ -23,6 +25,7 @@ int main(int argc, char *argv[]) {
         packetOut = SDLNet_AllocPacket(940);
         
         packetID=0;
+        gameIsActive = true;
         SDL_Event e;
         while (gameIsActive) {
             moveShips(ships);
@@ -73,7 +76,7 @@ void acceptConnection() {
                 }
             }
         }
-        SDL_Delay(1000);
+        SDL_Delay(500);
     }
 
 }

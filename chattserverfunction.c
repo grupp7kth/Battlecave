@@ -154,8 +154,6 @@ void activePlayers(char playerReady[])
 
     char TCPtextOUT[MAX_LENGTH];
     char charid[MAX_LENGTH];
-    //char ready[MAX_LENGTH];      clearString(ready);     sprintf(ready, "%d", READY);
-    //char nready[MAX_LENGTH];     clearString(nready);    sprintf(nready, "%d", NOT_READY);
     clearString(TCPtextOUT);
     for(int i=0; i<MAX_CLIENTS;i++)
     {

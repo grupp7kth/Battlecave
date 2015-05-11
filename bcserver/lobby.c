@@ -5,6 +5,8 @@ int Lobby(void * data) {
 
     char TCPrecv[MAX_LENGTH];       clearString(TCPrecv);
     char TCPsend[MAX_LENGTH];       clearString(TCPsend);
+    
+// ---------------------------------------------------------------------------------------------------------------------
     //receive name and UDP port, send UDP port
     SDLNet_TCP_Recv(clients[clientId].socket,(clients[clientId].name),MAX_LENGTH);
     clearReturn(clients[clientId].name);
@@ -20,12 +22,13 @@ int Lobby(void * data) {
     clearReturn(TCPsend);
     sendMessageExc(TCPsend, clientId);
     clearString(TCPsend);
+// ---------------------------------------------------------------------------------------------------------------------
 
     activePlayers();
 
     clearString(TCPrecv);
     while (true) {
-        if (checkConnection(clientId, TCPrecv)) {
+        if (checkConnection(clientId, TCPrecv) || TCPrecv[0] == '-') {
 
             if (strcmp(TCPrecv,PREAMBLE_READY)==0) {
                 clients[clientId].ready = !clients[clientId].ready;
@@ -52,18 +55,20 @@ int Lobby(void * data) {
             }
 
         }
-        else {
+        else{
+            
             printf("name: %s ClientID: %d has disconnected...\n",clients[clientId].name,clientId);
+            
             clearString(TCPsend);
             sprintf(TCPsend,PREAMBLE_DISC"%s has disconnected",clients[clientId].name);
             clearReturn(TCPsend);
             clients[clientId].active = false;
             clients[clientId].ready = false;
+            SDLNet_TCP_Close(clients[clientId].socket);
             Broadcast(TCPsend);
             clearString(TCPsend);
             activePlayers();
             disconnect(clientId);
-            SDLNet_TCP_Close(clients[clientId].socket);
             break;
         }
     }
@@ -130,7 +135,14 @@ void clearString(char message[]) {
 }
 bool checkConnection(int id,char TCPrecv[]) {
     if ((SDLNet_TCP_Recv(clients[id].socket,TCPrecv,MAX_LENGTH))<=0) return false;
+<<<<<<< Updated upstream
     else if(strcmp(TCPrecv,PREAMBLE_DISCONNECT)==0) {return false;
+=======
+    else if(strcmp(TCPrecv,PREAMBLE_DISCONNECT)==0){
+        puts("Han lamnade med - ");
+        return false;
+    }
+>>>>>>> Stashed changes
     return true;
 }
 void disconnect(int id) {
