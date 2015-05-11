@@ -1,9 +1,9 @@
 #include "includes.h"
 
 Client client;
-GameBackground gameBackground;
 Ship ship[MAX_PLAYERS];
 Bullet bullet[MAX_BULLETS];
+GameBackground gameBackground;
 
 int mode;                               // Modes as specified in "definitions.h"
 int keyboardMode;

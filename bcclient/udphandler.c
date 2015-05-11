@@ -11,7 +11,6 @@ int UDPhandler(void){
             outPacket->data[0] = pressedButtons;
             outPacket->len = sizeof(pressedButtons);
             SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
-            //printf("Sent %d\n", pressedButtons);
         }
         SDL_Delay(20);
     }

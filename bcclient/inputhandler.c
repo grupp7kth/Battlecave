@@ -113,6 +113,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
                         playerReady[i] = 0;
 
                     clearTextStrings(11);
+                    clearPlayerNameString(8);
                     printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
                     *mode = FIND_SERVERS;
                 }                           // (ELSE: Enter Chat Message Window Pressed)
