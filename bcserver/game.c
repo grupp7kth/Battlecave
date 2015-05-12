@@ -15,27 +15,29 @@ int IdFromPort(Uint16 port) {
 /** uppdaterar ett skepps position baserat p} hastighet.
  @var skeppet: Det skepp som ska uppdateras.
  */
-void updateShip(Ship* ship) {
-    if (ship->acceleration) {
-        ship->yVel-=sin(getRadians(ship->angle))*0.1;
-        ship->xVel-=cos(getRadians(ship->angle))*0.1;
-    }
-    if (ship->shooting) {
-        if (ship->bulletCooldown ==0) {
-            addBullet(ship);
-            ship->bulletCooldown = ship->bulletIntervall;
+void updateShip(Ship ships[MAX_CLIENTS]) {
+    for (int i; i<MAX_CLIENTS; i++) {
+        if (ships->acceleration) {
+            ships->yVel-=sin(getRadians(ships->angle))*0.1;
+            ships->xVel-=cos(getRadians(ships->angle))*0.1;
         }
+        if (ships->shooting) {
+            if (ships->bulletCooldown ==0) {
+                addBullet(ships);
+                ships->bulletCooldown = ships->bulletIntervall;
+            }
+        }
+        ships->xPos += ships->xVel;
+        ships->yPos += ships->yVel;
+        if (ships->xPos > STAGE_WIDTH) ships->xPos=0;
+        if (ships->xPos <0) ships->xPos=STAGE_WIDTH;
+        if (ships->yPos > STAGE_HEIGHT) ships->yPos=0;
+        if (ships->yPos <0) ships->yPos=STAGE_HEIGHT;
+        ships->angle += ships->angleVel;
+        if (ships->angle > 360) ships->angle-=360;
+        if (ships->angle < 0) ships->angle+=360;
+        if (ships->bulletCooldown>0) ships->bulletCooldown--;
     }
-    ship->xPos += ship->xVel;
-    ship->yPos += ship->yVel;
-    if (ship->xPos > STAGE_WIDTH) ship->xPos=0;
-    if (ship->xPos <0) ship->xPos=STAGE_WIDTH;
-    if (ship->yPos > STAGE_HEIGHT) ship->yPos=0;
-    if (ship->yPos <0) ship->yPos=STAGE_HEIGHT;
-    ship->angle += ship->angleVel;
-    if (ship->angle > 360) ship->angle-=360;
-    if (ship->angle < 0) ship->angle+=360;
-    if (ship->bulletCooldown>0) ship->bulletCooldown--;
 }
 
 /** L{gger till ett skott i spelet och r{knar ut dess hastighet.
@@ -114,18 +116,10 @@ int udpListener(void* data) {
 	packetIn = SDLNet_AllocPacket(16);
 	short clientId=0, key=0;
 	puts("udplistener startad.");
-	while(1){
-        if(SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
-
-            //printf("data:%d\n",packetIn->data[0]);
-
-        }
-    }
     while (gameIsActive) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
             if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
-                printf("error packet/client conflict");
-            }
+                printf("error packet/client conflict"); }
 
             key = packetIn->data[0];
             if ((key & 3) == 1) ships[clientId].angleVel=5;

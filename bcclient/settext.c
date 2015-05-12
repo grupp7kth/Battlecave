@@ -1,4 +1,4 @@
-#include "includes.h"
+ #include "includes.h"
 
 SDL_Surface* gTempTextMessage;
 SDL_Texture* mText = NULL;

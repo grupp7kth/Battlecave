@@ -23,22 +23,14 @@ int main(int argc, char *argv[]) {
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
         
         packetOut = SDLNet_AllocPacket(940);
-        
         packetID=0;
         
-        SDL_Event e;
         while (gameIsActive) {
-            moveShips(ships);
+            if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
+            updateShip(ships);
             moveBullets(bullets);
             createAndSendUDPPackets(ships, bullets);
             SDL_Delay(20);
-            if (!ClientsAreReady()) {
-                gameIsActive = false;
-                puts("framme2");
-            }
-            while (SDL_PollEvent(&e) > 0) {
-                if (e.type == SDL_QUIT){ gameIsActive=false; puts("framme");}
-            }
         }
     }
     closeServer();
@@ -58,6 +50,7 @@ void acceptConnection() {
                 clients[clientId].id = clientId;
                 clients[clientId].active = true;
                 clients[clientId].ipadress = SDLNet_TCP_GetPeerAddress(incomming)->host;
+                SDL_Delay(100);
                 SDL_DetachThread(SDL_CreateThread(Lobby, "lobbyThread", &clientId));
                 incomming = NULL;
             }
@@ -74,16 +67,18 @@ void acceptConnection() {
                     printf("starting in 1...\n");
                     broadCast("$4starting in 1...");
                     SDL_Delay(1000);
-                    printf("!GO\n");
-                    broadCast("!GO");
-                    break;
+                    if (ClientsAreReady()) {
+                        printf("!GO\n");
+                        broadCast("!GO");
+                        SDL_Delay(500);
+                        break;
+                    }
                 }
             }
         }
         incomming = NULL;
         SDL_Delay(500);
     }
-
 }
 int getClientId() {
     for (int i=0; i<MAX_CLIENTS; i++) {
