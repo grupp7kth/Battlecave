@@ -19,7 +19,7 @@ int UDPhandler(void){
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
                 unpackPacket();
-                printf("ID0 SHIP = X:%d Y:%d ANGLE:%d\n", ship[0].x, ship[0].y, ship[0].angle);//*****************
+
             }
         }
         SDL_Delay(20);
@@ -28,7 +28,6 @@ int UDPhandler(void){
 }
 
 void unpackPacket(void){
-    int player;
     Uint32 tempint, read, i;
 
 //    Uint8 data[1000];
@@ -38,10 +37,10 @@ void unpackPacket(void){
 		tempint = inPacket->data[i];
 		read = read | tempint << i*8;
 	}
-    printf("paketnmr: %d\n", read);
+    printf("paketnmr: %d    ", read);
 
-    for(player = 0; player < 8; player++){
-		for(int i = 0; i < 4; i++){
+    for(int player = 0; player < MAX_PLAYERS; player++){
+		for(i = 0, read = 0; i < 4; i++){
 			tempint = inPacket->data[4+player*4+i];
 			read = read | tempint << i*8;
 		}
@@ -51,6 +50,8 @@ void unpackPacket(void){
 		ship[player].angle *= 6;
 		ship[player].blown = (read >> 30) & 1;
 		ship[player].active = (read >> 31) & 1;
+
 	}
+	printf("ID0 SHIP = X:%d Y:%d ANGLE:%d\n", ship[0].x, ship[0].y, ship[0].angle); //*****************
     return;
 }
