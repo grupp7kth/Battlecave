@@ -68,6 +68,14 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     else if(*mode == IN_GAME){
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, NULL);
 
+        for (int i=0; i < 8; i++){
+            if (i == client.id)
+                continue;
+            ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
+            ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
+            SDL_RenderCopyEx(gRenderer ,ship[i].texture ,NULL,&ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
+        }
+
         setText(mode, gRenderer, select);
     }
 

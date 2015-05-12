@@ -1,3 +1,7 @@
+0.64 : 
+* New background picture added; text and buttons moved to accomodate.
+* Implementation of handling for incomming UDP packets started.
+
 0.63 : 
 * The client no longer spams empty messages if the user holds down RETURN.
 * Fixed a bug where names appeared incorrectly when players leave and rejoin a lobby.

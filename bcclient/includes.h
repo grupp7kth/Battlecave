@@ -87,7 +87,7 @@ typedef struct{
 extern Client client;
 
 typedef struct{
-	int x, y; // w, h,  *****************************************************
+	int x, y, w, h;
 	short angle;
 	bool active, blown;
 	SDL_Texture* texture;
@@ -136,6 +136,7 @@ extern bool left;
 extern bool shooting;
 extern Uint8 pressedButtons;
 extern UDPpacket* outPacket;
+extern UDPpacket* inPacket;
 
 // ********************************    TCPHANDLER.C    ******************************************
 

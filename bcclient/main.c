@@ -24,7 +24,7 @@ int main(int argc, char* args[]){
     clearTextStrings(11);
     //SDL_StartTextInput();
 
-    strcpy(defaultIP, "130.229.180.107");
+    strcpy(defaultIP, "130.229.157.233");
     strcpy(defaultPort, "4444");
 
     while(!quit){

@@ -1,18 +1,56 @@
 #include "includes.h"
 
+void unpackPacket(void);
+
 int UDPhandler(void){
     // Set the static information for the packet used for outgoing UDP (Used to transmit the player's keypresses)
     outPacket = SDLNet_AllocPacket(16);
     outPacket->address.port = client.ServerRecvUDPPort;
     outPacket->address.host = SDLNet_TCP_GetPeerAddress(client.TCPSock)->host;
+    inPacket = SDLNet_AllocPacket(940);
 
     for(;;){
         if(mode == IN_GAME){
+            // Send key-press data to server
             outPacket->data[0] = pressedButtons;
             outPacket->len = sizeof(pressedButtons);
             SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
+
+            // Recieve placement data from server
+            if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
+                unpackPacket();
+                printf("ID0 SHIP = X:%d Y:%d ANGLE:%d\n", ship[0].x, ship[0].y, ship[0].angle);//*****************
+            }
         }
         SDL_Delay(20);
     }
     return 0;
+}
+
+void unpackPacket(void){
+    int player;
+    Uint32 tempint, read, i;
+
+//    Uint8 data[1000];
+//    data = inPacket->data;
+
+	for (i = 0, read = 0; i < 4; i++){
+		tempint = inPacket->data[i];
+		read = read | tempint << i*8;
+	}
+    printf("paketnmr: %d\n", read);
+
+    for(player = 0; player < 8; player++){
+		for(int i = 0; i < 4; i++){
+			tempint = inPacket->data[4+player*4+i];
+			read = read | tempint << i*8;
+		}
+		ship[player].x = read & 0b111111111111;
+		ship[player].y = (read >> 12) & 0b111111111111;
+		ship[player].angle = (read >> 24) & 0b111111;
+		ship[player].angle *= 6;
+		ship[player].blown = (read >> 30) & 1;
+		ship[player].active = (read >> 31) & 1;
+	}
+    return;
 }

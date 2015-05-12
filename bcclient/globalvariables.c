@@ -32,3 +32,4 @@ bool left;
 bool shooting;
 Uint8 pressedButtons;
 UDPpacket* outPacket;
+UDPpacket* inPacket;
