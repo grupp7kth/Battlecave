@@ -14,7 +14,7 @@ int IdFromPort(Uint16 port) {
 }
 /** uppdaterar ett skepps position baserat p} hastighet.
  @var skeppet: Det skepp som ska uppdateras.
- */
+ */ /// alkdjlaksjdlaskjd
 void updateShip(Ship ships[MAX_CLIENTS]) {
     for (int i; i<MAX_CLIENTS; i++) {
         if (ships->acceleration) {
