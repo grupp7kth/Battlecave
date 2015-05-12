@@ -41,7 +41,7 @@ static void setButtonsMode0(SDL_Rect buttonPlacement[]){ // 0 = Find Servers , 1
 
 static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server , 1 = Custom Server , 2 = Back
     buttonPlacement[0].x = SCREENWIDTH/6 - 180;
-    buttonPlacement[0].y = 4*(SCREENHEIGHT/6) + 50;
+    buttonPlacement[0].y = 4*(SCREENHEIGHT/6 + 10);
     buttonPlacement[0].h = 40;
     buttonPlacement[0].w = 334;
     buttonPlacement[1].x = SCREENWIDTH/6 - 180;
@@ -52,19 +52,6 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 125;
     buttonPlacement[2].h = 40;
     buttonPlacement[2].w = 352;
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    buttonPlacement[3].x = SCREENWIDTH/6 - 180;
-    buttonPlacement[3].y = 4*(SCREENHEIGHT/6) + 150;
-    buttonPlacement[3].h = 40;
-    buttonPlacement[3].w = 87;
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
->>>>>>> Stashed changes
     return;
 }
 
