@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
         
-        while (gameIsActive) {
+        while (1) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             updateShip(ships);
             moveBullets(bullets);

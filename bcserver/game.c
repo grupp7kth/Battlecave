@@ -116,7 +116,7 @@ int udpListener(void* data) {
 	packetIn = SDLNet_AllocPacket(16);
 	short clientId=0, key=0;
 	puts("udplistener startad.");
-    while (gameIsActive) {
+    while (1) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
             if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
                 printf("error packet/client conflict"); }
