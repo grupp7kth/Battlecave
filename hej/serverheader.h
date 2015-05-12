@@ -89,7 +89,7 @@ Ship ships[MAX_CLIENTS];
 SDL_Surface* background;
 bool gameIsActive;
 int packetId;
-Uint8 *gameData[940];
+Uint8 *gameData[1024];
 UDPpacket *packetOut;
 
 #endif // SERVERHEADER_H_INCLUDED

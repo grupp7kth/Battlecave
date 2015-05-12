@@ -15,8 +15,8 @@ int IdFromPort(Uint16 port,Uint32 host) {
 bool initGame() {
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
-		ships[i].xPos =0;
-		ships[i].yPos =0;
+		ships[i].xPos =400+(i*10);
+		ships[i].yPos =400+(i*10);
 		ships[i].xVel =0;
 		ships[i].yVel =0;
 		ships[i].bulletIntervall = 10;
@@ -27,9 +27,7 @@ bool initGame() {
 		ships[i].shooting = false;
 		ships[i].alive = false;
 	}
-	ships[0].xPos=400;
-	ships[0].yPos=400;
-    return true;
+	return true;
 }
 int udpListener(void* data) {
 
@@ -37,13 +35,6 @@ int udpListener(void* data) {
 	packetIn = SDLNet_AllocPacket(16);
 	short clientId=0, keysPressed=0;
 	puts("udplistener startad.");
-//	while(gameIsActive){
-//        if(SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
-//
-//            printf("data:%d\n",packetIn->data[0]);
-//
-//        }
-//    }
 	while (1) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
             if ((clientId = IdFromPort(packetIn->address.port,packetIn->address.host)) < 0 ) {
@@ -134,15 +125,12 @@ void createAndSendUDPPackets() {
 		tmp=0;
 		tmp = (int)ships[player].xPos | (int)ships[player].yPos << 12 | (int)(ships[player].angle/6) << 24;
 		tmp = tmp | ships[player].alive <<30 | clients[player].active << 31;
+		printf("tmp:%u\n",tmp);
 		for (i=0; i<4; i++) {
 			gameData[4+player*4+i] = tmp >> i*8;
 		}
 	}
-
-//    char temp[100];
-//        itoa(gameData,temp,2);
-//        printf("%s\n",temp);
-
+	printf("__________________________\n");
 	for (player=0; player<MAX_CLIENTS; player++) {
 		if (!clients[player].active) continue;
 		if (ships[player].xPos < SCREEN_WIDTH/2)
@@ -166,7 +154,6 @@ void createAndSendUDPPackets() {
 				counter++;
 			}
 		}
-		printf("x%f y%f", ships[0].xPos,ships[0].yPos);
 		UDPpacketLength = 36+counter*3;
 		gameData[UDPpacketLength++]=0xFF;
 		packetOut->data = gameData;
@@ -175,4 +162,5 @@ void createAndSendUDPPackets() {
 		packetOut->address.port=clients[player].recvPort;
 		SDLNet_UDP_Send(udpSendSock,-1,packetOut);
 	}
+	printf("xPos:%d    yPos:%d     active:%d \n",(int)ships[0].xPos, (int)ships[0].yPos,(int)clients[0].active);
 }

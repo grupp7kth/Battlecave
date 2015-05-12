@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
             updateBullets();
             updateShips();
             createAndSendUDPPackets();
-            SDL_Delay(50);
+            SDL_Delay(20);
 //            if (!ClientsAreReady()) {
 //                gameIsActive = false;
 //            }
@@ -100,7 +100,7 @@ bool init() {
     SDLNet_ResolveHost(&serverIP, NULL, 4444);
     TCPsock = SDLNet_TCP_Open(&serverIP);
     if (TCPsock==NULL) { printf("Couldn't open TCP socket.\n"); return false;}
-    packetOut = SDLNet_AllocPacket(940);
+    packetOut = SDLNet_AllocPacket(1024);
     //packetOut->data=gameData;
     return true;
 }
