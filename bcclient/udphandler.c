@@ -7,7 +7,7 @@ int UDPhandler(void){
     outPacket = SDLNet_AllocPacket(16);
     outPacket->address.port = client.ServerRecvUDPPort;
     outPacket->address.host = SDLNet_TCP_GetPeerAddress(client.TCPSock)->host;
-    inPacket = SDLNet_AllocPacket(940);
+    inPacket = SDLNet_AllocPacket(1024);
 
     for(;;){
         if(mode == IN_GAME){
@@ -19,8 +19,11 @@ int UDPhandler(void){
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
                 unpackPacket();
-
+               // printf("ID0 SHIP = X:%f Y:%f ANGLE:%f\n", ship[client.id].x, ship[client.id].y, ship[client.id].angle); //*****************
+              // printf("I am here... x=%d...y=%d...active=%d...\n", ship[0].x, ship[0].y, ship[0].active);
+//               SDL_Delay(1000);
             }
+
         }
         SDL_Delay(20);
     }
@@ -28,22 +31,19 @@ int UDPhandler(void){
 }
 
 void unpackPacket(void){
-    Uint32 tempint, read, i;
-
-//    Uint8 data[1000];
-//    data = inPacket->data;
+    Uint32 read, i, tempint;
 
 	for (i = 0, read = 0; i < 4; i++){
 		tempint = inPacket->data[i];
 		read = read | tempint << i*8;
 	}
-    printf("paketnmr: %d    ", read);
 
     for(int player = 0; player < MAX_PLAYERS; player++){
 		for(i = 0, read = 0; i < 4; i++){
-			tempint = inPacket->data[4+player*4+i];
+			tempint = inPacket->data[4+(4*player)+i];
 			read = read | tempint << i*8;
 		}
+		printf("%u\n", read);
 		ship[player].x = read & 0b111111111111;
 		ship[player].y = (read >> 12) & 0b111111111111;
 		ship[player].angle = (read >> 24) & 0b111111;
@@ -51,7 +51,6 @@ void unpackPacket(void){
 		ship[player].blown = (read >> 30) & 1;
 		ship[player].active = (read >> 31) & 1;
 
-	}
-	printf("ID0 SHIP = X:%d Y:%d ANGLE:%d\n", ship[0].x, ship[0].y, ship[0].angle); //*****************
+	}printf("__________________end\n");
     return;
 }

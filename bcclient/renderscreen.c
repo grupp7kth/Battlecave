@@ -64,16 +64,35 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         setText(mode, gRenderer, select);
     }
-//*********************** MODE 6 : In Game ********** **********************
+//*********************** MODE 6 : In Game *********************************
     else if(*mode == IN_GAME){
+//        gameBackground.source.x = ship[client.id].x - (SCREENWIDTH/2);
+//        gameBackground.source.y = ship[client.id].y - (SCREENHEIGHT/2);
+
+//        if(ship[client.id].x < SCREENWIDTH/2)
+//            gameBackground.source.x = 0;
+//        else if(ship[client.id].x > gameBackground.w - SCREENWIDTH/2)
+//            gameBackground.source.x = gameBackground.w - SCREENWIDTH;
+//
+//        if(ship[client.id].y < SCREENHEIGHT/2)
+//            gameBackground.source.y = 0;
+//        else if(ship[client.id].y > gameBackground.h - SCREENHEIGHT/2)
+//            gameBackground.source.y = gameBackground.h - SCREENHEIGHT;
+
+
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, NULL);
 
-        for (int i=0; i < 8; i++){
-            if (i == client.id)
-                continue;
+//for(int i=0; i<8; i++){
+//    printf("ID %d activ status = %d\n", i, ship[i].active);
+//}
+//SDL_Delay(1000); printf("-----------------------------\n");
+
+        for(int i=0; i < MAX_PLAYERS; i++){
+            if(!ship[i].active)
+                break;
             ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
             ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
-            SDL_RenderCopyEx(gRenderer ,ship[i].texture ,NULL,&ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
+            SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
         }
 
         setText(mode, gRenderer, select);
@@ -105,6 +124,13 @@ void loadMedia(void){
     for(int i=0; i < MAX_PLAYERS; i++){
         ship[i].texture = loadTexture("resources/images/ship.png");
         SDL_QueryTexture(ship[i].texture, NULL, NULL, &ship[i].placement.w, &ship[i].placement.h);
+        ship[i].x = 0;
+        ship[i].y = 0;
+        ship[i].w = ship[i].placement.w;
+        ship[i].h = ship[i].placement.h;
+        ship[i].active = false;
+        ship[i].angle = 0;
+        ship[i].blown = false;
     }
     return;
 }
