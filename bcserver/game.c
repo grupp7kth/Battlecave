@@ -247,10 +247,3 @@ void moveShips(Ship ships[MAX_CLIENTS]) {
         updateShip(&ships[i]);
     }
 }
-
-//int findFreeBullet(bullet skotten[MAX_BULLETS])
-//void updateShip(serverShip* skeppet)
-//void addBullet(serverShip* skeppet)
-//void createAndSendUDPPackets(serverShip skeppen[8],bullet skotten[MAX_BULLETS])
-//void moveBullets(bullet skotten[MAX_BULLETS])
-//void moveShips(serverShip skeppen[MAX_CLIENTS])
