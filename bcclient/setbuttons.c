@@ -24,34 +24,47 @@ void setButtons(SDL_Rect buttonPlacement[], int *mode){
     }
 
 static void setButtonsMode0(SDL_Rect buttonPlacement[]){ // 0 = Find Servers , 1 = Options , 2 = Exit
-    buttonPlacement[0].x = SCREENWIDTH/6;
-    buttonPlacement[0].y = 4*(SCREENHEIGHT/6);
+    buttonPlacement[0].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[0].y = 4*(SCREENHEIGHT/6 + 10);
     buttonPlacement[0].h = 40;
     buttonPlacement[0].w = 220;
-    buttonPlacement[1].x = SCREENWIDTH/6;
-    buttonPlacement[1].y = 4*(SCREENHEIGHT/6) + 50;
+    buttonPlacement[1].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[1].y = 4*(SCREENHEIGHT/6) + 80;
     buttonPlacement[1].h = 40;
     buttonPlacement[1].w = 131;
-    buttonPlacement[2].x = SCREENWIDTH/6;
-    buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 100;
+    buttonPlacement[2].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 125;
     buttonPlacement[2].h = 40;
     buttonPlacement[2].w = 65;
     return;
 }
 
 static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server , 1 = Custom Server , 2 = Back
-    buttonPlacement[0].x = SCREENWIDTH/6;
-    buttonPlacement[0].y = 4*(SCREENHEIGHT/6);
+    buttonPlacement[0].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[0].y = 4*(SCREENHEIGHT/6) + 50;
     buttonPlacement[0].h = 40;
     buttonPlacement[0].w = 334;
-    buttonPlacement[1].x = SCREENWIDTH/6;
-    buttonPlacement[1].y = 4*(SCREENHEIGHT/6) + 50;
+    buttonPlacement[1].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[1].y = 4*(SCREENHEIGHT/6) + 80;
     buttonPlacement[1].h = 40;
     buttonPlacement[1].w = 345;
-    buttonPlacement[2].x = SCREENWIDTH/6;
-    buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 100;
+    buttonPlacement[2].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 125;
     buttonPlacement[2].h = 40;
     buttonPlacement[2].w = 352;
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    buttonPlacement[3].x = SCREENWIDTH/6 - 180;
+    buttonPlacement[3].y = 4*(SCREENHEIGHT/6) + 150;
+    buttonPlacement[3].h = 40;
+    buttonPlacement[3].w = 87;
+=======
+>>>>>>> origin/master
+=======
+>>>>>>> origin/master
+>>>>>>> Stashed changes
     return;
 }
 

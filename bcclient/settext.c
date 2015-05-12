@@ -50,22 +50,22 @@ void setText(int *mode, SDL_Renderer* gRenderer, int *select){
 void setTextMode0(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select){
     TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
 
-    textPlacement->x = SCREENWIDTH/6;
-    textPlacement->y = 4*(SCREENHEIGHT/6);
+    textPlacement->x = SCREENWIDTH/6 -  180;
+    textPlacement->y = 4*(SCREENHEIGHT/6 + 10);
     if(*select == 0)
         gTempTextMessage = TTF_RenderText_Solid(font, "Find Servers", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
         gTempTextMessage = TTF_RenderText_Solid(font, "Find Servers", colors[TEXT_COLOR_WHITE]);
     renderText(textPlacement, gRenderer);
 
-    textPlacement->y = 4*(SCREENHEIGHT/6) + 50;
+    textPlacement->y = 4*(SCREENHEIGHT/6) + 80;
     if(*select == 1)
         gTempTextMessage = TTF_RenderText_Solid(font, "Options", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
         gTempTextMessage = TTF_RenderText_Solid(font, "Options", colors[TEXT_COLOR_WHITE]);
     renderText(textPlacement, gRenderer);
 
-    textPlacement->y = 4*(SCREENHEIGHT/6) + 100;
+    textPlacement->y = 4*(SCREENHEIGHT/6) + 125;
     if(*select == 2)
         gTempTextMessage = TTF_RenderText_Solid(font, "Exit", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
@@ -80,22 +80,22 @@ void setTextMode0(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
 void setTextMode1(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select){
     TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
 
-    textPlacement->x = SCREENWIDTH/6;
-    textPlacement->y = 4*(SCREENHEIGHT/6);
+    textPlacement->x = SCREENWIDTH/6 - 180;
+    textPlacement->y = 4*(SCREENHEIGHT/6 + 10);
     if(*select == 0)
         gTempTextMessage = TTF_RenderText_Solid(font, "Join Default Server", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
         gTempTextMessage = TTF_RenderText_Solid(font, "Join Default Server", colors[TEXT_COLOR_WHITE]);
     renderText(textPlacement, gRenderer);
 
-    textPlacement->y = 4*(SCREENHEIGHT/6) + 50;
+    textPlacement->y = 4*(SCREENHEIGHT/6) + 80;
     if(*select == 1)
         gTempTextMessage = TTF_RenderText_Solid(font, "Join Custom Server", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
         gTempTextMessage = TTF_RenderText_Solid(font, "Join Custom Server", colors[TEXT_COLOR_WHITE]);
     renderText(textPlacement, gRenderer);
 
-    textPlacement->y = 4*(SCREENHEIGHT/6) + 100;
+    textPlacement->y = 4*(SCREENHEIGHT/6) + 125;
     if(*select == 2)
         gTempTextMessage = TTF_RenderText_Solid(font, "Back", colors[TEXT_COLOR_BRIGHTYELLOW]);
     else
