@@ -40,24 +40,23 @@ int Lobby(void * data) {
                 else {
                     strcat(TCPsend, NOT_READY);
                 }
-                Broadcast(TCPsend);
+                broadCast(TCPsend);
                 clearString(TCPsend);
                 clearString(TCPrecv);
             }
             else {
 
-                printf("%s: %s", clients[clientId].name, TCPrecv);
+                //printf("%s: %s", clients[clientId].name, TCPrecv);
                 clearString(TCPsend);
                 sprintf(TCPsend, PREAMBLE_CHAT"%c%s: %s",clients[clientId].id+54,clients[clientId].name,TCPrecv); // +54 Because we have to send the ID as ASCII, and then add 6 to get to the player-index-colors in the client color table
                 clearReturn(TCPsend);
                 clearString(TCPrecv);
-                Broadcast(TCPsend);
+                broadCast(TCPsend);
             }
-
         }
         else{
             
-            printf("name: %s ClientID: %d has disconnected...\n",clients[clientId].name,clientId);
+            printf("ClientID: %d has disconnected...\n",clientId);
             
             clearString(TCPsend);
             sprintf(TCPsend,PREAMBLE_DISC"%s has disconnected",clients[clientId].name);
@@ -65,14 +64,13 @@ int Lobby(void * data) {
             clients[clientId].active = false;
             clients[clientId].ready = false;
             SDLNet_TCP_Close(clients[clientId].socket);
-            Broadcast(TCPsend);
+            broadCast(TCPsend);
             clearString(TCPsend);
             activePlayers();
             disconnect(clientId);
             break;
         }
     }
-
     return 0;
 }
 
@@ -86,7 +84,7 @@ void activePlayers() {
         if(clients[i].active)
         {
             sprintf(TCPsend,PREAMBLE_PLAYERS"%d%s",clients[i].id,clients[i].name);
-            Broadcast(TCPsend);
+            broadCast(TCPsend);
             puts(TCPsend);
             clearString(TCPsend);
         }
@@ -101,7 +99,7 @@ void activePlayers() {
         else{
             strcat(TCPsend, NOT_READY);
         }
-        Broadcast(TCPsend);
+        broadCast(TCPsend);
         clearString(TCPsend);
     }
 }
@@ -137,7 +135,6 @@ bool checkConnection(int id,char TCPrecv[]) {
     if ((SDLNet_TCP_Recv(clients[id].socket,TCPrecv,MAX_LENGTH))<=0) return false;
 
     else if(strcmp(TCPrecv,PREAMBLE_DISCONNECT)==0){
-        puts("Han lamnade med - ");
         return false;
     }
     return true;
@@ -147,10 +144,9 @@ void disconnect(int id) {
     clearString(TCPsend);
 
     sprintf(TCPsend,PREAMBLE_PLAYERS"%d",id);
-    Broadcast(TCPsend);
-    printf("%s har disconnected",TCPsend);
+    broadCast(TCPsend);
 }
-void Broadcast(char TCPsend[]) {
+void broadCast(char TCPsend[]) {
     for (int i=0;i<MAX_CLIENTS;i++) {
         if(clients[i].active) SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
     }

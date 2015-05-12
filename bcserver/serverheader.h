@@ -8,13 +8,17 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
- #include <SDL.h>
- #include <SDL_image.h>
- #include <SDL_net.h>
+    #include <SDL.h>
+    #include <SDL_image.h>
+    #include <SDL_net.h>
 #elif __APPLE__
- #include <SDL2/SDL.h>
- #include <SDL2_Image/SDL_Image.h>
- #include <SDL2_Net/SDL_Net.h>
+    #include <SDL2/SDL.h>
+    #include <SDL2_Image/SDL_Image.h>
+    #include <SDL2_Net/SDL_Net.h>
+#else
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_net.h>
 #endif
 
 #define STAGE_HEIGHT 1600
@@ -73,7 +77,7 @@ extern void SendAndgetPort(int id);
 extern int Lobby (void * data);
 extern bool checkConnection(int id, char TCPrecv[]);
 extern void clearString(char message[]);
-extern void Broadcast(char TCPsend[]);
+extern void broadCast(char TCPsend[]);
 extern void clearReturn(char message[]);
 extern void sendMessageExc(char TCPsend[], int id);
 extern void activePlayers();
@@ -83,6 +87,7 @@ extern int IdFromPort(Uint16 port);
 extern bool isInside(int x, int y, SDL_Rect* r);
 extern int udpListener(void* data);
 
+//------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 extern void moveBullets(Bullet bullets[MAX_BULLETS]);
 extern void moveShips(Ship ships[MAX_CLIENTS]);
@@ -96,11 +101,6 @@ extern Bullet bullets[MAX_BULLETS];
 extern Ship ships[MAX_CLIENTS];
 extern SDL_Surface* background;
 
-extern UDPsocket udpSendSock, udpRecvSock;
-extern Client clients[MAX_CLIENTS];
-extern Bullet bullets[MAX_BULLETS];
-extern Ship ships[MAX_CLIENTS];
-extern SDL_Surface* background;
 //byt från globala!!
 extern UDPpacket *packetOut;
 extern Uint8 gameData[1000];

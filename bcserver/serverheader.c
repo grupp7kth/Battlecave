@@ -10,7 +10,7 @@ void SendAndgetPort(int id);
 int Lobby (void * data);
 bool checkConnection(int id, char TCPrecv[]);
 void clearString(char message[]);
-void Broadcast(char TCPsend[]);
+void broadCast(char TCPsend[]);
 void clearReturn(char message[]);
 void sendMessageExc(char TCPsend[], int id);
 void activePlayers();
