@@ -73,6 +73,8 @@ void clearTextStrings(int total);
 
 void clearTextString(int id);
 
+void clearAllPlayerNameStrings(int total);
+
 void clearPlayerNameString(int id);
 
 // ********************************    GLOBALVARIABLES.C    *************************************

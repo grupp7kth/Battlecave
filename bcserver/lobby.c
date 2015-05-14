@@ -5,7 +5,7 @@ int Lobby(void * data) {
 
     char TCPrecv[MAX_LENGTH];       clearString(TCPrecv);
     char TCPsend[MAX_LENGTH];       clearString(TCPsend);
-    
+
 // ---------------------------------------------------------------------------------------------------------------------
     //receive name and UDP port, send UDP port
     SDLNet_TCP_Recv(clients[clientId].socket,(clients[clientId].name),MAX_LENGTH);
@@ -24,7 +24,7 @@ int Lobby(void * data) {
     clearString(TCPsend);
 // ---------------------------------------------------------------------------------------------------------------------
 
-    activePlayers(); // Sending information 
+    activePlayers(); // Sending information
 
     clearString(TCPrecv);
     while (true) {
@@ -55,9 +55,9 @@ int Lobby(void * data) {
             }
         }
         else{
-            
+
             printf("ClientID: %d has disconnected...\n",clientId);
-            
+
             clearString(TCPsend);
             sprintf(TCPsend,PREAMBLE_DISC"%s has disconnected",clients[clientId].name);
             clearReturn(TCPsend);
@@ -120,6 +120,9 @@ void SendAndgetPort(int id) {
     SDLNet_TCP_Recv(clients[id].socket,&(rPort),sizeof(int));
     clients[id].recvPort=rPort;
     printf("sent %x   recvsendport: %x   recvrecvport:%x \n", sPort, clients[id].sendPort,clients[id].recvPort);
+//    clients[id].recvPort = 11111;
+//    clients[id].sendPort = 22222;
+//    printf("sent  recvsendport: %d   recvrecvport:%d \n", clients[id].sendPort,clients[id].recvPort);
 }
 void clearReturn(char message[]) {
     for (int i=0;i<MAX_LENGTH;i++) {

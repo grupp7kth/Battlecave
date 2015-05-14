@@ -6,9 +6,9 @@ double getRadians(int a) {
 bool isInside(int x, int y, SDL_Rect* r) {
 	return (x >= r->x && x < (r->x+r->w) && y >= r->y && y < (r->y+r->h));
 }
-int IdFromPort(Uint16 port) {
+int IdFromPort(Uint16 port, Uint32 ip) {
 	for (int i=0; i<MAX_CLIENTS; i++) {
-		if (clients[i].active && clients[i].sendPort==port) return i;
+		if(clients[i].active && clients[i].sendPort==port && clients[i].ipadress==ip) return i;
 	}
 	return -1;
 }
@@ -118,7 +118,7 @@ int udpListener(void* data) {
 	puts("udplistener startad.");
     while (1) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
-            if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
+            if ((clientId = IdFromPort(packetIn->address.port, packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
             if ((key & 3) == 1) ships[clientId].angleVel=5;

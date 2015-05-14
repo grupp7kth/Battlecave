@@ -265,7 +265,7 @@
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-1431456605 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
+1431603688 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	"includes.h"
@@ -273,7 +273,7 @@
 1431601468 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
 	"includes.h"
 
-1431456605 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
+1431610216 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
 	"includes.h"
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\inputhandler.h
@@ -287,7 +287,7 @@
 	<SDL_net.h>
 	"globalvariables.h"
 
-1431598421 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
+1431610263 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
 	"includes.h"
 
 1431351533 c:\users\johan\documents\github\battlecave\bcclient\renderscreen.h
@@ -317,10 +317,10 @@
 1431456606 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
 	"includes.h"
 
-1431602818 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
+1431605164 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
 	"includes.h"
 
-1431601426 c:\users\johan\documents\github\battlecave\bcclient\includes.h
+1431610133 c:\users\johan\documents\github\battlecave\bcclient\includes.h
 	<SDL.h>
 	<SDL_net.h>
 	<SDL_image.h>

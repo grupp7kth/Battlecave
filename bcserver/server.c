@@ -11,20 +11,20 @@ int main(int argc, char *argv[]) {
     else {
         printf("initialized\n");
     }
-    
+
     for (int i=0; i<MAX_CLIENTS; i++){ clients[i].id = i; }
-    
+
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
         if(!initGame())puts("Failed to init game"); else puts("Game initialized");
-        
+
         gameIsActive = true;
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
-        
+
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
-        
+
         while (1) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             updateShip(ships);
@@ -98,20 +98,20 @@ bool loadMedia() {
 	return true;
 }
 bool init() {
-    
+
     if (SDL_Init(SDL_INIT_VIDEO)<0) printf("Init failed at step: 1\n, %s\n", SDL_GetError());
-    
+
     if(SDLNet_Init()<0) printf("Init failed at step: 2\n, %s\n", SDLNet_GetError());
-    
+
     int initFlags = IMG_INIT_PNG;
     if (!(IMG_Init(initFlags) & initFlags)) printf("Init failed at step: 3\n");
-    
+
     if(!loadMedia()) printf("Init failed at step: 4\n");
-    
-    udpSendSock = SDLNet_UDP_Open(0);
-    udpRecvSock = SDLNet_UDP_Open(0);
+
+    udpSendSock = SDLNet_UDP_Open(4446);
+    udpRecvSock = SDLNet_UDP_Open(4445);
     packetOut=SDLNet_AllocPacket(16);
-    
+
     if (udpSendSock == NULL || udpRecvSock == NULL) printf("Init failed at step: 5\n");
     SDLNet_ResolveHost(&serverIP, NULL, 4444);
     TCPsock = SDLNet_TCP_Open(&serverIP);

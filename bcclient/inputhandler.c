@@ -297,7 +297,7 @@ void joinLobby(int *mode){
     // Open the TCP Socket
     client.TCPSock = SDLNet_TCP_Open(&ip);
     if(client.TCPSock == NULL){
-        printf("TCP Open Failure\n");
+        printf("TCP Open Failure: %s\n", SDLNet_GetError());
         //exit(EXIT_FAILURE);
         return;
     }
@@ -305,8 +305,8 @@ void joinLobby(int *mode){
     SDLNet_TCP_Send(client.TCPSock, textString[ENTERING_NAME], MAX_NAME_LENGTH);
 
     // Open the UDP Sockets; Recieve & Send
-    client.UDPRecvSock = SDLNet_UDP_Open(0);
-    client.UDPSendSock = SDLNet_UDP_Open(0);
+    client.UDPRecvSock = SDLNet_UDP_Open(4447);
+    client.UDPSendSock = SDLNet_UDP_Open(4448);
     if(client.UDPRecvSock == NULL || client.UDPSendSock == NULL){
         printf("Opening of UDP sockets failed!\n");
         exit(EXIT_FAILURE);
@@ -320,6 +320,7 @@ void joinLobby(int *mode){
     SDLNet_TCP_Send(client.TCPSock,&(sendPort),sizeof(int));
     recvPort = SDLNet_UDP_GetPeerAddress(client.UDPRecvSock,-1)->port;
     SDLNet_TCP_Send(client.TCPSock,&(recvPort),sizeof(int));
+//    client.ServerRecvUDPPort = 4445;
 
     // Recieve the ID within the game that the client was assigned by the server
     SDLNet_TCP_Recv(client.TCPSock, &client.id, sizeof(int));
