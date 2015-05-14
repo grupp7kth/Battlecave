@@ -16,27 +16,27 @@ int IdFromPort(Uint16 port) {
  @var skeppet: Det skepp som ska uppdateras.
  */ /// alkdjlaksjdlaskjd
 void updateShip(Ship ships[MAX_CLIENTS]) {
-    for (int i; i<MAX_CLIENTS; i++) {
-        if (ships->acceleration) {
-            ships->yVel-=sin(getRadians(ships->angle))*0.1;
-            ships->xVel-=cos(getRadians(ships->angle))*0.1;
+    for (int i=0; i<MAX_CLIENTS; i++) {
+        if (ships[i].acceleration) {
+            ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
+            ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
         }
-        if (ships->shooting) {
-            if (ships->bulletCooldown ==0) {
+        if (ships[i].shooting) {
+            if (ships[i].bulletCooldown ==0) {
                 addBullet(ships);
-                ships->bulletCooldown = ships->bulletIntervall;
+                ships[i].bulletCooldown = ships[i].bulletIntervall;
             }
         }
-        ships->xPos += ships->xVel;
-        ships->yPos += ships->yVel;
-        if (ships->xPos > STAGE_WIDTH) ships->xPos=0;
-        if (ships->xPos <0) ships->xPos=STAGE_WIDTH;
-        if (ships->yPos > STAGE_HEIGHT) ships->yPos=0;
-        if (ships->yPos <0) ships->yPos=STAGE_HEIGHT;
-        ships->angle += ships->angleVel;
-        if (ships->angle > 360) ships->angle-=360;
-        if (ships->angle < 0) ships->angle+=360;
-        if (ships->bulletCooldown>0) ships->bulletCooldown--;
+        ships[i].xPos += ships[i].xVel;
+        ships[i].yPos += ships[i].yVel;
+        if (ships[i].xPos > STAGE_WIDTH) ships[i].xPos=0;
+        if (ships[i].xPos <0) ships[i].xPos=STAGE_WIDTH;
+        if (ships[i].yPos > STAGE_HEIGHT) ships[i].yPos=0;
+        if (ships[i].yPos <0) ships[i].yPos=STAGE_HEIGHT;
+        ships[i].angle += ships[i].angleVel;
+        if (ships[i].angle > 360) ships[i].angle-=360;
+        if (ships[i].angle < 0) ships[i].angle+=360;
+        if (ships[i].bulletCooldown>0) ships[i].bulletCooldown--;
     }
 }
 
@@ -120,15 +120,14 @@ int udpListener(void* data) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
             if ((clientId = IdFromPort(packetIn->address.port)) < 0 ) {
                 printf("error packet/client conflict"); }
-
             key = packetIn->data[0];
             if ((key & 3) == 1) ships[clientId].angleVel=5;
             else if ((key & 3) == 2) ships[clientId].angleVel=-5;
             else ships[clientId].angleVel = 0;
-            
+
             if ((key & 4) == 4) ships[clientId].acceleration=true;
             else ships[clientId].acceleration=false;
-            
+
             if ((key & 8) == 8) ships[clientId].shooting=true;
             else ships[clientId].shooting=false;
         }
@@ -158,9 +157,9 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     viewport.h = SCREEN_HEIGHT;
     int i, player, secondary, counter,UDPpacketLength;
     Uint32 tempint;
-    
+
     packetID++; // Det h{r {r tidsangivelsen. Den b|rjar p} 0 och |kar med 1 f|r varje paket.
-    
+
     for (i=0; i<4; i++) {
         gameData[i] = packetID >> i*8;
     }
@@ -177,7 +176,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     // D{rf|r k|r vi en ny player-loop, d{r den kollar spelarens position, och skickar med
     // de relevanta skotten. Efter att den gjort det, ska den skicka UPD-paketet till den spelaren
     // och sen g|ra samma sak f|r n{sta spelare.
-    
+
     for (player=0; player<MAX_CLIENTS; player++) {
         if (!clients[player].active) continue;
         // H{r ska den r{kna ut "viewport" f|r spelaren, eller kontrekt uttryckt:
@@ -192,9 +191,9 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         else if (ships[player].yPos > STAGE_HEIGHT-SCREEN_HEIGHT/2)
             viewport.y=STAGE_HEIGHT-SCREEN_HEIGHT;
         else viewport.y=ships[player].yPos-SCREEN_HEIGHT/2;
-        
+
         // Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
-        
+
         for (secondary=0, counter=0; secondary<MAX_BULLETS; secondary++) {
             if (bullets[secondary].active && isInside((int)bullets[secondary].xPos, (int)bullets[secondary].yPos, &viewport)) {
                 tempint=0;
@@ -213,7 +212,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         packetOut->address.port=clients[player].recvPort;
         SDLNet_UDP_Send(udpSendSock,-1,packetOut);
         //		printf("Skickade paket till %s\n",klienter[player].namn);
-        
+
     }
 }
 

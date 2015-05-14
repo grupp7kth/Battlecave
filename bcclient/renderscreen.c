@@ -66,18 +66,18 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     }
 //*********************** MODE 6 : In Game *********************************
     else if(*mode == IN_GAME){
-//        gameBackground.source.x = ship[client.id].x - (SCREENWIDTH/2);
-//        gameBackground.source.y = ship[client.id].y - (SCREENHEIGHT/2);
+        gameBackground.source.x = ship[client.id].x - (SCREENWIDTH/2);
+        gameBackground.source.y = ship[client.id].y - (SCREENHEIGHT/2);
 
-//        if(ship[client.id].x < SCREENWIDTH/2)
-//            gameBackground.source.x = 0;
-//        else if(ship[client.id].x > gameBackground.w - SCREENWIDTH/2)
-//            gameBackground.source.x = gameBackground.w - SCREENWIDTH;
-//
-//        if(ship[client.id].y < SCREENHEIGHT/2)
-//            gameBackground.source.y = 0;
-//        else if(ship[client.id].y > gameBackground.h - SCREENHEIGHT/2)
-//            gameBackground.source.y = gameBackground.h - SCREENHEIGHT;
+        if(ship[client.id].x < SCREENWIDTH/2)
+            gameBackground.source.x = 0;
+        else if(ship[client.id].x > gameBackground.w - SCREENWIDTH/2)
+            gameBackground.source.x = gameBackground.w - SCREENWIDTH;
+
+        if(ship[client.id].y < SCREENHEIGHT/2)
+            gameBackground.source.y = 0;
+        else if(ship[client.id].y > gameBackground.h - SCREENHEIGHT/2)
+            gameBackground.source.y = gameBackground.h - SCREENHEIGHT;
 
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, NULL);
@@ -120,6 +120,7 @@ void loadMedia(void){
     gameBackground.texture = loadTexture("resources/images/cave.png");
     gameBackground.source.w = SCREENWIDTH;
     gameBackground.source.h = SCREENHEIGHT;
+    SDL_QueryTexture(gameBackground.texture, NULL, NULL, &gameBackground.w, &gameBackground.h);
 
     for(int i=0; i < MAX_PLAYERS; i++){
         ship[i].texture = loadTexture("resources/images/ship.png");

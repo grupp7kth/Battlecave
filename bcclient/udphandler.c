@@ -43,7 +43,6 @@ void unpackPacket(void){
 			tempint = inPacket->data[4+(4*player)+i];
 			read = read | tempint << i*8;
 		}
-		printf("%u\n", read);
 		ship[player].x = read & 0b111111111111;
 		ship[player].y = (read >> 12) & 0b111111111111;
 		ship[player].angle = (read >> 24) & 0b111111;
@@ -51,6 +50,6 @@ void unpackPacket(void){
 		ship[player].blown = (read >> 30) & 1;
 		ship[player].active = (read >> 31) & 1;
 
-	}printf("__________________end\n");
+	}
     return;
 }
