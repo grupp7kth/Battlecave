@@ -17,26 +17,45 @@ int IdFromPort(Uint32 ip) {
  */ /// alkdjlaksjdlaskjd
 void updateShip(Ship ships[MAX_CLIENTS]) {
     for (int i=0; i<MAX_CLIENTS; i++){
-        if (ships[i].acceleration) {
-            ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
-            ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
-        }
-        if (ships[i].shooting) {
-            if (ships[i].bulletCooldown ==0) {
-                addBullet(&ships[i]);
-                ships[i].bulletCooldown = ships[i].bulletIntervall;
+        if(clients[i].active){
+            if (ships[i].acceleration) {
+                ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
+                ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
+                if(ships[i].yVel > SHIPMAXSPEED)
+                    ships[i].yVel = SHIPMAXSPEED;
+                else if(ships[i].yVel < -SHIPMAXSPEED)
+                    ships[i].yVel = -SHIPMAXSPEED;
+                if(ships[i].xVel > SHIPMAXSPEED)
+                    ships[i].xVel = SHIPMAXSPEED;
+                else if(ships[i].xVel < -SHIPMAXSPEED)
+                    ships[i].xVel = -SHIPMAXSPEED;
             }
+            else{
+                ships[i].yVel /= 1.005;
+                ships[i].xVel /= 1.005;
+
+                if(ships[i].yVel <= 0.2 && ships[i].yVel >= -0.2)
+                    ships[i].yVel = 0;
+                if(ships[i].xVel <= 0.2 && ships[i].xVel >= -0.2)
+                    ships[i].xVel = 0;
+            }
+            if (ships[i].shooting) {
+                if (ships[i].bulletCooldown ==0) {
+                    addBullet(&ships[i]);
+                    ships[i].bulletCooldown = ships[i].bulletIntervall;
+                }
+            }
+            ships[i].xPos += ships[i].xVel;
+            ships[i].yPos += ships[i].yVel;
+            if (ships[i].xPos > STAGE_WIDTH) ships[i].xPos=0;
+            if (ships[i].xPos <0) ships[i].xPos=STAGE_WIDTH;
+            if (ships[i].yPos > STAGE_HEIGHT) ships[i].yPos=0;
+            if (ships[i].yPos <0) ships[i].yPos=STAGE_HEIGHT;
+            ships[i].angle += ships[i].angleVel;
+            if (ships[i].angle > 360) ships[i].angle-=360;
+            if (ships[i].angle < 0) ships[i].angle+=360;
+            if (ships[i].bulletCooldown>0) ships[i].bulletCooldown--;
         }
-        ships[i].xPos += ships[i].xVel;
-        ships[i].yPos += ships[i].yVel;
-        if (ships[i].xPos > STAGE_WIDTH) ships[i].xPos=0;
-        if (ships[i].xPos <0) ships[i].xPos=STAGE_WIDTH;
-        if (ships[i].yPos > STAGE_HEIGHT) ships[i].yPos=0;
-        if (ships[i].yPos <0) ships[i].yPos=STAGE_HEIGHT;
-        ships[i].angle += ships[i].angleVel;
-        if (ships[i].angle > 360) ships[i].angle-=360;
-        if (ships[i].angle < 0) ships[i].angle+=360;
-        if (ships[i].bulletCooldown>0) ships[i].bulletCooldown--;
     }
 }
 
@@ -88,8 +107,20 @@ bool initGame() {
 	}
 	ships[0].xPos = 400;
 	ships[0].yPos = 400;
-	ships[0].bulletIntervall =10;
-	ships[0].bulletCooldown=0;
+	ships[1].xPos = 1200;
+	ships[1].yPos = 100;
+	ships[2].xPos = 2200;
+	ships[2].yPos = 100;
+	ships[3].xPos = 100;
+	ships[3].yPos = 600;
+	ships[4].xPos = 1100;
+	ships[4].yPos = 700;
+	ships[5].xPos = 2350;
+	ships[5].yPos = 800;
+	ships[6].xPos = 400;
+	ships[6].yPos = 1400;
+	ships[7].xPos = 1400;
+	ships[8].yPos = 1500;
 
     return true;
 }
@@ -213,21 +244,83 @@ void moveBullets(Bullet bullets[MAX_BULLETS]){
         }
     }
 }
-/** anropar updateShip f|r en array av serverShip.
- @var skeppen: den serverShip-array som ska uppdateras.
- */
-void moveShips(Ship ships[MAX_CLIENTS]) {
-    int i;
-    for (i=0; i<MAX_CLIENTS; i++) {
-        updateShip(&ships[i]);
-    }
-}
+
+//***********************************************************************
+//       ___  ___ _____   _  _   _   _  _ ___  _    ___ _  _  ___       *
+//      | _ )/ _ \_   _| | || | /_\ | \| |   \| |  |_ _| \| |/ __|      *
+//      | _ \ (_) || |   | __ |/ _ \| .` | |) | |__ | || .` | (_ |      *
+//      |___/\___/ |_|   |_||_/_/ \_\_|\_|___/|____|___|_|\_|\___|      *
+//                                                                      *
+//***********************************************************************
 
 void updateBots(void){
     for(int i=0; i < MAX_CLIENTS; i++){
         if(clients[i].playerType == PLAYER_TYPE_BOT){
-
+            handleBot(i);
         }
     }
     return;
+}
+
+void handleBot(int id){
+    int closestDistance = 0, closestID, distance, deltaX, deltaY;
+    float closestAngle;
+
+    for(int i=0; i < MAX_CLIENTS; i++){
+        if(i != id && clients[i].active){
+            deltaX = getDelta(ships[id].xPos, ships[i].xPos);
+            deltaY = getDelta(ships[id].yPos, ships[i].yPos);
+            distance = getObjectDistance(deltaX, deltaY);
+
+            if(closestDistance <= 0 || distance < closestDistance){
+                closestDistance = distance;
+                closestID = i;
+
+                closestAngle = getObjectAngle(deltaX, deltaY);
+                if(deltaX <= 0)              // The angle will be relative to the ship; 0-180 means it's to the right, 0-(-180) means left
+                    closestAngle += 90;
+                else
+                    closestAngle += 270;
+                closestAngle = closestAngle - ships[id].angle;
+            }
+        }
+    }
+    if((closestAngle > 2 && closestAngle <= 180) || closestAngle < -180)
+        ships[id].angleVel = 5;
+    else if((closestAngle < -2 && closestAngle >= -180 ) || closestAngle > 180)
+        ships[id].angleVel = -5;
+    else
+        ships[id].angleVel = 0;
+
+    if(abs(closestAngle) < 5){
+        if(closestDistance <= 400)
+            ships[id].shooting = true;
+        else
+            ships[id].shooting = false;
+
+        if(closestDistance > 300)
+            ships[id].acceleration = true;
+        else
+            ships[id].acceleration = false;
+    }
+
+
+    //printf("MY CLOSEST ENEMY WAS ID=%d AT DISTANCE=%d\n", closestID, closestDistance);
+    return;
+}
+
+int getDelta(int p1, int p2){
+    return (p1 - p2);
+}
+
+int getObjectDistance(int deltaX, int deltaY){
+    int distance;
+    distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+    return distance;
+}
+
+float getObjectAngle(int deltaX, int deltaY){
+    float angle;
+    angle = atan((float)deltaY/(float)deltaX) * 57.2957795;
+    return angle;
 }

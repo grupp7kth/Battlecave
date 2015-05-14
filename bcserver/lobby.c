@@ -30,10 +30,10 @@ int Lobby(void * data) {
     while (true) {
         if (checkConnection(clientId, TCPrecv) || TCPrecv[0] == '-') {
 
-            if (strcmp(TCPrecv,PREAMBLE_READY)==0) {
+            if (TCPrecv[0] == PREAMBLE_READY) {
                 clients[clientId].ready = !clients[clientId].ready;
                 clearString(TCPsend);
-                sprintf(TCPsend, PREAMBLE_READY"%d", clientId);
+                sprintf(TCPsend, "#%d", clientId);
                 if (clients[clientId].ready) {
                     strcat(TCPsend, READY);
                 }
@@ -125,7 +125,7 @@ void activePlayers() {
     clearString(TCPsend);
     for(int i=0; i<MAX_CLIENTS;i++)
     {
-        sprintf(TCPsend,PREAMBLE_READY"%d",clients[i].id);
+        sprintf(TCPsend,"#%d",clients[i].id);
         if (clients[i].ready) {
             strcat(TCPsend, READY);
         }
@@ -192,7 +192,7 @@ int fetchCPUname(void){
 
     for(i=0; i < 8; i++){
         match = false;
-        tempBotString[0] = "\0";
+        tempBotString[0] = '\0';
         sprintf(tempBotString, "CPU %d", i+1);
 
         for(int j=0; j < MAX_CLIENTS; j++)

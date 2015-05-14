@@ -1,25 +1,32 @@
-0.71 :
+0.30 :
+* CPU players have been added to the game. Click an empty player-box while in a lobby to add/remove them.
+    The bots currently face their closest opponent and then accelerate or fire based on the distance to the opponent.
+* Fixed a bug where the server would sometimes send a 'READY_PREAMBLE' as a chat message.
+* There's now a max speed for ships, and if a player is not accelerating they will be decelerating.
+* A few functions have been made more effective by reducing overhead.
+
+0.21 :
 * All ports used are now absolute (4444-4448) in order to allow for port-forwarding and more importantly: internet play.
 * A ton of bugfixes server-side to fix bullet placements, address matching etc.
 
-0.70 :
+0.20 :
 * The client now handles gameplay, it recieves and draws ships and bullets.
 
-0.64 : 
+0.14 : 
 * New background picture added; text and buttons moved to accomodate.
 * Implementation of handling for incomming UDP packets started.
 
-0.63 : 
+0.13 : 
 * The client no longer spams empty messages if the user holds down RETURN.
 * Fixed a bug where names appeared incorrectly when players leave and rejoin a lobby.
 
-0.62 : 
+0.12 : 
 * Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
 
-0.61 : 
+0.11 : 
 * Each player now has a color assigned to them, this color is linked to their ID assigned by the server. 
-  The colors are displayed by their messages while chatting and on their name-slots in the lobby screen.
+    The colors are displayed by their messages while chatting and on their name-slots in the lobby screen.
 
-0.60 : 
+0.10 : 
 * Added UDP support, implemented keypress tarnsmissions from clients to server.
 * Added chat support in-game (Still needs artwork to go with it).

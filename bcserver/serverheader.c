@@ -20,6 +20,11 @@ int IdFromPort(Uint32 ip);
 bool isInside(int x, int y, SDL_Rect* r);
 int udpListener(void* data);
 int fetchCPUname(void);
+void updateBots(void);
+void handleBot(int id);
+int getDelta(int p1, int p2);
+int getObjectDistance(int deltaX, int deltaY);
+float getObjectAngle(int deltaX, int deltaY);
 
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 void moveBullets(Bullet bullets[MAX_BULLETS]);

@@ -115,7 +115,6 @@ void handleGameStart(void){
 }
 
 void handleBots(char TCPTextIn[]){
-    printf("CHANGED STATUS= %d\n", TCPTextIn[1]-48);
     computerPlayerActive[TCPTextIn[1]-48] = !computerPlayerActive[TCPTextIn[1]-48];
 
     for(int i=0; i<8;i++)

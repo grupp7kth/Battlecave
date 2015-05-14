@@ -35,7 +35,7 @@
 #define PREAMBLE_CONN "$3"
 #define PREAMBLE_DISC "$1"
 #define PREAMBLE_PLAYERS "@"
-#define PREAMBLE_READY "#"
+#define PREAMBLE_READY '#'
 #define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT "-"
 #define READY "1"
@@ -44,6 +44,7 @@
 #define BACKGROUND_TEXTURE "cave.png"
 #define PLAYER_TYPE_HUMAN 0
 #define PLAYER_TYPE_BOT 1
+#define SHIPMAXSPEED 5
 
 
 typedef struct _Client {
@@ -91,6 +92,11 @@ extern int IdFromPort(Uint32 ip);
 extern bool isInside(int x, int y, SDL_Rect* r);
 extern int udpListener(void* data);
 extern int fetchCPUname(void);
+extern void updateBots(void);
+extern void handleBot(int id);
+extern int getDelta(int p1, int p2);
+extern int getObjectDistance(int deltaX, int deltaY);
+extern float getObjectAngle(int deltaX, int deltaY);
 
 //------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
