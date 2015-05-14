@@ -16,7 +16,7 @@ void sendMessageExc(char TCPsend[], int id);
 void activePlayers();
 void disconnect(int id);
 double getRadians(int a);
-int IdFromPort(Uint16 port, Uint32 ip);
+int IdFromPort(Uint32 ip);
 bool isInside(int x, int y, SDL_Rect* r);
 int udpListener(void* data);
 

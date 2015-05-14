@@ -83,7 +83,7 @@ extern void sendMessageExc(char TCPsend[], int id);
 extern void activePlayers();
 extern void disconnect(int id);
 extern double getRadians(int a);
-extern int IdFromPort(Uint16 port, Uint32 ip);
+extern int IdFromPort(Uint32 ip);
 extern bool isInside(int x, int y, SDL_Rect* r);
 extern int udpListener(void* data);
 

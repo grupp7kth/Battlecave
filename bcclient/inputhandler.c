@@ -320,7 +320,6 @@ void joinLobby(int *mode){
     SDLNet_TCP_Send(client.TCPSock,&(sendPort),sizeof(int));
     recvPort = SDLNet_UDP_GetPeerAddress(client.UDPRecvSock,-1)->port;
     SDLNet_TCP_Send(client.TCPSock,&(recvPort),sizeof(int));
-//    client.ServerRecvUDPPort = 4445;
 
     // Recieve the ID within the game that the client was assigned by the server
     SDLNet_TCP_Recv(client.TCPSock, &client.id, sizeof(int));

@@ -25,6 +25,12 @@ int main(int argc, char *argv[]) {
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
 
+        for(int i=0; i<8; i++){
+            if(clients[i].active)
+                printf("AACTIVE CLIENT (ID %d) HAS IP:%u RPORT:%u SPORT:%u\n", i, clients[i].ipadress, clients[i].recvPort, clients[i].sendPort);
+
+        }
+
         while (1) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             updateShip(ships);

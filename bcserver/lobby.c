@@ -120,9 +120,6 @@ void SendAndgetPort(int id) {
     SDLNet_TCP_Recv(clients[id].socket,&(rPort),sizeof(int));
     clients[id].recvPort=rPort;
     printf("sent %x   recvsendport: %x   recvrecvport:%x \n", sPort, clients[id].sendPort,clients[id].recvPort);
-//    clients[id].recvPort = 11111;
-//    clients[id].sendPort = 22222;
-//    printf("sent  recvsendport: %d   recvrecvport:%d \n", clients[id].sendPort,clients[id].recvPort);
 }
 void clearReturn(char message[]) {
     for (int i=0;i<MAX_LENGTH;i++) {
