@@ -82,17 +82,22 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, NULL);
 
-//for(int i=0; i<8; i++){
-//    printf("ID %d activ status = %d\n", i, ship[i].active);
-//}
-//SDL_Delay(1000); printf("-----------------------------\n");
-
-        for(int i=0; i < MAX_PLAYERS; i++){
+        for(int i = 0; i < MAX_PLAYERS; i++){
             if(!ship[i].active)
                 break;
             ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
             ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
             SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
+        }
+
+        SDL_Rect bulletPlacement;
+        bulletPlacement.w = 2;
+        bulletPlacement.h = 2;
+
+        for(int i = 0; i < currentBulletAmmount; i++){
+            bulletPlacement.x = bullet[i].x;
+            bulletPlacement.y = bullet[i].y;
+            SDL_RenderDrawRect(gRenderer, &bulletPlacement);
         }
 
         setText(mode, gRenderer, select);
@@ -159,7 +164,7 @@ void initSDL(void){
         printf("SDL Net Init failed!\n");
         exit(EXIT_FAILURE);
     }
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 0xED, 0x1C, 0x24, 0xFF);
     return;
 }
 

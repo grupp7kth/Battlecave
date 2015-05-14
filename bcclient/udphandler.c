@@ -19,9 +19,6 @@ int UDPhandler(void){
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
                 unpackPacket();
-               // printf("ID0 SHIP = X:%f Y:%f ANGLE:%f\n", ship[client.id].x, ship[client.id].y, ship[client.id].angle); //*****************
-              // printf("I am here... x=%d...y=%d...active=%d...\n", ship[0].x, ship[0].y, ship[0].active);
-//               SDL_Delay(1000);
             }
 
         }
@@ -31,7 +28,7 @@ int UDPhandler(void){
 }
 
 void unpackPacket(void){
-    Uint32 read, i, tempint;
+    Uint32 read, i, tempint, bulletID;
 
 	for (i = 0, read = 0; i < 4; i++){
 		tempint = inPacket->data[i];
@@ -49,7 +46,18 @@ void unpackPacket(void){
 		ship[player].angle *= 6;
 		ship[player].blown = (read >> 30) & 1;
 		ship[player].active = (read >> 31) & 1;
-
 	}
+
+    for(bulletID = 0; (inPacket->data[36+(bulletID)*3] != 0xFF) && (bulletID < 300); bulletID++){
+		for (i = 0, read = 0; i < 3; i++){
+			tempint = inPacket->data[36+(bulletID)*3+i];
+			read = read | tempint << i*8;
+		}
+		bullet[bulletID].x = read & 0b11111111111;
+		bullet[bulletID].y = (read >> 11) & 0b1111111111;
+		bullet[bulletID].type = (read >> 21) & 0b1111;
+	}
+    currentBulletAmmount = bulletID;
+
     return;
 }

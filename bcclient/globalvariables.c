@@ -33,3 +33,5 @@ bool shooting;
 Uint8 pressedButtons;
 UDPpacket* outPacket;
 UDPpacket* inPacket;
+
+int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen

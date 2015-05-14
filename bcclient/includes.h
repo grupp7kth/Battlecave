@@ -138,6 +138,8 @@ extern Uint8 pressedButtons;
 extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;
 
+extern int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
+
 // ********************************    TCPHANDLER.C    ******************************************
 
 int TCPhandler(Client* client);
