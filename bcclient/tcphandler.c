@@ -4,6 +4,7 @@ void handleChat(char TCPTextIn[]);
 void handleNames(char TCPTextIn[]);
 void handleReady(char TCPTextIn[]);
 void handleGameStart(void);
+void handleBots(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -30,6 +31,8 @@ int TCPhandler(Client* client){
             handleReady(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_GAMESTART)
             handleGameStart();
+        else if(TCPTextIn[0] == PREAMBLE_TOGGLEBOT)
+            handleBots(TCPTextIn);
 
         if(!isConnected)
             break;
@@ -104,10 +107,19 @@ void handleReady(char TCPTextIn[]){
 }
 
 void handleGameStart(void){
-    printf("ATTEMPTINT TO START GAME...\n"); //********************************************************************************
+    printf("ATTEMPTING TO START GAME...\n"); //********************************************************************************
     mode = IN_GAME;
     keyboardMode = PLAYING;
     clearTextStrings(11);
+    return;
+}
+
+void handleBots(char TCPTextIn[]){
+    printf("CHANGED STATUS= %d\n", TCPTextIn[1]-48);
+    computerPlayerActive[TCPTextIn[1]-48] = !computerPlayerActive[TCPTextIn[1]-48];
+
+    for(int i=0; i<8;i++)
+        printf("STATUS %d: %d\n", i, computerPlayerActive[i]);
     return;
 }
 

@@ -90,6 +90,7 @@ extern double getRadians(int a);
 extern int IdFromPort(Uint32 ip);
 extern bool isInside(int x, int y, SDL_Rect* r);
 extern int udpListener(void* data);
+extern int fetchCPUname(void);
 
 //------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);

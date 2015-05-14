@@ -33,6 +33,8 @@ int main(int argc, char *argv[]) {
 
         while (1) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
+            if(computerPlayerCount > 0)
+                updateBots();
             updateShip(ships);
             moveBullets(bullets);
             createAndSendUDPPackets(ships, bullets);

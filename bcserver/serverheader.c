@@ -19,6 +19,7 @@ double getRadians(int a);
 int IdFromPort(Uint32 ip);
 bool isInside(int x, int y, SDL_Rect* r);
 int udpListener(void* data);
+int fetchCPUname(void);
 
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 void moveBullets(Bullet bullets[MAX_BULLETS]);

@@ -45,27 +45,39 @@ int Lobby(void * data) {
                 clearString(TCPrecv);
             }
             else if(TCPrecv[0] == PREAMBLE_TOGGLEBOT){
-                computerPlayerActive[TCPrecv[1]] = !computerPlayerActive[TCPrecv[1]];
+                int botID = TCPrecv[1], temporaryInt;
 
-                printf("ID BOT AASASASAS %d\n", TCPrecv[1]);
+                temporaryInt = fetchCPUname();
 
-                clearString(clients[TCPrecv[1]].name);
-                if(computerPlayerActive[TCPrecv[1]]){
+
+
+
+                printf("FREE SLOT WAS %d\n", temporaryInt);
+
+                computerPlayerActive[botID] = !computerPlayerActive[botID];
+                clearString(clients[botID].name);
+                if(computerPlayerActive[botID]){
                     computerPlayerCount++;
-                    strcpy(clients[TCPrecv[1]].name, "TESTLOL");
-                    clients[TCPrecv[1]].active = true;
-                    clients[TCPrecv[1]].id = TCPrecv[1];
-                    clients[TCPrecv[1]].playerType = PLAYER_TYPE_BOT;
-                    clients[TCPrecv[1]].ready = true;
-                    activePlayers();
-                }
-//                else{
-//                    computerPlayerCount--;
-//                    clearString(clients[TCPrecv[1]].name);
-//                    clients[TCPrecv[1]].active = false;
-//                    clients[TCPrecv[1]].playerType = PLAYER_TYPE_HUMAN;
-//                }
+                    strcpy(clients[botID].name, "CPU ");
 
+                    clients[botID].active = true;
+                    clients[botID].id = botID;
+                    clients[botID].playerType = PLAYER_TYPE_BOT;
+                    clients[botID].ready = true;
+                    clients[botID].name[4] = temporaryInt+48; // +48 because ASCII to int, +1 because we want 1-8 rather than 0-7
+                }
+                else{
+                    computerPlayerCount--;
+                    clients[botID].active = false;
+                    clients[botID].playerType = PLAYER_TYPE_HUMAN;
+                    clients[botID].ready = false;
+                    disconnect(botID);
+                }
+                clearString(TCPsend);
+                sprintf(TCPsend, "?%d", botID);
+                broadCast(TCPsend);
+                activePlayers();
+                printf("computerPlayerCount=%d\n", computerPlayerCount);//***********************************************
             }
             else {
 
@@ -80,10 +92,8 @@ int Lobby(void * data) {
         else{
 
             printf("ClientID: %d has disconnected...\n",clientId);
-
             clearString(TCPsend);
             sprintf(TCPsend,PREAMBLE_DISC"%s has disconnected",clients[clientId].name);
-            clearReturn(TCPsend);
             clients[clientId].active = false;
             clients[clientId].ready = false;
             SDLNet_TCP_Close(clients[clientId].socket);
@@ -171,6 +181,28 @@ void disconnect(int id) {
 }
 void broadCast(char TCPsend[]) {
     for (int i=0;i<MAX_CLIENTS;i++) {
-        if(clients[i].active) SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
+        if(clients[i].active && clients[i].playerType == PLAYER_TYPE_HUMAN) SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
     }
+}
+
+int fetchCPUname(void){
+    bool match = false;
+    char tempBotString[6];
+    int i;
+
+    for(i=0; i < 8; i++){
+        match = false;
+        tempBotString[0] = "\0";
+        sprintf(tempBotString, "CPU %d", i+1);
+
+        for(int j=0; j < MAX_CLIENTS; j++)
+            if(strcmp(tempBotString, clients[j].name) == 0)
+                match = true;
+
+        if(match == 0)
+            return i+1;
+
+    }
+    puts("Fetch CPU Name Error!");
+    exit(EXIT_FAILURE);
 }

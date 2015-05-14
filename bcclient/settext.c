@@ -139,7 +139,6 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
         renderText(textPlacement, gRenderer);
         textPlacement->y += 65;
     }
-    computerPlayerActive[5] = true;
     for(int i=0; i < MAX_PLAYERS; i++){
         if(*select == (i+3) && (strcmp(playerName[i], "\0") == 0 || computerPlayerActive[i] == true)){
 

@@ -16,7 +16,7 @@ int IdFromPort(Uint32 ip) {
  @var skeppet: Det skepp som ska uppdateras.
  */ /// alkdjlaksjdlaskjd
 void updateShip(Ship ships[MAX_CLIENTS]) {
-    for (int i=0; i<MAX_CLIENTS; i++) {
+    for (int i=0; i<MAX_CLIENTS; i++){
         if (ships[i].acceleration) {
             ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
             ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
@@ -74,10 +74,10 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
 bool initGame() {
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
-		ships[i].xPos =0;
-		ships[i].yPos =0;
-		ships[i].xVel =0;
-		ships[i].yVel =0;
+		ships[i].xPos = 800;
+		ships[i].yPos = 50+i*100;
+		ships[i].xVel = 0;
+		ships[i].yVel = 0;
 		ships[i].bulletIntervall = 10;
 		ships[i].bulletCooldown = 0;
 		ships[i].angleVel = 0;
@@ -87,27 +87,10 @@ bool initGame() {
 		ships[i].alive = false;
 	}
 	ships[0].xPos = 400;
-	ships[0].yPos = 300;
+	ships[0].yPos = 400;
 	ships[0].bulletIntervall =10;
 	ships[0].bulletCooldown=0;
-	ships[1].xPos = 500;
-	ships[1].yPos = 400;
-	ships[1].xVel = 0;
-	ships[1].angleVel = -3;
-	ships[2].xPos = 1000;
-	ships[2].yPos = 1200;
-	ships[2].angleVel = +5;
-	ships[3].xPos = 2000;
-	ships[3].yPos = 1200;
-	ships[3].yVel = -2;
-	ships[4].xPos = 10;
-	ships[4].yPos = 10;
-	ships[4].xVel = 2;
-	ships[4].yVel = 2;
-	ships[5].xPos = 1200;
-	ships[5].yPos = 800;
-	ships[5].xVel = 1.5;
-	ships[5].yVel = -1.5;
+
     return true;
 }
 int udpListener(void* data) {
@@ -218,7 +201,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
 /** uppdaterar alla skotts positioner. St{nger av dem om de hamnar utanf|r spelf{ltet.
  @var skotten: den array av serverBullet som ska uppdateras.
  */
-void moveBullets(Bullet bullets[MAX_BULLETS]) {
+void moveBullets(Bullet bullets[MAX_BULLETS]){
     int i;
     for (i=0; i<MAX_BULLETS; i++) {
         if (bullets[i].active) {
@@ -238,4 +221,13 @@ void moveShips(Ship ships[MAX_CLIENTS]) {
     for (i=0; i<MAX_CLIENTS; i++) {
         updateShip(&ships[i]);
     }
+}
+
+void updateBots(void){
+    for(int i=0; i < MAX_CLIENTS; i++){
+        if(clients[i].playerType == PLAYER_TYPE_BOT){
+
+        }
+    }
+    return;
 }
