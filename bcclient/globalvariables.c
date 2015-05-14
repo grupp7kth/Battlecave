@@ -18,8 +18,8 @@ char defaultPort[5];
 
 char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 bool playerReady[8];
-char playerReadyStr[2];
 SDL_Rect readyIcon;
+bool computerPlayerActive[8];
 //char name[MAX_NAME_LENGTH]; *********************************************************************
 
 SDL_Thread* TCPthread;

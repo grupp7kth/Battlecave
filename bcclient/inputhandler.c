@@ -37,7 +37,7 @@ void checkMouse(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
         checkMouseMode5(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, keyboardMode);
 
 
-    if((*mode == STARTUP || *mode == FIND_SERVERS) && !match)
+    if((*mode == STARTUP || *mode == FIND_SERVERS || *mode == LOBBY) && !match)
         *select = -1;
 
     return;
@@ -97,10 +97,17 @@ static void checkMouseMode1(SDL_Event *event, SDL_Point *currentMouseLocation, S
 static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode){
     for(int i=0; i < modeMaxButtons[3]; i++){
         if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
+            *select = i;
+            *match = true;
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = ENTERING_TEXT;
+                if(i >=3 && i <= 11){
+                    char tempStr[3] = {PREAMBLE_TOGGLEBOT, i-3, '\0'};
+                    //sprintf(twoCharStr, PREAMBLE_TOGGLEBOT"%c", i-3);
+                    SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
+                }
 
-                if(i == 2)                  // Ready
+                else if(i == 2)             // Ready
                     SDLNet_TCP_Send(client.TCPSock, "#", strlen("#"));
                 else if(i == 1){            // Leave
                     isConnected = false;
@@ -198,7 +205,6 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
         else if(event->key.keysym.sym == SDLK_RETURN){
             joinLobby(mode);
         }
-
 
         else{
             if(*select == ENTERING_IP){

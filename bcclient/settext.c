@@ -21,7 +21,7 @@ SDL_Color colors[14] = {{225, 225, 255},  // 0  = White
 
 void setTextMode0(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
 void setTextMode1(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
-void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
+void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
 void setTextMode4(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
@@ -36,7 +36,7 @@ void setText(int *mode, SDL_Renderer* gRenderer, int *select){
     else if(*mode == FIND_SERVERS)
         setTextMode1(&textPlacement, gRenderer, select);
     else if(*mode == LOBBY)
-        setTextMode3(&textPlacement, gRenderer);
+        setTextMode3(&textPlacement, gRenderer, select);
     else if(*mode == JOIN_DEFAULT)
         setTextMode4(&textPlacement, gRenderer);
     else if(*mode == JOIN_CUSTOM)
@@ -107,7 +107,7 @@ void setTextMode1(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
     showClientVersion(textPlacement, gRenderer);
 }
 
-void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
+void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select){
     TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 20);
 
     // Chat messages (0 = upper, 4 = lower)
@@ -138,6 +138,23 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         gTempTextMessage = TTF_RenderText_Solid(font, playerName[i], colors[i+6]);
         renderText(textPlacement, gRenderer);
         textPlacement->y += 65;
+    }
+    computerPlayerActive[5] = true;
+    for(int i=0; i < MAX_PLAYERS; i++){
+        if(*select == (i+3) && (strcmp(playerName[i], "\0") == 0 || computerPlayerActive[i] == true)){
+
+            textPlacement->y = 120 + i*65;
+
+            if(computerPlayerActive[i] == false){
+                textPlacement->x = 240;
+                gTempTextMessage = TTF_RenderText_Solid(font, "Add CPU Player", colors[TEXT_COLOR_BRIGHTGREEN]);
+            }
+            else{
+                textPlacement->x = 217;
+                gTempTextMessage = TTF_RenderText_Solid(font, "Remove CPU Player", colors[TEXT_COLOR_BRIGHTRED]);
+            }
+            renderText(textPlacement, gRenderer);
+        }
     }
 
     TTF_CloseFont(font);

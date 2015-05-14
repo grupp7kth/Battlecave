@@ -68,6 +68,13 @@ static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Messa
     buttonPlacement[2].y = 350;
     buttonPlacement[2].h = 45;
     buttonPlacement[2].w = 119;
+    // Player Fields 1-8 :
+    for(int i = 0; i < MAX_PLAYERS; i++){
+        buttonPlacement[i+3].x = 183;
+        buttonPlacement[i+3].y = 112 + i*65;
+        buttonPlacement[i+3].h = 45;
+        buttonPlacement[i+3].w = 300;
+    }
     return;
 }
 

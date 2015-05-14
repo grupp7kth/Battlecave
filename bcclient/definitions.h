@@ -6,7 +6,7 @@
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
 
-#define MAXBUTTONS 5
+#define MAXBUTTONS 11
 
 // The different modes that the client can be in. Determines what to render and how to interpret mouse clicks / keystrokes etc...
 #define STARTUP 0
@@ -46,7 +46,7 @@
 #define PREAMBLE_CHAT '$'
 #define PREAMBLE_PLAYERS '@'
 #define PREAMBLE_READY '#'
-//#define PREAMBLE_XXXX '%'   // FREE FOR USE
+#define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT '-'
 #define PREAMBLE_GAMESTART '!'
 

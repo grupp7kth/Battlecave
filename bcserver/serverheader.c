@@ -38,3 +38,5 @@ UDPpacket *packetOut;
 Uint8 gameData[1000];
 int packetID;
 bool gameIsActive;
+bool computerPlayerActive[MAX_CLIENTS];
+int computerPlayerCount;

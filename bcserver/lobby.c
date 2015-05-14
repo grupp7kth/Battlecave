@@ -44,6 +44,29 @@ int Lobby(void * data) {
                 clearString(TCPsend);
                 clearString(TCPrecv);
             }
+            else if(TCPrecv[0] == PREAMBLE_TOGGLEBOT){
+                computerPlayerActive[TCPrecv[1]] = !computerPlayerActive[TCPrecv[1]];
+
+                printf("ID BOT AASASASAS %d\n", TCPrecv[1]);
+
+                clearString(clients[TCPrecv[1]].name);
+                if(computerPlayerActive[TCPrecv[1]]){
+                    computerPlayerCount++;
+                    strcpy(clients[TCPrecv[1]].name, "TESTLOL");
+                    clients[TCPrecv[1]].active = true;
+                    clients[TCPrecv[1]].id = TCPrecv[1];
+                    clients[TCPrecv[1]].playerType = PLAYER_TYPE_BOT;
+                    clients[TCPrecv[1]].ready = true;
+                    activePlayers();
+                }
+//                else{
+//                    computerPlayerCount--;
+//                    clearString(clients[TCPrecv[1]].name);
+//                    clients[TCPrecv[1]].active = false;
+//                    clients[TCPrecv[1]].playerType = PLAYER_TYPE_HUMAN;
+//                }
+
+            }
             else {
 
                 //printf("%s: %s", clients[clientId].name, TCPrecv);

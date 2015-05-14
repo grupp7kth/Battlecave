@@ -124,8 +124,8 @@ extern char defaultPort[5];
 
 extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 extern bool playerReady[8];
-extern char playerReadyStr[2];
 extern SDL_Rect readyIcon;
+extern bool computerPlayerActive[8];
 //char name[MAX_NAME_LENGTH]; *********************************************************************
 
 extern SDL_Thread* TCPthread;

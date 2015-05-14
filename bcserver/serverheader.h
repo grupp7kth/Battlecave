@@ -36,11 +36,14 @@
 #define PREAMBLE_DISC "$1"
 #define PREAMBLE_PLAYERS "@"
 #define PREAMBLE_READY "#"
+#define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT "-"
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"
 #define BACKGROUND_TEXTURE "cave.png"
+#define PLAYER_TYPE_HUMAN 0
+#define PLAYER_TYPE_BOT 1
 
 
 typedef struct _Client {
@@ -52,6 +55,7 @@ typedef struct _Client {
     bool active;
     bool ready;
     Uint32 ipadress;
+    int playerType;
 }Client;
 typedef struct _Ship {
     SDL_Surface* surface;
@@ -106,6 +110,7 @@ extern UDPpacket *packetOut;
 extern Uint8 gameData[1000];
 extern int packetID;
 extern bool gameIsActive;
-
+extern bool computerPlayerActive[MAX_CLIENTS];
+extern int computerPlayerCount;
 
 #endif // SERVERHEADER_H_INCLUDED

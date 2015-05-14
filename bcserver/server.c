@@ -122,6 +122,10 @@ bool init() {
     SDLNet_ResolveHost(&serverIP, NULL, 4444);
     TCPsock = SDLNet_TCP_Open(&serverIP);
     if(TCPsock==NULL)printf("Init failed at step: 6\n");
+
+    computerPlayerCount = 0;
+    for(int i=0; i < MAX_CLIENTS; i++)
+        computerPlayerActive[i] = false;
     return true;
 }
 bool ClientsAreReady() {
