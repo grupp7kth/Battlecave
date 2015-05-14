@@ -1,3 +1,6 @@
+0.70 :
+* The client now handles gameplay, it recieves and draws ships and bullets.
+
 0.64 : 
 * New background picture added; text and buttons moved to accomodate.
 * Implementation of handling for incomming UDP packets started.
