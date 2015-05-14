@@ -211,8 +211,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         packetOut->address.host=clients[player].ipadress;
         packetOut->address.port=clients[player].recvPort;
         SDLNet_UDP_Send(udpSendSock,-1,packetOut);
-        		printf("Skickade paket till %s (IP=%u)\n",clients[player].name, clients[player].ipadress);
-
+   		//printf("Skickade paket till %s (IP=%x)\n",clients[player].name, clients[player].ipadress);
     }
 }
 

@@ -50,12 +50,12 @@ int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
 }
 
 void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N have?
-    modeMaxButtons[STARTUP]       = 3;
-    modeMaxButtons[FIND_SERVERS]  = 3;
-    modeMaxButtons[OPTIONS]       = 0;          // UNUSED ATM
-    modeMaxButtons[LOBBY]         = 3;
-    modeMaxButtons[JOIN_DEFAULT]  = 2;
-    modeMaxButtons[JOIN_CUSTOM]   = 5;
+    modeMaxButtons[STARTUP]       =  3;
+    modeMaxButtons[FIND_SERVERS]  =  3;
+    modeMaxButtons[OPTIONS]       =  0;          // UNUSED ATM
+    modeMaxButtons[LOBBY]         = 11;
+    modeMaxButtons[JOIN_DEFAULT]  =  2;
+    modeMaxButtons[JOIN_CUSTOM]   =  5;
     return;
 }
 

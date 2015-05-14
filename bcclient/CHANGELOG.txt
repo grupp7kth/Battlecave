@@ -1,3 +1,7 @@
+0.71 :
+* All ports used are now absolute (4444-4448) in order to allow for port-forwarding and more importantly: internet play.
+* A ton of bugfixes server-side to fix bullet placements, address matching etc.
+
 0.70 :
 * The client now handles gameplay, it recieves and draws ships and bullets.
 
