@@ -18,6 +18,7 @@ int UDPhandler(void){
 
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
+                printf("RECIEVED SHIT XD\n");
                 unpackPacket();
             }
 
