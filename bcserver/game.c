@@ -167,8 +167,8 @@ int udpListener(void* data) {
  */
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     SDL_Rect viewport;
-    viewport.w = SCREEN_WIDTH;
-    viewport.h = SCREEN_HEIGHT;
+    viewport.w = GAME_AREA_WIDTH;
+    viewport.h = GAME_AREA_HEIGHT;
     int i, player, secondary, counter,UDPpacketLength;
     Uint32 tempint;
 
@@ -195,16 +195,16 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         if (!clients[player].active) continue;
         // H{r ska den r{kna ut "viewport" f|r spelaren, eller kontrekt uttryckt:
         // Vilken position p} banan som |vre v{nstra h|rnet p} hans sk{rm har.
-        if (ships[player].xPos < SCREEN_WIDTH/2)
+        if (ships[player].xPos < GAME_AREA_WIDTH/2)
             viewport.x=0;
-        else if (ships[player].xPos > STAGE_WIDTH-SCREEN_WIDTH/2)
-            viewport.x=STAGE_WIDTH-SCREEN_WIDTH;
-        else viewport.x=ships[player].xPos-SCREEN_WIDTH/2;
-        if (ships[player].yPos < SCREEN_HEIGHT/2)
+        else if (ships[player].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
+            viewport.x=STAGE_WIDTH-GAME_AREA_WIDTH;
+        else viewport.x=ships[player].xPos-GAME_AREA_WIDTH/2;
+        if (ships[player].yPos < GAME_AREA_HEIGHT/2)
             viewport.y=0;
-        else if (ships[player].yPos > STAGE_HEIGHT-SCREEN_HEIGHT/2)
-            viewport.y=STAGE_HEIGHT-SCREEN_HEIGHT;
-        else viewport.y=ships[player].yPos-SCREEN_HEIGHT/2;
+        else if (ships[player].yPos > STAGE_HEIGHT-GAME_AREA_HEIGHT/2)
+            viewport.y=STAGE_HEIGHT-GAME_AREA_HEIGHT;
+        else viewport.y=ships[player].yPos-GAME_AREA_HEIGHT/2;
 
         // Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
 

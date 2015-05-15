@@ -1,3 +1,7 @@
+0.40 :
+* All ships are now colored, based on their ID as previously excercised in the lobby and chats.
+* Shrunk the game area on the screen to make room for new features, moved all centres etc accordingly.
+
 0.30 :
 * CPU players have been added to the game. Click an empty player-box while in a lobby to add/remove them.
     The bots currently face their closest opponent and then accelerate or fire based on the distance to the opponent.

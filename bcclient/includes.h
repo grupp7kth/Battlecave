@@ -105,10 +105,17 @@ extern Bullet bullet[MAX_BULLETS];
 
 typedef struct{
 	int w, h;
-    SDL_Texture* texture;                      // Width, Height
+    SDL_Texture* texture;
 	SDL_Rect source;
+	SDL_Rect dest;
 } GameBackground;
 extern GameBackground gameBackground;
+
+typedef struct{
+    SDL_Texture* texture;
+	SDL_Rect placement;
+} SideBar;
+extern SideBar sideBar;
 
 extern int mode;                               // Modes as specified in "definitions.h"
 extern int keyboardMode;
@@ -141,6 +148,9 @@ extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;
 
 extern int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
+
+extern SDL_Color colorsRGB[14];                // SDL_Color format RGB
+extern Uint8 colorsPlayer[24];             // Split colors (3 entries per color: R/G/B)
 
 // ********************************    TCPHANDLER.C    ******************************************
 

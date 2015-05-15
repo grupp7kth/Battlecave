@@ -66,28 +66,35 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     }
 //*********************** MODE 6 : In Game *********************************
     else if(*mode == IN_GAME){
-        gameBackground.source.x = ship[client.id].x - (SCREENWIDTH/2);
-        gameBackground.source.y = ship[client.id].y - (SCREENHEIGHT/2);
+        // RENDER EVERYTHING GAME RELATED
+        gameBackground.source.x = ship[client.id].x - (GAME_AREA_WIDTH/2);
+        gameBackground.source.y = ship[client.id].y - (GAME_AREA_HEIGHT/2);
 
-        if(ship[client.id].x < SCREENWIDTH/2)
+        if(ship[client.id].x < GAME_AREA_WIDTH/2)
             gameBackground.source.x = 0;
-        else if(ship[client.id].x > gameBackground.w - SCREENWIDTH/2)
-            gameBackground.source.x = gameBackground.w - SCREENWIDTH;
+        else if(ship[client.id].x > gameBackground.w - GAME_AREA_WIDTH/2)
+            gameBackground.source.x = gameBackground.w - GAME_AREA_WIDTH;
 
-        if(ship[client.id].y < SCREENHEIGHT/2)
+        if(ship[client.id].y < GAME_AREA_HEIGHT/2)
             gameBackground.source.y = 0;
-        else if(ship[client.id].y > gameBackground.h - SCREENHEIGHT/2)
-            gameBackground.source.y = gameBackground.h - SCREENHEIGHT;
+        else if(ship[client.id].y > gameBackground.h - GAME_AREA_HEIGHT/2)
+            gameBackground.source.y = gameBackground.h - GAME_AREA_HEIGHT;
 
-
-        SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, NULL);
+        SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, &gameBackground.dest);
 
         for(int i = 0; i < MAX_PLAYERS; i++){
             if(!ship[i].active)
                 break;
+            int temp;
             ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
             ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
-            SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
+
+            if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)
+                temp = ship[i].placement.x - ship[client.id].placement.x;
+            else
+                temp = ship[i].placement.x - GAME_AREA_WIDTH/2;
+            if(temp < GAME_AREA_WIDTH/2)
+                SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
         }
 
         SDL_Rect bulletPlacement;
@@ -99,6 +106,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             bulletPlacement.y = bullet[i].y;
             SDL_RenderDrawRect(gRenderer, &bulletPlacement);
         }
+        // RENDER EVERYTHING SIDEBAR RELATED
+        SDL_RenderCopy(gRenderer, sideBar.texture, NULL, &sideBar.placement);
 
         setText(mode, gRenderer, select);
     }
@@ -122,13 +131,24 @@ void loadMedia(void){
     mLobbyWindow = loadTexture("resources/images/lobbybackground.png");
     mReady = loadTexture("resources/images/ready.png");
 
+    sideBar.texture = loadTexture("resources/images/sidebar.png");
+    sideBar.placement.x = GAME_AREA_WIDTH;
+    sideBar.placement.y = 0;
+    sideBar.placement.w = SCREENWIDTH - GAME_AREA_WIDTH;
+    sideBar.placement.h = SCREENHEIGHT;
+
     gameBackground.texture = loadTexture("resources/images/cave.png");
-    gameBackground.source.w = SCREENWIDTH;
+    gameBackground.source.w = SCREENWIDTH-250;
     gameBackground.source.h = SCREENHEIGHT;
+    gameBackground.dest.x = 0;
+    gameBackground.dest.y = 0;
+    gameBackground.dest.w = SCREENWIDTH-250;
+    gameBackground.dest.h = SCREENHEIGHT;
     SDL_QueryTexture(gameBackground.texture, NULL, NULL, &gameBackground.w, &gameBackground.h);
 
     for(int i=0; i < MAX_PLAYERS; i++){
         ship[i].texture = loadTexture("resources/images/ship.png");
+        SDL_SetTextureColorMod(ship[i].texture, colorsPlayer[i*3], colorsPlayer[i*3+1], colorsPlayer[i*3+2]);       // Assign each ship colors to match their ID-color
         SDL_QueryTexture(ship[i].texture, NULL, NULL, &ship[i].placement.w, &ship[i].placement.h);
         ship[i].x = 0;
         ship[i].y = 0;

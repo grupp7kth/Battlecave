@@ -12,6 +12,7 @@ void addCharToString(int id, int maxLen, SDL_Event *event);
 void joinLobby(int *mode);
 int resolveIPPortFromStrings(void);
 void handleChatInput(SDL_Event* event);
+void handleLeave(void);
 
 //**************************************************************************
 //                                                                         *
@@ -109,19 +110,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
                 else if(i == 2)             // Ready
                     SDLNet_TCP_Send(client.TCPSock, "#", strlen("#"));
                 else if(i == 1){            // Leave
-                    isConnected = false;
-                    SDLNet_TCP_Send(client.TCPSock, "-", strlen("-"));
-                    SDLNet_TCP_Close(client.TCPSock);
-                    SDLNet_UDP_Close(client.UDPRecvSock);
-                    SDLNet_UDP_Close(client.UDPSendSock);
-
-                    for(int i=0; i < MAX_PLAYERS; i++)
-                        playerReady[i] = 0;
-
-                    clearAllPlayerNameStrings(8);
-                    clearTextStrings(11);
-                    printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
-                    *mode = FIND_SERVERS;
+                    handleLeave();
                 }                           // (ELSE: Enter Chat Message Window Pressed)
             }
         }
@@ -376,5 +365,22 @@ void handleChatInput(SDL_Event* event){
     }
     else
         addCharToString(PLAYER_MESSAGE_WRITE, 40, event);
+    return;
+}
+
+void handleLeave(void){
+    isConnected = false;
+    SDLNet_TCP_Send(client.TCPSock, "-", strlen("-"));
+    SDLNet_TCP_Close(client.TCPSock);
+    SDLNet_UDP_Close(client.UDPRecvSock);
+    SDLNet_UDP_Close(client.UDPSendSock);
+
+    for(int i=0; i < MAX_PLAYERS; i++)
+        playerReady[i] = 0;
+
+    clearAllPlayerNameStrings(8);
+    clearTextStrings(11);
+    printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
+    mode = FIND_SERVERS;
     return;
 }
