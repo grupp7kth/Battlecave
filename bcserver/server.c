@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
                 updateBots();
             updateShip(ships);
             moveBullets(bullets);
+            checkShipHealth();
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000){      // *1000 for MS to S, *60 for Minutes

@@ -102,6 +102,7 @@ bool initGame(){
 		ships[i].acceleration = false;
 		ships[i].shooting = false;
 		ships[i].isDead = false;
+		ships[i].deathTimer=0;
 	}
     fetchMapData();
 
@@ -111,6 +112,15 @@ bool initGame(){
     ships[0].isDead = true;
     return true;
 }
+void checkShipHealth() {
+    for (int i=0; i<MAX_CLIENTS; i++) {
+        if(clients[i].active && ships[i].health<=0 && ships[i].isDead==false) {
+            SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
+            ships[i].deathTimer=10000;
+        }
+    }
+}
+
 
 void fetchMapData(void){
     char mapName[30] = {'\0'}, readNum[5] = {'\0'};

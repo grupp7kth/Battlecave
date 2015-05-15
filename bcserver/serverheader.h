@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-    #include <SDL.h>
-    #include <SDL_image.h>
-    #include <SDL_net.h>
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -66,6 +66,7 @@ typedef struct{
     bool ready;
     Uint32 ipadress;
     int playerType;
+    int deathTimer;
 }Client;
 typedef struct{
     SDL_Surface* surface;
@@ -114,7 +115,7 @@ extern int getObjectDistance(int deltaX, int deltaY);
 extern float getObjectAngle(int deltaX, int deltaY);
 extern void removeBOT(int *id);
 extern void fetchMapData(void);
-
+extern void checkShipHealth();
 //------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 extern void moveBullets(Bullet bullets[MAX_BULLETS]);

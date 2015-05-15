@@ -27,7 +27,7 @@ int getObjectDistance(int deltaX, int deltaY);
 float getObjectAngle(int deltaX, int deltaY);
 void removeBOT(int *id);
 void fetchMapData(void);
-
+void checkShipHealth();
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 void moveBullets(Bullet bullets[MAX_BULLETS]);
 void moveShips(Ship ships[MAX_CLIENTS]);
