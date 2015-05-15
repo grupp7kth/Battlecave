@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-    #include <SDL.h>
-    #include <SDL_image.h>
-    #include <SDL_net.h>
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -122,5 +122,5 @@ extern int packetID;
 extern bool gameIsActive;
 extern bool computerPlayerActive[MAX_CLIENTS];
 extern int computerPlayerCount;
-
+extern int GameFreezeTime;
 #endif // SERVERHEADER_H_INCLUDED

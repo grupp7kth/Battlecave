@@ -46,3 +46,4 @@ int packetID;
 bool gameIsActive;
 bool computerPlayerActive[MAX_CLIENTS];
 int computerPlayerCount;
+int GameFreezeTime;

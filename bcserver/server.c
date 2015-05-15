@@ -18,20 +18,19 @@ int main(int argc, char *argv[]) {
     while (true) {
         acceptConnection();
         if(!initGame())puts("Failed to init game"); else puts("Game initialized");
-
-        gameIsActive = true;
-        SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
-
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
-
-        for(int i=0; i<8; i++){
-            if(clients[i].active)
-                printf("AACTIVE CLIENT (ID %d) HAS IP:%u RPORT:%u SPORT:%u\n", i, clients[i].ipadress, clients[i].recvPort, clients[i].sendPort);
-
+        char gameCounter[MAX_LENGTH];
+        GameFreezeTime = 3; //-1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+        while (GameFreezeTime<-1) {
+            sprintf(gameCounter,PREAMBLE_GAMEFREEZE"%d",GameFreezeTime);
+            broadCast(gameCounter);
+            GameFreezeTime--;
+            SDL_Delay(1000);
         }
-
-        while (1) {
+        gameIsActive = true;
+        SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
+        while (gameIsActive) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             if(computerPlayerCount > 0)
                 updateBots();
