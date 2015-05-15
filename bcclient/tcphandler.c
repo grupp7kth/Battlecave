@@ -5,6 +5,7 @@ void handleNames(char TCPTextIn[]);
 void handleReady(char TCPTextIn[]);
 void handleGameStart(void);
 void handleBots(char TCPTextIn[]);
+void handleFreezeTime(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -33,7 +34,8 @@ int TCPhandler(Client* client){
             handleGameStart();
         else if(TCPTextIn[0] == PREAMBLE_TOGGLEBOT)
             handleBots(TCPTextIn);
-        else if(TCPTextIn[0] == PREAMBLE_GAMESTART)
+        else if(TCPTextIn[0] == PREAMBLE_GAMEFREEZE)
+            handleFreezeTime(TCPTextIn);
 
         if(!isConnected)
             break;
@@ -121,6 +123,12 @@ void handleBots(char TCPTextIn[]){
 
     for(int i=0; i<8;i++)
         printf("STATUS %d: %d\n", i, computerPlayerActive[i]);
+    return;
+}
+
+void handleFreezeTime(char TCPTextIn[]){
+    gameFreezeTime = TCPTextIn[1];
+    printf("FREEZETIME IS %d\n", gameFreezeTime);
     return;
 }
 
