@@ -265,12 +265,12 @@
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-1431712400 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
+1431727715 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	"includes.h"
 
-1431725779 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
+1431728356 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
 	"includes.h"
 
 1431721732 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
@@ -320,7 +320,7 @@
 1431727292 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
 	"includes.h"
 
-1431727188 c:\users\johan\documents\github\battlecave\bcclient\includes.h
+1431728391 c:\users\johan\documents\github\battlecave\bcclient\includes.h
 	<SDL.h>
 	<SDL_net.h>
 	<SDL_image.h>

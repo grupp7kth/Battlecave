@@ -32,6 +32,7 @@ IPaddress ip;                               // Contains the information (host + 
 
 int gameTimeStart;
 int gameTimeRemaining;
+int deathTimerStart;
 
 bool throttle;
 bool right;

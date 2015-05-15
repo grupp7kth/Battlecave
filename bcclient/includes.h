@@ -91,7 +91,7 @@ typedef struct{
     UDPsocket UDPRecvSock, UDPSendSock;
     Uint16 ServerRecvUDPPort;
     short health;
-    short deathTimer;
+    int deathTimer;
 } Client;
 extern Client client;
 
@@ -156,6 +156,7 @@ extern IPaddress ip;                           // Contains the information (host
 
 extern int gameTimeStart;
 extern int gameTimeRemaining;
+extern int deathTimerStart;
 
 extern bool throttle;
 extern bool right;

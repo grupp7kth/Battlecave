@@ -7,6 +7,7 @@ void handleGameStart(void);
 void handleBots(char TCPTextIn[]);
 void handleFreezeTime(char TCPTextIn[]);
 void handleGameOptions(char TCPTextIn[]);
+void handleDeath(void);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -41,6 +42,8 @@ int TCPhandler(Client* client){
             handleLeave();
         else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
             handleGameOptions(TCPTextIn);
+        else if(TCPTextIn[1] == PREAMBLE_KILLED)
+            handleDeath();
         if(!isConnected)
             break;
     }
@@ -120,6 +123,7 @@ void handleGameStart(void){
     clearTextStrings(11);
     gameFreezeTime = 4;
     client.health = 100;
+    client.deathTimer = 0;
     return;
 }
 
@@ -149,6 +153,13 @@ void handleGameOptions(char TCPTextIn[]){
         activeGameLength = TCPTextIn[2]-48;
 
     //printf("BI=%d, IM=%d, MS=%d, GL=%d\n", bulletIntervalList[activeBulletInterval], infiniteMomentum, maxSpeedList[activeMaxSpeed], gameLengthList[activeGameLength]); //***********************************************************
+    return;
+}
+
+void handleDeath(void){
+    puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");
+    client.deathTimer = 10000;
+    deathTimerStart = SDL_GetTicks();
     return;
 }
 
