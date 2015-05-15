@@ -72,6 +72,34 @@ int Lobby(void * data) {
                 activePlayers();
                 printf("computerPlayerCount=%d\n", computerPlayerCount);//***********************************************
             }
+            else if(TCPrecv[0] == PREAMBLE_OPTIONS){
+                if (TCPrecv[1]==TOGGLE_BULLETINTERVAL) {
+                    activeBulletInterval++;
+                    if(activeBulletInterval>=3)
+                        activeBulletInterval=0;
+                    sprintf(TCPsend, "*1%d", activeBulletInterval);
+                    broadCast(TCPsend);
+                }
+                if (TCPrecv[1]==TOGGLE_INFINITEMOMENTUM) {
+                    infiniteMomentum = !infiniteMomentum;
+                    sprintf(TCPsend, "*2%d", infiniteMomentum);
+                    broadCast(TCPsend);
+                }
+                if (TCPrecv[1]==TOGGLE_MAXSPEED) {
+                    activeMaxSpeed++;
+                    if(activeMaxSpeed>=4)
+                        activeMaxSpeed=0;
+                    sprintf(TCPsend, "*3%d", activeMaxSpeed);
+                    broadCast(TCPsend);
+                }
+                if (TCPrecv[1]==TOGGLE_GAMELENGTH) {
+                    activeGameLength++;
+                    if(activeGameLength>=6)
+                        activeGameLength=0;
+                    sprintf(TCPsend, "*4%d", activeGameLength);
+                    broadCast(TCPsend);
+               }
+            }
             else {
                 //printf("%s: %s", clients[clientId].name, TCPrecv);
                 clearString(TCPsend);
@@ -113,7 +141,18 @@ void activePlayers() {
 
     char TCPsend[MAX_LENGTH];
     clearString(TCPsend);
-
+    sprintf(TCPsend, "*1%d", activeBulletInterval);
+    broadCast(TCPsend);
+    clearString(TCPsend);
+    sprintf(TCPsend, "*2%d", infiniteMomentum);
+    broadCast(TCPsend);
+    clearString(TCPsend);
+    sprintf(TCPsend, "*3%d", activeMaxSpeed);
+    broadCast(TCPsend);
+    clearString(TCPsend);
+    sprintf(TCPsend, "*4%d", activeGameLength);
+    broadCast(TCPsend);
+    clearString(TCPsend);
     for(int i=0; i<MAX_CLIENTS;i++)
     {
         if(clients[i].active)

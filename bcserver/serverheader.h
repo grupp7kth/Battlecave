@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-    #include <SDL.h>
-    #include <SDL_image.h>
-    #include <SDL_net.h>
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -39,6 +39,7 @@
 #define PREAMBLE_PLAYERS "@"
 #define PREAMBLE_READY '#'
 #define PREAMBLE_TOGGLEBOT '?'
+#define PREAMBLE_OPTIONS '*'
 #define PREAMBLE_DISCONNECT "-"
 #define PREAMBLE_GAMEFREEZE "¤"
 #define PREAMBLE_GAMEEND "="
@@ -48,8 +49,10 @@
 #define BACKGROUND_TEXTURE "cave.png"
 #define PLAYER_TYPE_HUMAN 0
 #define PLAYER_TYPE_BOT 1
-#define SHIPMAXSPEED 5
-
+#define TOGGLE_BULLETINTERVAL 1
+#define TOGGLE_INFINITEMOMENTUM 2
+#define TOGGLE_MAXSPEED 3
+#define TOGGLE_GAMELENGTH 4
 
 typedef struct _Client {
     TCPsocket socket;
@@ -126,4 +129,13 @@ extern bool computerPlayerActive[MAX_CLIENTS];
 extern int computerPlayerCount;
 extern int humanPlayerCount;
 extern int GameFreezeTime;
+
+extern int activeGameLength; // Choses which entry from the list below that's active in terms of game-length
+extern int gameLenghtList[6];
+extern int activeMaxSpeed; // Choses which entry from the list below that's active in terms of max-speed
+extern int MaxSpeedList[4];
+extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
+extern int bulletIntervalList[3];
+extern bool infiniteMomentum;
+
 #endif // SERVERHEADER_H_INCLUDED

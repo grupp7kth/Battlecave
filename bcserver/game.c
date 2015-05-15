@@ -21,16 +21,16 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             if (ships[i].acceleration) {
                 ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
                 ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
-                if(ships[i].yVel > SHIPMAXSPEED)
-                    ships[i].yVel = SHIPMAXSPEED;
-                else if(ships[i].yVel < -SHIPMAXSPEED)
-                    ships[i].yVel = -SHIPMAXSPEED;
-                if(ships[i].xVel > SHIPMAXSPEED)
-                    ships[i].xVel = SHIPMAXSPEED;
-                else if(ships[i].xVel < -SHIPMAXSPEED)
-                    ships[i].xVel = -SHIPMAXSPEED;
+                if(ships[i].yVel > MaxSpeedList[activeMaxSpeed])
+                    ships[i].yVel = MaxSpeedList[activeMaxSpeed];
+                else if(ships[i].yVel < -MaxSpeedList[activeMaxSpeed])
+                    ships[i].yVel = -MaxSpeedList[activeMaxSpeed];
+                if(ships[i].xVel > MaxSpeedList[activeMaxSpeed])
+                    ships[i].xVel = MaxSpeedList[activeMaxSpeed];
+                else if(ships[i].xVel < -MaxSpeedList[activeMaxSpeed])
+                    ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
-            else{
+            else if (!infiniteMomentum) {
                 ships[i].yVel /= 1.005;
                 ships[i].xVel /= 1.005;
 
@@ -90,11 +90,15 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
 }
 
 bool initGame(){
+    activeGameLength = 1;
+    activeMaxSpeed = 1;
+    activeBulletInterval = 1;
+    infiniteMomentum=false;
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
 		ships[i].xVel = 0;
 		ships[i].yVel = 0;
-		ships[i].bulletIntervall = 10;
+		ships[i].bulletIntervall = bulletIntervalList[activeBulletInterval];
 		ships[i].bulletCooldown = 0;
 		ships[i].angleVel = 0;
 		ships[i].angle = 0;

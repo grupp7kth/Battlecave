@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
             moveBullets(bullets);
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
-            if(gameRunningTime >= 10000){
+            if(gameRunningTime >= gameLenghtList[activeGameLength]*1000){
                 broadCast(PREAMBLE_GAMEEND);
                 gameIsActive = false;
                 for(int i=0; i < MAX_CLIENTS; i++){
