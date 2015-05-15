@@ -6,6 +6,7 @@ void handleReady(char TCPTextIn[]);
 void handleGameStart(void);
 void handleBots(char TCPTextIn[]);
 void handleFreezeTime(char TCPTextIn[]);
+void handleGameOptions(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -38,7 +39,8 @@ int TCPhandler(Client* client){
             handleFreezeTime(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_GAMEEND)
             handleLeave();
-
+        else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
+            handleGameOptions(TCPTextIn);
         if(!isConnected)
             break;
     }
@@ -130,6 +132,20 @@ void handleBots(char TCPTextIn[]){
 
 void handleFreezeTime(char TCPTextIn[]){
     gameFreezeTime = TCPTextIn[1]-48;
+    return;
+}
+
+void handleGameOptions(char TCPTextIn[]){
+    if(TCPTextIn[1]-48 == TOGGLE_BULLETINTERVAL)
+        activeBulletInterval = TCPTextIn[2]-48;
+    else if(TCPTextIn[1]-48 == TOGGLE_INFINITEMOMENTUM)
+        infiniteMomentum = TCPTextIn[2]-48;
+    else if(TCPTextIn[1]-48 == TOGGLE_MAXSPEED)
+        activeMaxSpeed = TCPTextIn[2]-48;
+    else if(TCPTextIn[1]-48 == TOGGLE_GAMELENGTH)
+        activeGameLength = TCPTextIn[2]-48;
+
+    printf("BI=%d, IM=%d, MS=%d, GL=%d\n", )
     return;
 }
 

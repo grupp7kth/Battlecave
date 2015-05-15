@@ -22,11 +22,10 @@ char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 bool playerReady[8];
 SDL_Rect readyIcon;
 bool computerPlayerActive[8] = {false};
-//char name[MAX_NAME_LENGTH]; *********************************************************************
 
 SDL_Thread* TCPthread;
 SDL_Thread* UDPthread;
-IPaddress ip;                           // Contains the information (host + port) for the server to connect to
+IPaddress ip;                               // Contains the information (host + port) for the server to connect to
 
 bool throttle;
 bool right;
@@ -36,9 +35,17 @@ Uint8 pressedButtons;
 UDPpacket* outPacket;
 UDPpacket* inPacket;
 
-int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
+int currentBulletAmmount;                   // Number of bullets that were sent to us to be drawn on the screen
 
-int gameFreezeTime;                     // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+int gameFreezeTime;                         // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+int activeGameLength;                       // Choses which entry from the list below that's active in terms of game-length
+int gameLengthList[6] = {5, 10, 15,
+                        20, 25, 30};
+int activeMaxSpeed;                         // Choses which entry from the list below that's active in terms of max-speed
+int maxSpeedList[4] = {3, 5, 7, 10};
+bool infiniteMomentum;
+int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
+int bulletIntervalList[3] = {5, 10, 15};
 
 SDL_Color colorsRGB[14] = {{225, 225, 255}, // 0  = White
                        {255, 255, 150},     // 1  = Bright Yellow

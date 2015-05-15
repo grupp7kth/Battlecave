@@ -140,7 +140,6 @@ extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 extern bool playerReady[8];
 extern SDL_Rect readyIcon;
 extern bool computerPlayerActive[8];
-//char name[MAX_NAME_LENGTH]; *********************************************************************
 
 extern SDL_Thread* TCPthread;
 extern SDL_Thread* UDPthread;
@@ -154,12 +153,20 @@ extern Uint8 pressedButtons;
 extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;
 
-extern int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
+extern int currentBulletAmmount;                   // Number of bullets that were sent to us to be drawn on the screen
 
-extern int gameFreezeTime;                     // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+extern int gameFreezeTime;                         // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+extern int activeGameLength;                       // Choses which entry from the list below that's active in terms of game-length
+extern int gameLengthList[6] = {5, 10, 15,
+                        20, 25, 30};
+extern int activeMaxSpeed;                         // Choses which entry from the list below that's active in terms of max-speed
+extern int maxSpeedList[4] = {3, 5, 7, 10};
+extern bool infiniteMomentum;
+extern int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
+extern int bulletIntervalList[3] = {5, 10, 15};
 
-extern SDL_Color colorsRGB[14];                // SDL_Color format RGB
-extern Uint8 colorsPlayer[24];                 // Split colors (3 entries per color: R/G/B)
+extern SDL_Color colorsRGB[14];                    // SDL_Color format RGB
+extern Uint8 colorsPlayer[24];                     // Split colors (3 entries per color: R/G/B)
 
 // ********************************    TCPHANDLER.C    ******************************************
 
