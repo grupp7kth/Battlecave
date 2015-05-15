@@ -1,3 +1,7 @@
+0:48 :
+* All bullets now have a source, which decide their color when rendered.
+* Added a timer that counts down the remaining time of the current game.
+
 0.47 :
 * Added music to the game.
 

@@ -37,6 +37,7 @@ bool throttle;
 bool right;
 bool left;
 bool shooting;
+short spectatingID;
 Uint8 pressedButtons;
 UDPpacket* outPacket;
 UDPpacket* inPacket;
@@ -53,7 +54,7 @@ bool infiniteMomentum;
 int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};
 
-SDL_Color colorsRGB[14] = {{225, 225, 255}, // 0  = White
+SDL_Color colorsRGB[14] = {{225, 225, 255},     // 0  = White
                            {255, 255, 150},     // 1  = Bright Yellow
                            {0, 0, 0},           // 2  = Black
                            {100, 255, 100},     // 3  = Bright Green

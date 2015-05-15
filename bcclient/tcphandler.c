@@ -119,6 +119,7 @@ void handleGameStart(void){
     keyboardMode = PLAYING;
     clearTextStrings(11);
     gameFreezeTime = 4;
+    client.health = 100;
     return;
 }
 

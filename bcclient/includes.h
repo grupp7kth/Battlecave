@@ -90,22 +90,25 @@ typedef struct{
     TCPsocket TCPSock;
     UDPsocket UDPRecvSock, UDPSendSock;
     Uint16 ServerRecvUDPPort;
-    int score;      //**************************************************************************
+    short health;
+    short deathTimer;
 } Client;
 extern Client client;
 
 typedef struct{
 	int x, y, w, h;
 	short angle;
-	bool active, blown;
+	bool active, isDead;
 	SDL_Texture* texture;
 	SDL_Rect placement;
+    int score;      //**************************************************************************
 } Ship;
 extern Ship ship[MAX_PLAYERS];
 
 typedef struct{
 	int x, y;
 	short type; // ***********************************************************************
+	short source;
 } Bullet;
 extern Bullet bullet[MAX_BULLETS];
 
@@ -158,6 +161,7 @@ extern bool throttle;
 extern bool right;
 extern bool left;
 extern bool shooting;
+extern short spectatingID;
 extern Uint8 pressedButtons;
 extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;

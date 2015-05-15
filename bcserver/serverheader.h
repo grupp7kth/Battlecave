@@ -43,6 +43,7 @@
 #define PREAMBLE_DISCONNECT "-"
 #define PREAMBLE_GAMEFREEZE "¤"
 #define PREAMBLE_GAMEEND "="
+#define PREAMBLE_KILLED "/"
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"
@@ -53,8 +54,9 @@
 #define TOGGLE_INFINITEMOMENTUM 2
 #define TOGGLE_MAXSPEED 3
 #define TOGGLE_GAMELENGTH 4
+#define MAX_HEALTH 100
 
-typedef struct _Client {
+typedef struct{
     TCPsocket socket;
     Uint16 sendPort,recvPort;
     char name[MAX_LENGTH];
@@ -65,19 +67,25 @@ typedef struct _Client {
     Uint32 ipadress;
     int playerType;
 }Client;
-typedef struct _Ship {
+typedef struct{
     SDL_Surface* surface;
     int bulletIntervall,bulletCooldown;
     double xPos,yPos,xVel,yVel;
-    short angle,angleVel;
-    bool acceleration,shooting, alive;
+    short angle,angleVel,deathTimer;
+    bool acceleration,shooting, isDead;
+    int health;
 }Ship;
 
-typedef struct _Bullet {
+typedef struct{
     double xPos,yPos,xVel,yVel;
     short type;
     bool active;
+    short source;
 }Bullet;
+
+typedef struct{
+    Uint16 x, y;
+}PlayerSpawnPoint;
 
 extern bool init();
 extern bool initGame();
@@ -112,13 +120,14 @@ extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 extern void moveBullets(Bullet bullets[MAX_BULLETS]);
 extern void moveShips(Ship ships[MAX_CLIENTS]);
 extern void updateShip(Ship* ship);
-extern void addBullet(Ship* ship);
+extern void addBullet(Ship* ship, int *id);
 extern int findFreeBullet(Bullet bullets[MAX_BULLETS]);
 
 extern UDPsocket udpSendSock, udpRecvSock;
 extern Client clients[MAX_CLIENTS];
 extern Bullet bullets[MAX_BULLETS];
 extern Ship ships[MAX_CLIENTS];
+extern PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
 extern SDL_Surface* background;
 
 extern UDPpacket *packetOut;

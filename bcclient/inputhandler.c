@@ -171,7 +171,8 @@ static void checkMouseMode6(SDL_Event *event, SDL_Point *currentMouseLocation, S
         if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 if(i == 0){         // Leave
-                    handleLeave();
+                    client.health -= 5;
+                    //handleLeave();
                 }
             }
         }

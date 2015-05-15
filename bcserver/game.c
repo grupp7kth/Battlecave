@@ -41,7 +41,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             }
             if (ships[i].shooting) {
                 if (ships[i].bulletCooldown ==0) {
-                    addBullet(&ships[i]);
+                    addBullet(&ships[i] , &i);
                     ships[i].bulletCooldown = ships[i].bulletIntervall;
                 }
             }
@@ -64,17 +64,18 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
  @var skeppet: Det serverShip som just skjutit.
  */
 
-void addBullet(Ship* ship) {
+void addBullet(Ship* ship, int *id){
     int freeSpot = findFreeBullet(bullets);
     if (freeSpot <0) {
         exit(1);
     }
-    bullets[freeSpot].xPos=ship->xPos;
-    bullets[freeSpot].yPos=ship->yPos;
-    bullets[freeSpot].yVel=-sin(getRadians(ship->angle))*8;
-    bullets[freeSpot].xVel=-cos(getRadians(ship->angle))*8;
+    bullets[freeSpot].xPos = ship->xPos;
+    bullets[freeSpot].yPos = ship->yPos;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*6;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*6;
 
     bullets[freeSpot].active = true;
+    bullets[freeSpot].source = *id;
     //	printf("Bam[%d]: %f,%f\n",antalSkott,serverSkott[antalSkott].xPos,serverSkott[antalSkott].yPos);
 }
 /** Hittar en ledig plats i arrayen av skott
@@ -100,12 +101,14 @@ bool initGame(){
 		ships[i].angle = 0;
 		ships[i].acceleration = false;
 		ships[i].shooting = false;
-		ships[i].alive = false;
+		ships[i].isDead = false;
 	}
     fetchMapData();
 
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
+
+    ships[0].isDead = true;
     return true;
 }
 
@@ -121,11 +124,13 @@ void fetchMapData(void){
             for(int j=0; readNum[j-1] != '.' && j < 5; j++){
                 readNum[j] = fgetc(fp);
             }
-            ships[i].xPos = atoi(readNum);
+            playerSpawnPoint[i].x = atoi(readNum);
+            ships[i].xPos = playerSpawnPoint[i].x;
             for(int j=0; readNum[j-1] != '\n' && j < 5; j++){
                 readNum[j] = fgetc(fp);
             }
-            ships[i].yPos = atoi(readNum);
+            playerSpawnPoint[i].y = atoi(readNum);
+            ships[i].yPos = playerSpawnPoint[i].y;
         }
     }
 
@@ -189,7 +194,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     for (player=0; player<MAX_CLIENTS; player++) {
         tempint=0;
         tempint = (int)ships[player].xPos | (int)ships[player].yPos << 12 | (int)(ships[player].angle/6) << 24;
-        tempint = tempint | ships[player].alive <<30 | clients[player].active << 31;
+        tempint = tempint | ships[player].isDead <<30 | clients[player].active << 31;
         for (i=0; i<4; i++) {
             gameData[4+player*4+i] = tempint >> i*8;
         }
@@ -201,26 +206,37 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     // och sen g|ra samma sak f|r n{sta spelare.
 
     for (player=0; player<MAX_CLIENTS; player++) {
-        if (!clients[player].active) continue;
-        // H{r ska den r{kna ut "viewport" f|r spelaren, eller kontrekt uttryckt:
-        // Vilken position p} banan som |vre v{nstra h|rnet p} hans sk{rm har.
-        if (ships[player].xPos < GAME_AREA_WIDTH/2)
+        if (!clients[player].active)
+            continue;
+
+        short tempID;
+        if(!ships[player].isDead)   // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
+            tempID = player;
+        else{
+            for(int i=0; i < MAX_CLIENTS; i++){
+                if(clients[i].active && !ships[i].isDead){
+                    tempID = i;
+                    break;
+                }
+            }
+        }
+        if (ships[tempID].xPos < GAME_AREA_WIDTH/2)
             viewport.x=0;
-        else if (ships[player].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
+        else if (ships[tempID].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
             viewport.x=STAGE_WIDTH-GAME_AREA_WIDTH;
-        else viewport.x=ships[player].xPos-GAME_AREA_WIDTH/2;
-        if (ships[player].yPos < GAME_AREA_HEIGHT/2)
+        else viewport.x=ships[tempID].xPos-GAME_AREA_WIDTH/2;
+        if (ships[tempID].yPos < GAME_AREA_HEIGHT/2)
             viewport.y=0;
-        else if (ships[player].yPos > STAGE_HEIGHT-GAME_AREA_HEIGHT/2)
+        else if (ships[tempID].yPos > STAGE_HEIGHT-GAME_AREA_HEIGHT/2)
             viewport.y=STAGE_HEIGHT-GAME_AREA_HEIGHT;
-        else viewport.y=ships[player].yPos-GAME_AREA_HEIGHT/2;
+        else viewport.y=ships[tempID].yPos-GAME_AREA_HEIGHT/2;
 
         // Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
 
         for (secondary=0, counter=0; secondary<MAX_BULLETS; secondary++) {
             if (bullets[secondary].active && isInside((int)bullets[secondary].xPos, (int)bullets[secondary].yPos, &viewport)) {
                 tempint=0;
-                tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].type) << 21;
+                tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].source) << 21;
                 for (i=0; i<3; i++) {
                     gameData[36+counter*3+i] = tempint >> i*8;
                 }
@@ -276,7 +292,7 @@ void handleBot(int id){
     float closestAngle;
 
     for(int i=0; i < MAX_CLIENTS; i++){
-        if(i != id && clients[i].active){
+        if(i != id && clients[i].active && !ships[i].isDead){
             deltaX = getDelta(ships[id].xPos, ships[i].xPos);
             deltaY = getDelta(ships[id].yPos, ships[i].yPos);
             distance = getObjectDistance(deltaX, deltaY);
@@ -293,6 +309,9 @@ void handleBot(int id){
             }
         }
     }
+    if(closestDistance <= 0)
+        return;
+
     if((closestAngle > 2 && closestAngle <= 180) || closestAngle < -180)
         ships[id].angleVel = 5;
     else if((closestAngle < -2 && closestAngle >= -180 ) || closestAngle > 180)
@@ -313,7 +332,7 @@ void handleBot(int id){
     }
 
 
-    //printf("MY CLOSEST ENEMY WAS ID=%d AT DISTANCE=%d\n", closestID, closestDistance);
+    printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", closestDistance);
     return;
 }
 

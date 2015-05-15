@@ -10,6 +10,7 @@ void setTextMode4(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
+void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width);
 void showClientVersion(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 
 void setText(int *mode, SDL_Renderer* gRenderer, int *select){
@@ -215,7 +216,6 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 20);
 
     // Chat messages (0 upper, 4 lower)
-
     textPlacement->y = 500;
     for(int i=0; i < 5; i ++){
         textPlacement->x = 20;
@@ -296,6 +296,28 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     renderText(textPlacement, gRenderer);
     TTF_CloseFont(font);
 
+    // If the player is dead show the following
+    if(ship[client.id].isDead){
+        char tempSpecStr[50];
+
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 60);
+        textPlacement->y = 100;
+        gTempTextMessage = TTF_RenderText_Solid(font, "YOU ARE DEAD", colorsRGB[TEXT_COLOR_RED]);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        TTF_CloseFont(font);
+
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
+        textPlacement->y = 200;
+        sprintf(tempSpecStr, "Respawning in %d", client.deathTimer);
+        gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_WHITE]);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+
+        textPlacement->y = 600;
+        sprintf(tempSpecStr, "Currently Spectating %s", playerName[spectatingID]);
+        gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_ORANGE]);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        TTF_CloseFont(font);
+    }
     return;
 }
 
@@ -303,6 +325,17 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
 void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     mText = SDL_CreateTextureFromSurface(gRenderer, gTempTextMessage);
     SDL_QueryTexture(mText, NULL, NULL, &textPlacement->w, &textPlacement->h);
+    SDL_RenderCopy(gRenderer, mText, NULL, textPlacement);
+
+    SDL_FreeSurface(gTempTextMessage);
+    SDL_DestroyTexture(mText);
+    return;
+}
+
+void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width){       // Renders the text in the middle of the width specified
+    mText = SDL_CreateTextureFromSurface(gRenderer, gTempTextMessage);
+    SDL_QueryTexture(mText, NULL, NULL, &textPlacement->w, &textPlacement->h);
+    textPlacement->x = (width - textPlacement->w) / 2;
     SDL_RenderCopy(gRenderer, mText, NULL, textPlacement);
 
     SDL_FreeSurface(gTempTextMessage);

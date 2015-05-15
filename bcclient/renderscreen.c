@@ -8,6 +8,7 @@ SDL_Texture* mIPPortWindow = NULL;
 SDL_Texture* mLobbyWindow = NULL;
 SDL_Texture* mReady = NULL;
 SDL_Texture* mNameWindow = NULL;
+SDL_Texture* mHealthBar = NULL;
 
 SDL_Texture* loadTexture(char* filname);
 
@@ -67,21 +68,34 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 //*********************** MODE 6 : In Game *********************************
     else if(*mode == IN_GAME){
         // RENDER EVERYTHING GAME RELATED
-        gameBackground.source.x = ship[client.id].x - (GAME_AREA_WIDTH/2);
-        gameBackground.source.y = ship[client.id].y - (GAME_AREA_HEIGHT/2);
+        // Render Background
 
-        if(ship[client.id].x < GAME_AREA_WIDTH/2)
+        if(!ship[client.id].isDead)         // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
+            spectatingID = client.id;
+        else{
+            for(int i=0; i < MAX_PLAYERS; i++){
+                if(ship[i].active && !ship[i].isDead){
+                    spectatingID = i;
+                    break;
+                }
+            }
+        }
+        gameBackground.source.x = ship[spectatingID].x - (GAME_AREA_WIDTH/2);
+        gameBackground.source.y = ship[spectatingID].y - (GAME_AREA_HEIGHT/2);
+
+        if(ship[spectatingID].x < GAME_AREA_WIDTH/2)
             gameBackground.source.x = 0;
-        else if(ship[client.id].x > gameBackground.w - GAME_AREA_WIDTH/2)
+        else if(ship[spectatingID].x > gameBackground.w - GAME_AREA_WIDTH/2)
             gameBackground.source.x = gameBackground.w - GAME_AREA_WIDTH;
 
-        if(ship[client.id].y < GAME_AREA_HEIGHT/2)
+        if(ship[spectatingID].y < GAME_AREA_HEIGHT/2)
             gameBackground.source.y = 0;
-        else if(ship[client.id].y > gameBackground.h - GAME_AREA_HEIGHT/2)
+        else if(ship[spectatingID].y > gameBackground.h - GAME_AREA_HEIGHT/2)
             gameBackground.source.y = gameBackground.h - GAME_AREA_HEIGHT;
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, &gameBackground.dest);
 
+        // Render Ships
         for(int i = 0; i < MAX_PLAYERS; i++){
             if(!ship[i].active)
                 continue;
@@ -98,24 +112,36 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         }
 
         SDL_Rect bulletPlacement;
-        bulletPlacement.w = 2;
-        bulletPlacement.h = 2;
+        bulletPlacement.w = 4;
+        bulletPlacement.h = 4;
 
         for(int i = 0; i < currentBulletAmmount; i++){
             bulletPlacement.x = bullet[i].x;
             bulletPlacement.y = bullet[i].y;
-            SDL_RenderDrawRect(gRenderer, &bulletPlacement);
+            SDL_RenderCopy(gRenderer, miniMap.playerTexture[bullet[i].source] , NULL, &bulletPlacement);
         }
+
         // RENDER EVERYTHING SIDEBAR RELATED
         SDL_RenderCopy(gRenderer, sideBar.texture, NULL, &sideBar.placement);
+        // Render MiniMap
         SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &miniMap.mapPlacement);
         for(int i=0; i < MAX_PLAYERS; i++){
-            if(ship[i].active){
+            if(ship[i].active && !ship[i].isDead){
                 miniMap.playerPlacement[i].x = ship[i].x/10 + miniMap.mapPlacement.x - 5;
                 miniMap.playerPlacement[i].y = ship[i].y/10 + miniMap.mapPlacement.y - 5;
                 SDL_RenderCopy(gRenderer, miniMap.playerTexture[i], NULL, &miniMap.playerPlacement[i]);
             }
         }
+
+        // Health-bar
+        SDL_Rect health;
+        health.x = GAME_AREA_WIDTH + 27;
+        health.y = 391;
+        health.w = 2*client.health;
+        health.h = 25;
+        SDL_RenderCopy(gRenderer, mHealthBar, NULL, &health);
+
+
 
         // RENDER ALL TEXT
         setText(mode, gRenderer, select);
@@ -139,6 +165,7 @@ void loadMedia(void){
     mNameWindow = loadTexture("resources/images/namewindow.png");
     mLobbyWindow = loadTexture("resources/images/lobbybackground.png");
     mReady = loadTexture("resources/images/ready.png");
+    mHealthBar = loadTexture("resources/images/healthbar.png");
 
     sideBar.texture = loadTexture("resources/images/sidebar.png");
     sideBar.placement.x = GAME_AREA_WIDTH;
@@ -176,7 +203,7 @@ void loadMedia(void){
         ship[i].h = ship[i].placement.h;
         ship[i].active = false;
         ship[i].angle = 0;
-        ship[i].blown = false;
+        ship[i].isDead = false;
     }
     return;
 }

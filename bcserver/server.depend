@@ -65,10 +65,10 @@
 1431186180 source:c:\users\johan\documents\sdl_projects\server\server.c
 	"serverheader.h"
 
-1431712788 source:c:\users\johan\documents\github\battlecave\bcserver\game.c
+1431727504 source:c:\users\johan\documents\github\battlecave\bcserver\game.c
 	"serverheader.h"
 
-1431709107 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
+1431724985 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
 	<stdio.h>
 	<stdbool.h>
 	<string.h>
@@ -90,6 +90,6 @@
 1431720296 source:c:\users\johan\documents\github\battlecave\bcserver\server.c
 	"serverheader.h"
 
-1431709092 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
+1431724426 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
 	"serverheader.h"
 

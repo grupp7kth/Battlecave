@@ -12,7 +12,7 @@ int UDPhandler(void){
     for(;;){
         if(mode == IN_GAME){
             // Send key-press data to server
-                if(gameFreezeTime < 0){
+                if(!ship[client.id].isDead && gameFreezeTime < 0){
                 outPacket->data[0] = pressedButtons;
                 outPacket->len = sizeof(pressedButtons);
                 SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
@@ -46,7 +46,7 @@ void unpackPacket(void){
 		ship[player].y = (read >> 12) & 0b111111111111;
 		ship[player].angle = (read >> 24) & 0b111111;
 		ship[player].angle *= 6;
-		ship[player].blown = (read >> 30) & 1;
+		ship[player].isDead = (read >> 30) & 1;
 		ship[player].active = (read >> 31) & 1;
 	}
 
@@ -57,7 +57,7 @@ void unpackPacket(void){
 		}
 		bullet[bulletID].x = read & 0b11111111111;
 		bullet[bulletID].y = (read >> 11) & 0b1111111111;
-		bullet[bulletID].type = (read >> 21) & 0b1111;
+		bullet[bulletID].source = (read >> 21) & 0b1111;
 	}
     currentBulletAmmount = bulletID;
 
