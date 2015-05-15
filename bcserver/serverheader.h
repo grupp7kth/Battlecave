@@ -40,6 +40,7 @@
 #define PREAMBLE_READY '#'
 #define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT "-"
+#define PREAMBLE_GAMEFREEZE "¤"
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"

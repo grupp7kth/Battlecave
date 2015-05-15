@@ -108,7 +108,16 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         }
         // RENDER EVERYTHING SIDEBAR RELATED
         SDL_RenderCopy(gRenderer, sideBar.texture, NULL, &sideBar.placement);
+        SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &miniMap.mapPlacement);
+        for(int i=0; i < MAX_PLAYERS; i++){
+            if(ship[i].active){
+                miniMap.playerPlacement[i].x = ship[i].x/10 + miniMap.mapPlacement.x - 5;
+                miniMap.playerPlacement[i].y = ship[i].y/10 + miniMap.mapPlacement.y - 5;
+                SDL_RenderCopy(gRenderer, miniMap.playerTexture[i], NULL, &miniMap.playerPlacement[i]);
+            }
+        }
 
+        // RENDER ALL TEXT
         setText(mode, gRenderer, select);
     }
 
@@ -136,6 +145,17 @@ void loadMedia(void){
     sideBar.placement.y = 0;
     sideBar.placement.w = SCREENWIDTH - GAME_AREA_WIDTH;
     sideBar.placement.h = SCREENHEIGHT;
+
+    for(int i=0; i < MAX_PLAYERS; i++){
+        miniMap.playerPlacement[i].w = 10;
+        miniMap.playerPlacement[i].h = 10;
+        miniMap.playerTexture[i] = loadTexture("resources/images/playericon.png");
+        SDL_SetTextureColorMod(miniMap.playerTexture[i], colorsPlayer[i*3], colorsPlayer[i*3+1], colorsPlayer[i*3+2]);       // Assign each player-icon colors to match their ID-color
+    }
+    miniMap.mapPlacement.x = GAME_AREA_WIDTH + 7;
+    miniMap.mapPlacement.y = 490;
+    miniMap.mapPlacement.w = 240;
+    miniMap.mapPlacement.h = 160;
 
     gameBackground.texture = loadTexture("resources/images/cave.png");
     gameBackground.source.w = SCREENWIDTH-250;

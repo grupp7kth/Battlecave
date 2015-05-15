@@ -5,6 +5,7 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]);
 static void setButtonsMode3(SDL_Rect buttonPlacement[]);
 static void setButtonsMode4(SDL_Rect buttonPlacement[]);
 static void setButtonsMode5(SDL_Rect buttonPlacement[]);
+static void setButtonsMode6(SDL_Rect buttonPlacement[]);
 
 void setButtons(SDL_Rect buttonPlacement[], int *mode){
     if(*mode == STARTUP)                                    // Startup Screen
@@ -13,13 +14,14 @@ void setButtons(SDL_Rect buttonPlacement[], int *mode){
         setButtonsMode1(buttonPlacement);
     else if(*mode == OPTIONS)                               // Options Screen
         printf("SET OPTIONS BUTTONS HERE\n");
-    else if(*mode == LOBBY)
+    else if(*mode == LOBBY)                                 // Lobby Screen
         setButtonsMode3(buttonPlacement);
-    else if(*mode == JOIN_DEFAULT)
+    else if(*mode == JOIN_DEFAULT)                          // Join Default Server Screen
         setButtonsMode4(buttonPlacement);
     else if(*mode == JOIN_CUSTOM)                           // Join Custom Server Screen
         setButtonsMode5(buttonPlacement);
-
+    else if(*mode == IN_GAME)
+        setButtonsMode6(buttonPlacement);
     return;
     }
 
@@ -111,5 +113,13 @@ static void setButtonsMode5(SDL_Rect buttonPlacement[]){ // 0 = Enter IP Field ,
     buttonPlacement[4].y = SCREENHEIGHT/2 + 136;
     buttonPlacement[4].h = 31;
     buttonPlacement[4].w = 100;
+    return;
+}
+
+static void setButtonsMode6(SDL_Rect buttonPlacement[]){ // 0 = Leave
+    buttonPlacement[0].x = GAME_AREA_WIDTH + 72;
+    buttonPlacement[0].y = 666;
+    buttonPlacement[0].h = 40;
+    buttonPlacement[0].w = 110;
     return;
 }

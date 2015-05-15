@@ -5,6 +5,7 @@ Ship ship[MAX_PLAYERS];
 Bullet bullet[MAX_BULLETS];
 GameBackground gameBackground;
 SideBar sideBar;
+MiniMap miniMap;
 
 int mode;                               // Modes as specified in "definitions.h"
 int keyboardMode;
@@ -36,6 +37,8 @@ UDPpacket* outPacket;
 UDPpacket* inPacket;
 
 int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
+
+int gameFreezeTime;                     // Used to disallow player's keypresses in-game
 
 SDL_Color colorsRGB[14] = {{225, 225, 255}, // 0  = White
                        {255, 255, 150},     // 1  = Bright Yellow

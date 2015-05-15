@@ -2,21 +2,18 @@
 
 int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], int *keyboardMode, bool *quit);
 void initModeMaxButtons(int modeMaxButtons[]);
+void init(void);
 
 int main(int argc, char* args[]){
     bool quit = false;
     int select = -1;
-    int modeMaxButtons[6];
-    keyboardMode = -1;
-    isConnected = false;
-
-    for(int i=0; i < MAX_PLAYERS; i++)
-        playerReady[i] = 0;
+    int modeMaxButtons[7];
 
     SDL_Event event;
     SDL_Rect buttonPlacement[MAXBUTTONS];   // Interactable buttons
     SDL_Rect windowPlacement[3];            // Window backgrounds
 
+    init();
     initSDL();
     loadMedia();
     initModeMaxButtons(modeMaxButtons);
@@ -24,7 +21,7 @@ int main(int argc, char* args[]){
     clearTextStrings(11);
     //SDL_StartTextInput();
 
-    strcpy(defaultIP, "83.250.47.232"); //83.250.47.232
+    strcpy(defaultIP, "83.250.47.232");
     strcpy(defaultPort, "4444");
 
     while(!quit){
@@ -56,6 +53,15 @@ void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N 
     modeMaxButtons[LOBBY]         = 11;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;
+    modeMaxButtons[IN_GAME]       =  1;
     return;
 }
 
+void init(void){
+    keyboardMode = -1;
+    isConnected = false;
+
+    for(int i=0; i < MAX_PLAYERS; i++)
+        playerReady[i] = 0;
+    return;
+}

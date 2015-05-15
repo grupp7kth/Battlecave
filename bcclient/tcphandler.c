@@ -33,6 +33,7 @@ int TCPhandler(Client* client){
             handleGameStart();
         else if(TCPTextIn[0] == PREAMBLE_TOGGLEBOT)
             handleBots(TCPTextIn);
+        else if(TCPTextIn[0] == PREAMBLE_GAMESTART)
 
         if(!isConnected)
             break;
@@ -111,6 +112,7 @@ void handleGameStart(void){
     mode = IN_GAME;
     keyboardMode = PLAYING;
     clearTextStrings(11);
+    gameFrozen = 100;
     return;
 }
 

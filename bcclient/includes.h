@@ -117,6 +117,13 @@ typedef struct{
 } SideBar;
 extern SideBar sideBar;
 
+typedef struct{
+	SDL_Rect mapPlacement;
+    SDL_Texture* playerTexture[MAX_PLAYERS];
+	SDL_Rect playerPlacement[MAX_PLAYERS];
+} MiniMap;
+extern MiniMap miniMap;
+
 extern int mode;                               // Modes as specified in "definitions.h"
 extern int keyboardMode;
 
