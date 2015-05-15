@@ -139,6 +139,37 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
             renderText(textPlacement, gRenderer);
         }
     }
+    // Options
+    char tempOptStr[3];
+
+    textPlacement->y = 127;
+    textPlacement->x = 790;
+    // -- RESERVED FOR GAME OPTION ID=0 --
+
+    // Option 1 : Bullet Interval
+    textPlacement->y += 58;
+    sprintf(tempOptStr, "%d", bulletIntervalList[activeBulletInterval]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    renderText(textPlacement, gRenderer);
+
+    // Option 2 : Infinite Momentum
+    textPlacement->y += 58;
+    if(infiniteMomentum)
+        gTempTextMessage = TTF_RenderText_Solid(font, "ON", colorsRGB[TEXT_COLOR_BRIGHTGREEN]);
+    else
+        gTempTextMessage = TTF_RenderText_Solid(font, "OFF", colorsRGB[TEXT_COLOR_BRIGHTRED]);
+    renderText(textPlacement, gRenderer);
+
+    // Option 3 : Max Speed
+    textPlacement->y += 58;
+    sprintf(tempOptStr, "%d", maxSpeedList[activeMaxSpeed]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    renderText(textPlacement, gRenderer);
+    // Option 4 : Game Length
+    textPlacement->y += 58;
+    sprintf(tempOptStr, "%d", gameLengthList[activeGameLength]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    renderText(textPlacement, gRenderer);
 
     TTF_CloseFont(font);
     return;

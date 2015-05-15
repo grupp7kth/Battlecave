@@ -125,8 +125,8 @@ void handleGameStart(void){
 void handleBots(char TCPTextIn[]){
     computerPlayerActive[TCPTextIn[1]-48] = !computerPlayerActive[TCPTextIn[1]-48];
 
-    for(int i=0; i<8;i++)
-        printf("STATUS %d: %d\n", i, computerPlayerActive[i]);
+//    for(int i=0; i<8;i++) //*************************************************************************************
+//        printf("STATUS %d: %d\n", i, computerPlayerActive[i]);
     return;
 }
 
@@ -145,7 +145,7 @@ void handleGameOptions(char TCPTextIn[]){
     else if(TCPTextIn[1]-48 == TOGGLE_GAMELENGTH)
         activeGameLength = TCPTextIn[2]-48;
 
-    printf("BI=%d, IM=%d, MS=%d, GL=%d\n", )
+    //printf("BI=%d, IM=%d, MS=%d, GL=%d\n", bulletIntervalList[activeBulletInterval], infiniteMomentum, maxSpeedList[activeMaxSpeed], gameLengthList[activeGameLength]); //***********************************************************
     return;
 }
 

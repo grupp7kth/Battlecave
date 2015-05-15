@@ -1,3 +1,6 @@
+0.46 :
+* Added Game-Options that can be toggled through the lobby.
+
 0.45 :
 * All (.png) maps now require a BattleCave Map File (.bcmf) containing spawn locations for all ships (and later on spawn locations for powerups) so that they can differ between maps.
 

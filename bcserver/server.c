@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
             moveBullets(bullets);
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
-            if(gameRunningTime >= gameLenghtList[activeGameLength]*1000){
+            if(gameRunningTime >= gameLenghtList[activeGameLength]*60000){      // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);
                 gameIsActive = false;
                 for(int i=0; i < MAX_CLIENTS; i++){
@@ -52,6 +52,10 @@ int main(int argc, char *argv[]) {
                         clients[i].ready = false;
                     }
                 }
+                activeGameLength = 1;
+                activeMaxSpeed = 1;
+                activeBulletInterval = 1;
+                infiniteMomentum = false;
             }
             SDL_Delay(20);
         }

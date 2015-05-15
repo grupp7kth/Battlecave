@@ -51,10 +51,11 @@ int computerPlayerCount;
 int humanPlayerCount;
 int GameFreezeTime;
 
-int activeGameLength; // Choses which entry from the list below that's active in terms of game-length
-int gameLenghtList[6] = {5,10,15,20,25,30};
-int activeMaxSpeed; // Choses which entry from the list below that's active in terms of max-speed
-int MaxSpeedList[4] = {3,5,7,10};
-int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
-int bulletIntervalList[3] = {5,10,15};
-bool infiniteMomentum;
+int activeGameLength = 1;               // Choses which entry from the list below that's active in terms of game-length
+int gameLenghtList[6] = {5, 10, 15,
+                         20, 25, 30};
+int activeMaxSpeed = 1;                 // Choses which entry from the list below that's active in terms of max-speed
+int MaxSpeedList[5] = {3, 5, 7, 10, 15};
+int activeBulletInterval = 1;           // Choses which entry from the list below that's active in terms of bullet-interval
+int bulletIntervalList[3] = {5, 10, 15};
+bool infiniteMomentum = false;

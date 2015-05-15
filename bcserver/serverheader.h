@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_image.h>
-    #include <SDL2/SDL_net.h>
+    #include <SDL.h>
+    #include <SDL_image.h>
+    #include <SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -133,7 +133,7 @@ extern int GameFreezeTime;
 extern int activeGameLength; // Choses which entry from the list below that's active in terms of game-length
 extern int gameLenghtList[6];
 extern int activeMaxSpeed; // Choses which entry from the list below that's active in terms of max-speed
-extern int MaxSpeedList[4];
+extern int MaxSpeedList[5];
 extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 extern bool infiniteMomentum;

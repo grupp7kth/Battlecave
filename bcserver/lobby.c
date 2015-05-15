@@ -73,26 +73,26 @@ int Lobby(void * data) {
                 printf("computerPlayerCount=%d\n", computerPlayerCount);//***********************************************
             }
             else if(TCPrecv[0] == PREAMBLE_OPTIONS){
-                if (TCPrecv[1]==TOGGLE_BULLETINTERVAL) {
+                if (TCPrecv[1]-48 == TOGGLE_BULLETINTERVAL) {
                     activeBulletInterval++;
                     if(activeBulletInterval>=3)
                         activeBulletInterval=0;
                     sprintf(TCPsend, "*1%d", activeBulletInterval);
                     broadCast(TCPsend);
                 }
-                if (TCPrecv[1]==TOGGLE_INFINITEMOMENTUM) {
+                else if (TCPrecv[1]-48 == TOGGLE_INFINITEMOMENTUM) {
                     infiniteMomentum = !infiniteMomentum;
                     sprintf(TCPsend, "*2%d", infiniteMomentum);
                     broadCast(TCPsend);
                 }
-                if (TCPrecv[1]==TOGGLE_MAXSPEED) {
+                else if (TCPrecv[1]-48 == TOGGLE_MAXSPEED) {
                     activeMaxSpeed++;
-                    if(activeMaxSpeed>=4)
+                    if(activeMaxSpeed>=5)
                         activeMaxSpeed=0;
                     sprintf(TCPsend, "*3%d", activeMaxSpeed);
                     broadCast(TCPsend);
                 }
-                if (TCPrecv[1]==TOGGLE_GAMELENGTH) {
+                else if (TCPrecv[1]-48 == TOGGLE_GAMELENGTH) {
                     activeGameLength++;
                     if(activeGameLength>=6)
                         activeGameLength=0;

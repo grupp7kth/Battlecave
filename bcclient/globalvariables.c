@@ -40,27 +40,27 @@ int currentBulletAmmount;                   // Number of bullets that were sent 
 int gameFreezeTime;                         // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
 int activeGameLength;                       // Choses which entry from the list below that's active in terms of game-length
 int gameLengthList[6] = {5, 10, 15,
-                        20, 25, 30};
+                         20, 25, 30};
 int activeMaxSpeed;                         // Choses which entry from the list below that's active in terms of max-speed
-int maxSpeedList[4] = {3, 5, 7, 10};
+int maxSpeedList[5] = {3, 5, 7, 10, 15};
 bool infiniteMomentum;
 int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};
 
 SDL_Color colorsRGB[14] = {{225, 225, 255}, // 0  = White
-                       {255, 255, 150},     // 1  = Bright Yellow
-                       {0, 0, 0},           // 2  = Black
-                       {100, 255, 100},     // 3  = Bright Green
-                       {255, 75, 75},       // 4  = Bright Red
-                       {45, 198, 250},      // 5  = Teal
-                       {255,0,0},           // 6  = Red        * Colors 6-13 are used to represent players with ID 0-7, respectively
-                       {0,0,255},           // 7  = Blue
-                       {0,255,0},           // 8  = Green
-                       {255,255,0},         // 9  = Yellow
-                       {128,0,255},         // 10 = Purple
-                       {255,128,0},         // 11 = Orange
-                       {255,128,192},       // 12 = Pink
-                       {128,64,0}};         // 13 = Brown
+                           {255, 255, 150},     // 1  = Bright Yellow
+                           {0, 0, 0},           // 2  = Black
+                           {100, 255, 100},     // 3  = Bright Green
+                           {255, 75, 75},       // 4  = Bright Red
+                           {45, 198, 250},      // 5  = Teal
+                           {255,0,0},           // 6  = Red        * Colors 6-13 are used to represent players with ID 0-7, respectively
+                           {0,0,255},           // 7  = Blue
+                           {0,255,0},           // 8  = Green
+                           {255,255,0},         // 9  = Yellow
+                           {128,0,255},         // 10 = Purple
+                           {255,128,0},         // 11 = Orange
+                           {255,128,192},       // 12 = Pink
+                           {128,64,0}};         // 13 = Brown
 
 Uint8 colorsPlayer[24] = {255,0,0,         //   0-2  = Red
                           0,0,255,         //   3-5  = Blue

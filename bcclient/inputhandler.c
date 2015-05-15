@@ -106,7 +106,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = ENTERING_TEXT;
                 if(i >= 11 && i <= 15){
-                    char tempStr[3] = {PREAMBLE_OPTIONS, i-11, '\0'};
+                    char tempStr[3] = {PREAMBLE_OPTIONS, i-11+48, '\0'};
                     SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
                 }
                 else if(i >=3 && i <= 11 && ((strcmp(playerName[i-3], "\0") == 0) || computerPlayerActive[i-3] == true)){

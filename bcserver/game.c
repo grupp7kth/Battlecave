@@ -72,8 +72,8 @@ void addBullet(Ship* ship) {
     }
     bullets[freeSpot].xPos=ship->xPos;
     bullets[freeSpot].yPos=ship->yPos;
-    bullets[freeSpot].yVel=ship->yVel-sin(getRadians(ship->angle))*6;
-    bullets[freeSpot].xVel=ship->xVel-cos(getRadians(ship->angle))*6;
+    bullets[freeSpot].yVel=ship->yVel + 3; //-sin(getRadians(ship->angle))*6;
+    bullets[freeSpot].xVel=ship->xVel + 3; //-cos(getRadians(ship->angle))*6;
     bullets[freeSpot].active = true;
     //	printf("Bam[%d]: %f,%f\n",antalSkott,serverSkott[antalSkott].xPos,serverSkott[antalSkott].yPos);
 }
@@ -90,10 +90,6 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
 }
 
 bool initGame(){
-    activeGameLength = 1;
-    activeMaxSpeed = 1;
-    activeBulletInterval = 1;
-    infiniteMomentum=false;
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
 		ships[i].xVel = 0;
