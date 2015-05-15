@@ -97,7 +97,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         // Render Ships
         for(int i = 0; i < MAX_PLAYERS; i++){
-            if(!ship[i].active)
+            if(!ship[i].active || ship[i].isDead)
                 continue;
             int temp;
             ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;

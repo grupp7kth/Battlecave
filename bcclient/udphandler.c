@@ -50,9 +50,11 @@ void unpackPacket(void){
 		ship[player].active = (read >> 31) & 1;
 	}
 
-    for(bulletID = 0; (inPacket->data[36+(bulletID)*3] != 0xFF) && (bulletID < 300); bulletID++){
+    client.health = inPacket->data[36];
+
+    for(bulletID = 0; (inPacket->data[37+(bulletID)*3] != 0xFF) && (bulletID < 300); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){
-			tempint = inPacket->data[36+(bulletID)*3+i];
+			tempint = inPacket->data[37+(bulletID)*3+i];
 			read = read | tempint << i*8;
 		}
 		bullet[bulletID].x = read & 0b11111111111;

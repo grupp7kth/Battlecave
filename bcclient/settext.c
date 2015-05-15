@@ -301,20 +301,21 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         char tempSpecStr[50];
 
         font = TTF_OpenFont("resources/fonts/arial.ttf", 60);
-        textPlacement->y = 100;
+        textPlacement->y = 30;
         gTempTextMessage = TTF_RenderText_Solid(font, "YOU ARE DEAD", colorsRGB[TEXT_COLOR_RED]);
         renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
         TTF_CloseFont(font);
 
         font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
-        textPlacement->y = 200;
-        sprintf(tempSpecStr, "Respawning in %d", client.deathTimer);
+        textPlacement->y = 130;
+        client.deathTimer = 10000 - (SDL_GetTicks() - deathTimerStart);
+        sprintf(tempSpecStr, "Respawning in %d", client.deathTimer/1000);
         gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_WHITE]);
         renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
 
-        textPlacement->y = 600;
+        textPlacement->y = 650;
         sprintf(tempSpecStr, "Currently Spectating %s", playerName[spectatingID]);
-        gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_ORANGE]);
+        gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[spectatingID+6]);
         renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
         TTF_CloseFont(font);
     }

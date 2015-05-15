@@ -42,7 +42,7 @@ int TCPhandler(Client* client){
             handleLeave();
         else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
             handleGameOptions(TCPTextIn);
-        else if(TCPTextIn[1] == PREAMBLE_KILLED)
+        else if(TCPTextIn[0] == PREAMBLE_KILLED)
             handleDeath();
         if(!isConnected)
             break;
@@ -157,7 +157,6 @@ void handleGameOptions(char TCPTextIn[]){
 }
 
 void handleDeath(void){
-    puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");puts("YOU DIED LOL");
     client.deathTimer = 10000;
     deathTimerStart = SDL_GetTicks();
     return;

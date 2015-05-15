@@ -65,15 +65,16 @@
 1431186180 source:c:\users\johan\documents\sdl_projects\server\server.c
 	"serverheader.h"
 
-1431727504 source:c:\users\johan\documents\github\battlecave\bcserver\game.c
+1431732612 source:c:\users\johan\documents\github\battlecave\bcserver\game.c
 	"serverheader.h"
 
-1431724985 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
+1431732020 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
 	<stdio.h>
 	<stdbool.h>
 	<string.h>
 	<math.h>
 	<stdlib.h>
+	<time.h>
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_net.h>
@@ -84,12 +85,12 @@
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_net.h>
 
-1431709092 source:c:\users\johan\documents\github\battlecave\bcserver\lobby.c
+1431732233 source:c:\users\johan\documents\github\battlecave\bcserver\lobby.c
 	"serverheader.h"
 
-1431720296 source:c:\users\johan\documents\github\battlecave\bcserver\server.c
+1431730921 source:c:\users\johan\documents\github\battlecave\bcserver\server.c
 	"serverheader.h"
 
-1431724426 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
+1431728444 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
 	"serverheader.h"
 

@@ -126,6 +126,7 @@ bool loadMedia() {
 	return true;
 }
 bool init() {
+    srand(time(NULL));
 
     if (SDL_Init(SDL_INIT_VIDEO)<0) printf("Init failed at step: 1\n, %s\n", SDL_GetError());
 

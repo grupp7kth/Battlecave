@@ -6,11 +6,12 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
 
 #ifdef _WIN32
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_image.h>
-    #include <SDL2/SDL_net.h>
+    #include <SDL.h>
+    #include <SDL_image.h>
+    #include <SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -26,7 +27,7 @@
 #define SHIP_HEIGHT 31
 #define SHIP_WIDTH 23
 #define MAX_BULLETS 1000
-#define MAX_BULLETS_ON_SCREEN 300
+#define MAX_BULLETS_ON_SCREEN 250
 #define SCREEN_HEIGHT 720
 #define SCREEN_WIDTH 1280
 #define GAME_AREA_HEIGHT 720
@@ -43,7 +44,7 @@
 #define PREAMBLE_DISCONNECT "-"
 #define PREAMBLE_GAMEFREEZE "¤"
 #define PREAMBLE_GAMEEND "="
-#define PREAMBLE_KILLED "/"
+#define PREAMBLE_KILLED "}\0"
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"
@@ -55,6 +56,7 @@
 #define TOGGLE_MAXSPEED 3
 #define TOGGLE_GAMELENGTH 4
 #define MAX_HEALTH 100
+#define RESPAWN_TIME_MS 10000
 
 typedef struct{
     TCPsocket socket;
@@ -66,15 +68,16 @@ typedef struct{
     bool ready;
     Uint32 ipadress;
     int playerType;
-    int deathTimer;
 }Client;
+
 typedef struct{
     SDL_Surface* surface;
     int bulletIntervall,bulletCooldown;
     double xPos,yPos,xVel,yVel;
-    short angle,angleVel,deathTimer;
+    short angle,angleVel;
+    Uint8 health;
     bool acceleration,shooting, isDead;
-    int health;
+    int deathTimer,deathTimerStart;
 }Ship;
 
 typedef struct{

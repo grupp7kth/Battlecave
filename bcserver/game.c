@@ -103,20 +103,35 @@ bool initGame(){
 		ships[i].shooting = false;
 		ships[i].isDead = false;
 		ships[i].deathTimer=0;
+		ships[i].health=100;
 	}
     fetchMapData();
 
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
 
-    ships[0].isDead = true;
     return true;
 }
-void checkShipHealth() {
+void checkShipHealth(){
     for (int i=0; i<MAX_CLIENTS; i++) {
-        if(clients[i].active && ships[i].health<=0 && ships[i].isDead==false) {
+        if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_HUMAN) {
             SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
-            ships[i].deathTimer=10000;
+            ships[i].deathTimer=RESPAWN_TIME_MS;
+            ships[i].deathTimerStart = SDL_GetTicks();
+            ships[i].isDead = true;
+            ships[i].xVel = 0;
+            ships[i].yVel = 0;
+        }
+        else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
+            ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
+        }
+        else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
+            ships[i].health = 100;
+            ships[i].isDead = false;
+            int tempSpawnID = rand() % 8;
+            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
+            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
+            ships[i].angle = 0;
         }
     }
 }
@@ -196,7 +211,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     int i, player, secondary, counter,UDPpacketLength;
     Uint32 tempint;
 
-    packetID++; // Det h{r {r tidsangivelsen. Den b|rjar p} 0 och |kar med 1 f|r varje paket.
+    packetID++;
 
     for (i=0; i<4; i++) {
         gameData[i] = packetID >> i*8;
@@ -218,6 +233,8 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     for (player=0; player<MAX_CLIENTS; player++) {
         if (!clients[player].active)
             continue;
+
+        gameData[36] = ships[player].health;
 
         short tempID;
         if(!ships[player].isDead)   // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
@@ -248,12 +265,12 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
                 tempint=0;
                 tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].source) << 21;
                 for (i=0; i<3; i++) {
-                    gameData[36+counter*3+i] = tempint >> i*8;
+                    gameData[37+counter*3+i] = tempint >> i*8;
                 }
                 counter++;
             }
         }
-        UDPpacketLength = 36+counter*3;
+        UDPpacketLength = 37+counter*3;
         gameData[UDPpacketLength++]=0xFF;
         packetOut->data = gameData;
         packetOut->len = UDPpacketLength;
@@ -342,7 +359,7 @@ void handleBot(int id){
     }
 
 
-    printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", closestDistance);
+    //printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", closestDistance);
     return;
 }
 

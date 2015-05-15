@@ -1,4 +1,9 @@
-0:48 :
+0.50 :
+* Implemented health and respawn systems. When a player reaches 0 health they'll remain dead for 10 seconds.
+    While dead the player will spectate a living player.
+    When 10 seconds have passed the player will respawn at a random spawnpoint from the 8 read from the BattleCave Map File.
+
+0.48 :
 * All bullets now have a source, which decide their color when rendered.
 * Added a timer that counts down the remaining time of the current game.
 

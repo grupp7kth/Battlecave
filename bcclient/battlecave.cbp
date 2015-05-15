@@ -58,6 +58,9 @@
 		<Unit filename="setwindows.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="sound.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="tcphandler.c">
 			<Option compilerVar="CC" />
 		</Unit>
