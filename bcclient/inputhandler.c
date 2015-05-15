@@ -13,7 +13,7 @@ void addCharToString(int id, int maxLen, SDL_Event *event);
 void joinLobby(int *mode);
 int resolveIPPortFromStrings(void);
 void handleChatInput(SDL_Event* event);
-void handleLeave(void);
+
 
 //**************************************************************************
 //                                                                         *

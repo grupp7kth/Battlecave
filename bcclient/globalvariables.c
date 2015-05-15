@@ -1,5 +1,8 @@
 #include "includes.h"
 
+Mix_Music* music[5] = {NULL};
+int currentSong = 1;
+
 Client client;
 Ship ship[MAX_PLAYERS];
 Bullet bullet[MAX_BULLETS];
@@ -26,6 +29,9 @@ bool computerPlayerActive[8] = {false};
 SDL_Thread* TCPthread;
 SDL_Thread* UDPthread;
 IPaddress ip;                               // Contains the information (host + port) for the server to connect to
+
+int gameTimeStart;
+int gameTimeRemaining;
 
 bool throttle;
 bool right;

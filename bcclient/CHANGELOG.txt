@@ -1,3 +1,6 @@
+0.47 :
+* Added music to the game.
+
 0.46 :
 * Added Game-Options that can be toggled through the lobby.
 

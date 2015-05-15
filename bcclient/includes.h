@@ -6,11 +6,13 @@
  #include <SDL_net.h>
  #include <SDL_image.h>
  #include <SDL_ttf.h>
+ #include <SDL_mixer.h>
 #elif __APPLE__
  #include <SDL2/SDL.h>
  #include <SDL2_Net/SDL_Net.h>
  #include <SDL2_image/SDL_image.h>
  #include <SDL2_ttf/SDL_ttf.h>
+ #include <SDL2_mixer/SDL_mixer.h>
 #endif
 
 #include <stdio.h>
@@ -65,6 +67,7 @@ void checkMouse(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
 // checkKeypress - Handles a keypress depending on the situation
 void checkKeypress(SDL_Event *event, int *mode, int *select);
 
+void handleLeave(void);
 
 // ********************************    CLEARSTRINGS.C    ****************************************
 
@@ -78,6 +81,9 @@ void clearAllPlayerNameStrings(int total);
 void clearPlayerNameString(int id);
 
 // ********************************    GLOBALVARIABLES.C    *************************************
+
+extern Mix_Music* music[5];
+extern int currentSong;
 
 typedef struct{
     int id;
@@ -145,6 +151,9 @@ extern SDL_Thread* TCPthread;
 extern SDL_Thread* UDPthread;
 extern IPaddress ip;                           // Contains the information (host + port) for the server to connect to
 
+extern int gameTimeStart;
+extern int gameTimeRemaining;
+
 extern bool throttle;
 extern bool right;
 extern bool left;
@@ -174,6 +183,10 @@ int TCPhandler(Client* client);
 // ********************************    UDPHANDLER.C    ******************************************
 
 int UDPhandler(void);
+
+// ********************************    SOUND.C    ***********************************************
+
+void soundHandler(void);
 
 // **************************** END OF FUNCTION PROTOTYPES **************************************
 #endif // INCLUDES_H

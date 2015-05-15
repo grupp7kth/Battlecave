@@ -252,7 +252,50 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             gTempTextMessage = TTF_RenderText_Solid(font, "GO!", colorsRGB[TEXT_COLOR_GREEN]);
         }
         renderText(textPlacement, gRenderer);
+        TTF_CloseFont(font);
     }
+
+    // Remaining time of the current game countdown
+    char tempTimeStr[8];
+    int minutes = 0, seconds;
+    font = TTF_OpenFont("resources/fonts/arial.ttf", 30);
+    textPlacement->y = 325;
+    textPlacement->x = GAME_AREA_WIDTH + 90;
+
+    if(gameFreezeTime < 0)
+        gameTimeRemaining = gameLengthList[activeGameLength]*60000 - (SDL_GetTicks() - gameTimeStart);
+    else
+        gameTimeRemaining = gameLengthList[activeGameLength]*60000;
+
+    if(gameTimeRemaining < 0)
+        gameTimeRemaining = 0;
+
+    seconds = gameTimeRemaining/1000;                     // Temp now contains the remaining time in seconds
+
+    while(seconds >= 60){
+        seconds -= 60;
+        minutes++;
+    }
+
+    if(minutes >= 10 && seconds >= 10)
+        sprintf(tempTimeStr, "%d:%d", minutes, seconds);
+    else if(minutes < 10 && seconds >= 10)
+        sprintf(tempTimeStr, "0%d:%d", minutes, seconds);
+    else if(minutes >= 10 && seconds < 10)
+        sprintf(tempTimeStr, "%d:0%d", minutes, seconds);
+    else
+        sprintf(tempTimeStr, "0%d:0%d", minutes, seconds);
+
+    if(gameTimeRemaining < 30000)                         // If <30 seconds remaining ; Red
+        gTempTextMessage = TTF_RenderText_Solid(font, tempTimeStr, colorsRGB[TEXT_COLOR_BRIGHTRED]);
+    else if(gameTimeRemaining < 120000)                   // If <2 minutes remaining  ; Yellow
+        gTempTextMessage = TTF_RenderText_Solid(font, tempTimeStr, colorsRGB[TEXT_COLOR_ORANGE]);
+    else                                                  // If >=2 minutes remaining ; Green
+        gTempTextMessage = TTF_RenderText_Solid(font, tempTimeStr, colorsRGB[TEXT_COLOR_BRIGHTGREEN]);
+
+    renderText(textPlacement, gRenderer);
+    TTF_CloseFont(font);
+
     return;
 }
 

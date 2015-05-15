@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         packetID=0;
         createAndSendUDPPackets(ships, bullets);
         char gameCounter[MAX_LENGTH];
-        GameFreezeTime = 3; //-1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+        GameFreezeTime = 3; // -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
         while (GameFreezeTime>=-1) {
             sprintf(gameCounter,PREAMBLE_GAMEFREEZE"%d",GameFreezeTime);
             broadCast(gameCounter);

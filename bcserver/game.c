@@ -67,13 +67,13 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
 void addBullet(Ship* ship) {
     int freeSpot = findFreeBullet(bullets);
     if (freeSpot <0) {
-        puts("FEL: Hittade inte ledig plats i skottlistan!");
         exit(1);
     }
     bullets[freeSpot].xPos=ship->xPos;
     bullets[freeSpot].yPos=ship->yPos;
-    bullets[freeSpot].yVel=ship->yVel + 3; //-sin(getRadians(ship->angle))*6;
-    bullets[freeSpot].xVel=ship->xVel + 3; //-cos(getRadians(ship->angle))*6;
+    bullets[freeSpot].yVel=-sin(getRadians(ship->angle))*8;
+    bullets[freeSpot].xVel=-cos(getRadians(ship->angle))*8;
+
     bullets[freeSpot].active = true;
     //	printf("Bam[%d]: %f,%f\n",antalSkott,serverSkott[antalSkott].xPos,serverSkott[antalSkott].yPos);
 }

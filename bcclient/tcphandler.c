@@ -118,7 +118,7 @@ void handleGameStart(void){
     mode = IN_GAME;
     keyboardMode = PLAYING;
     clearTextStrings(11);
-    gameFreezeTime = 100;
+    gameFreezeTime = 4;
     return;
 }
 
@@ -131,7 +131,9 @@ void handleBots(char TCPTextIn[]){
 }
 
 void handleFreezeTime(char TCPTextIn[]){
-    gameFreezeTime = TCPTextIn[1]-48;
+    gameFreezeTime--;
+    if(gameFreezeTime == -1)
+        gameTimeStart = SDL_GetTicks();
     return;
 }
 
