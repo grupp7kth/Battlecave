@@ -1,14 +1,14 @@
 #ifndef MODEDEFINITIONS
 #define MODEDEFINITIONS
 
-#define CLIENT_VERSION "v 0.42"
+#define CLIENT_VERSION "v 0.45"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
 #define GAME_AREA_WIDTH 1030
 #define GAME_AREA_HEIGHT 720
 
-#define MAXBUTTONS 11
+#define MAXBUTTONS 16
 
 // The different modes that the client can be in. Determines what to render and how to interpret mouse clicks / keystrokes etc...
 #define STARTUP 0
@@ -51,6 +51,9 @@
 #define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT '-'
 #define PREAMBLE_GAMESTART '!'
+#define PREAMBLE_GAMEFREEZE '¤'
+#define PREAMBLE_GAMEEND '='
+#define PREAMBLE_OPTIONS '*'
 
 #define TEXT_COLOR_WHITE 0
 #define TEXT_COLOR_BRIGHTYELLOW 1

@@ -25,6 +25,8 @@ void handleBot(int id);
 int getDelta(int p1, int p2);
 int getObjectDistance(int deltaX, int deltaY);
 float getObjectAngle(int deltaX, int deltaY);
+void removeBOT(int *id);
+void fetchMapData(void);
 
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 void moveBullets(Bullet bullets[MAX_BULLETS]);
@@ -46,4 +48,5 @@ int packetID;
 bool gameIsActive;
 bool computerPlayerActive[MAX_CLIENTS];
 int computerPlayerCount;
+int humanPlayerCount;
 int GameFreezeTime;

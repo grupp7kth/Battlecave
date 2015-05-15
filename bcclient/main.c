@@ -50,7 +50,7 @@ void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N 
     modeMaxButtons[STARTUP]       =  3;
     modeMaxButtons[FIND_SERVERS]  =  3;
     modeMaxButtons[OPTIONS]       =  0;          // UNUSED ATM
-    modeMaxButtons[LOBBY]         = 11;
+    modeMaxButtons[LOBBY]         = 16;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;
     modeMaxButtons[IN_GAME]       =  1;

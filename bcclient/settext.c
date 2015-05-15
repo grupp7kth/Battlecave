@@ -206,18 +206,20 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
 
     // FreezeTime countdown
     if(gameFreezeTime >= 0 && gameFreezeTime <= 3){
-        font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
-        textPlacement->x = GAME_AREA_WIDTH/2;
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 80);
         textPlacement->y = 100;
+        textPlacement->x = 490;
 
         if(gameFreezeTime == 3)
-            gTempTextMessage = TTF_RenderText_Solid(font, "3...", colorsRGB[textStringColor[TEXT_COLOR_RED]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, "3...", colorsRGB[TEXT_COLOR_RED]);
         else if(gameFreezeTime == 2)
-            gTempTextMessage = TTF_RenderText_Solid(font, "2...", colorsRGB[textStringColor[TEXT_COLOR_ORANGE]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, "2...", colorsRGB[TEXT_COLOR_ORANGE]);
         else if(gameFreezeTime == 1)
-            gTempTextMessage = TTF_RenderText_Solid(font, "1...", colorsRGB[textStringColor[TEXT_COLOR_YELLOW]]);
-        else if(gameFreezeTime == 0)
-            gTempTextMessage = TTF_RenderText_Solid(font, "GO!", colorsRGB[textStringColor[TEXT_COLOR_GREEN]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, "1...", colorsRGB[TEXT_COLOR_YELLOW]);
+        else if(gameFreezeTime == 0){
+            textPlacement->x = 475;
+            gTempTextMessage = TTF_RenderText_Solid(font, "GO!", colorsRGB[TEXT_COLOR_GREEN]);
+        }
         renderText(textPlacement, gRenderer);
     }
     return;

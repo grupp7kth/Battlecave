@@ -4,6 +4,9 @@ IPaddress serverIP;
 TCPsocket TCPsock;
 
 int main(int argc, char *argv[]) {
+    int gameStartTime;
+    int gameRunningTime;
+
     if (!init()) {
         printf("error initializing");
         return 1;
@@ -20,15 +23,17 @@ int main(int argc, char *argv[]) {
         if(!initGame())puts("Failed to init game"); else puts("Game initialized");
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
+        createAndSendUDPPackets(ships, bullets);
         char gameCounter[MAX_LENGTH];
         GameFreezeTime = 3; //-1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
-        while (GameFreezeTime<-1) {
+        while (GameFreezeTime>=-1) {
             sprintf(gameCounter,PREAMBLE_GAMEFREEZE"%d",GameFreezeTime);
             broadCast(gameCounter);
             GameFreezeTime--;
             SDL_Delay(1000);
         }
         gameIsActive = true;
+        gameStartTime = SDL_GetTicks();
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
         while (gameIsActive) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
@@ -37,6 +42,17 @@ int main(int argc, char *argv[]) {
             updateShip(ships);
             moveBullets(bullets);
             createAndSendUDPPackets(ships, bullets);
+            gameRunningTime = SDL_GetTicks() - gameStartTime;
+            if(gameRunningTime >= 10000){
+                broadCast(PREAMBLE_GAMEEND);
+                gameIsActive = false;
+                for(int i=0; i < MAX_CLIENTS; i++){
+                    if(clients[i].active){
+                        clients[i].active = false;
+                        clients[i].ready = false;
+                    }
+                }
+            }
             SDL_Delay(20);
         }
     }
@@ -62,19 +78,19 @@ void acceptConnection() {
                 incomming = NULL;
             }
         }
-        if(ClientsAreReady()) {
+        if(ClientsAreReady() && humanPlayerCount > 0) {
             printf("starting in 3...\n");
             broadCast("$4starting in 3...");
             SDL_Delay(1000);
-            if(ClientsAreReady()) {
+            if(ClientsAreReady() && humanPlayerCount > 0) {
                 printf("starting in 2...\n");
                 broadCast("$4starting in 2...");
                 SDL_Delay(1000);
-                if(ClientsAreReady()) {
+                if(ClientsAreReady() && humanPlayerCount > 0) {
                     printf("starting in 1...\n");
                     broadCast("$4starting in 1...");
                     SDL_Delay(1000);
-                    if (ClientsAreReady()) {
+                    if (ClientsAreReady() && humanPlayerCount > 0) {
                         printf("!GO\n");
                         broadCast("!GO");
                         SDL_Delay(500);
@@ -125,6 +141,7 @@ bool init() {
     if(TCPsock==NULL)printf("Init failed at step: 6\n");
 
     computerPlayerCount = 0;
+    humanPlayerCount = 0;
     for(int i=0; i < MAX_CLIENTS; i++)
         computerPlayerActive[i] = false;
     return true;

@@ -12,9 +12,11 @@ int UDPhandler(void){
     for(;;){
         if(mode == IN_GAME){
             // Send key-press data to server
-            outPacket->data[0] = pressedButtons;
-            outPacket->len = sizeof(pressedButtons);
-            SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
+                if(gameFreezeTime < 0){
+                outPacket->data[0] = pressedButtons;
+                outPacket->len = sizeof(pressedButtons);
+                SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
+            }
 
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){

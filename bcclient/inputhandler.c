@@ -105,7 +105,11 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
             *match = true;
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = ENTERING_TEXT;
-                if(i >=3 && i <= 11 && ((strcmp(playerName[i-3], "\0") == 0) || computerPlayerActive[i-3] == true)){
+                if(i >= 11 && i <= 15){
+                    char tempStr[3] = {PREAMBLE_OPTIONS, i-11, '\0'};
+                    SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
+                }
+                else if(i >=3 && i <= 11 && ((strcmp(playerName[i-3], "\0") == 0) || computerPlayerActive[i-3] == true)){
                     char tempStr[3] = {PREAMBLE_TOGGLEBOT, i-3, '\0'};
                     SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
                 }
@@ -393,9 +397,10 @@ void handleLeave(void){
     SDLNet_UDP_Close(client.UDPRecvSock);
     SDLNet_UDP_Close(client.UDPSendSock);
 
-    for(int i=0; i < MAX_PLAYERS; i++)
+    for(int i=0; i < MAX_PLAYERS; i++){
         playerReady[i] = 0;
-
+        computerPlayerActive[i] = false;
+    }
     clearAllPlayerNameStrings(8);
     clearTextStrings(11);
     printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************

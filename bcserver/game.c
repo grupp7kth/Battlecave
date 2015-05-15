@@ -89,12 +89,9 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
     return -1;
 }
 
-
-bool initGame() {
+bool initGame(){
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
-		ships[i].xPos = 800;
-		ships[i].yPos = 50+i*100;
 		ships[i].xVel = 0;
 		ships[i].yVel = 0;
 		ships[i].bulletIntervall = 10;
@@ -105,25 +102,37 @@ bool initGame() {
 		ships[i].shooting = false;
 		ships[i].alive = false;
 	}
-	ships[0].xPos = 400;
-	ships[0].yPos = 400;
-	ships[1].xPos = 1200;
-	ships[1].yPos = 100;
-	ships[2].xPos = 2200;
-	ships[2].yPos = 100;
-	ships[3].xPos = 100;
-	ships[3].yPos = 600;
-	ships[4].xPos = 1100;
-	ships[4].yPos = 700;
-	ships[5].xPos = 2350;
-	ships[5].yPos = 800;
-	ships[6].xPos = 400;
-	ships[6].yPos = 1400;
-	ships[7].xPos = 1400;
-	ships[8].yPos = 1500;
+    fetchMapData();
 
+    for(int i=0; i < MAX_BULLETS; i++)
+        bullets[i].active = false;
     return true;
 }
+
+void fetchMapData(void){
+    char mapName[30] = {'\0'}, readNum[5] = {'\0'};
+    strcat(mapName, "cave"); //******************************************************************************* MAKE VARIABLE??
+    strcat(mapName, ".bcmf");       // BattleCave Map File
+
+    FILE *fp;
+    fp = fopen(mapName,"r");
+    if(fp != NULL){
+        for(int i=0; i < MAX_CLIENTS; i++){
+            for(int j=0; readNum[j-1] != '.' && j < 5; j++){
+                readNum[j] = fgetc(fp);
+            }
+            ships[i].xPos = atoi(readNum);
+            for(int j=0; readNum[j-1] != '\n' && j < 5; j++){
+                readNum[j] = fgetc(fp);
+            }
+            ships[i].yPos = atoi(readNum);
+        }
+    }
+
+    fclose(fp);
+    return;
+}
+
 int udpListener(void* data) {
 
 	UDPpacket *packetIn;
@@ -263,7 +272,7 @@ void updateBots(void){
 }
 
 void handleBot(int id){
-    int closestDistance = 0, closestID, distance, deltaX, deltaY;
+    int closestDistance = 0, distance, deltaX, deltaY;
     float closestAngle;
 
     for(int i=0; i < MAX_CLIENTS; i++){
@@ -274,7 +283,6 @@ void handleBot(int id){
 
             if(closestDistance <= 0 || distance < closestDistance){
                 closestDistance = distance;
-                closestID = i;
 
                 closestAngle = getObjectAngle(deltaX, deltaY);
                 if(deltaX <= 0)              // The angle will be relative to the ship; 0-180 means it's to the right, 0-(-180) means left

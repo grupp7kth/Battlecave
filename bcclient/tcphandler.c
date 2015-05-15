@@ -36,6 +36,8 @@ int TCPhandler(Client* client){
             handleBots(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_GAMEFREEZE)
             handleFreezeTime(TCPTextIn);
+        else if(TCPTextIn[0] == PREAMBLE_GAMEEND)
+            handleLeave();
 
         if(!isConnected)
             break;
@@ -114,7 +116,7 @@ void handleGameStart(void){
     mode = IN_GAME;
     keyboardMode = PLAYING;
     clearTextStrings(11);
-    gameFrozen = 100;
+    gameFreezeTime = 100;
     return;
 }
 
@@ -127,8 +129,7 @@ void handleBots(char TCPTextIn[]){
 }
 
 void handleFreezeTime(char TCPTextIn[]){
-    gameFreezeTime = TCPTextIn[1];
-    printf("FREEZETIME IS %d\n", gameFreezeTime);
+    gameFreezeTime = TCPTextIn[1]-48;
     return;
 }
 

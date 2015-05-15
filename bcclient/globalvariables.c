@@ -38,7 +38,7 @@ UDPpacket* inPacket;
 
 int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
 
-int gameFreezeTime;                     // Used to disallow player's keypresses in-game
+int gameFreezeTime;                     // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
 
 SDL_Color colorsRGB[14] = {{225, 225, 255}, // 0  = White
                        {255, 255, 150},     // 1  = Bright Yellow

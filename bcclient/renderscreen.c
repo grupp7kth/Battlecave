@@ -40,8 +40,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         for(int i=0; i < MAX_PLAYERS; i++){     // Ready icons
             if(playerReady[i]){
-                readyIcon.x = 497;
-                readyIcon.y = 116 + (i * 64);
+                readyIcon.x = 485;
+                readyIcon.y = 116 + (i * 65);
                 readyIcon.h = 40;
                 readyIcon.w = 40;
                 SDL_RenderCopy(gRenderer, mReady, NULL, &readyIcon);
@@ -84,12 +84,12 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         for(int i = 0; i < MAX_PLAYERS; i++){
             if(!ship[i].active)
-                break;
+                continue;
             int temp;
             ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
             ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
 
-            if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)
+            if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)                    // Decide whether the ship is within the game area of the window
                 temp = ship[i].placement.x - ship[client.id].placement.x;
             else
                 temp = ship[i].placement.x - GAME_AREA_WIDTH/2;

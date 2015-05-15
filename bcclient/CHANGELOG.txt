@@ -1,3 +1,14 @@
+0.45 :
+* All (.png) maps now require a BattleCave Map File (.bcmf) containing spawn locations for all ships (and later on spawn locations for powerups) so that they can differ between maps.
+
+0.44 : 
+* Added End-Game support. The game now ends after a set ammount of seconds and boots all players and readies itself to start a new game.
+
+0.43 : 
+* Added freeze-time for 3 seconds before a game starts. 
+  During the freeze-time, players and bots are unable to control their ships. 
+  The freeze time is represented by a graphic countdown.
+
 0.42 :
 * Added the minimap feature.
 

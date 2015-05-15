@@ -156,8 +156,10 @@ extern UDPpacket* inPacket;
 
 extern int currentBulletAmmount;               // Number of bullets that were sent to us to be drawn on the screen
 
+extern int gameFreezeTime;                     // Used to disallow player's keypresses in-game, -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+
 extern SDL_Color colorsRGB[14];                // SDL_Color format RGB
-extern Uint8 colorsPlayer[24];             // Split colors (3 entries per color: R/G/B)
+extern Uint8 colorsPlayer[24];                 // Split colors (3 entries per color: R/G/B)
 
 // ********************************    TCPHANDLER.C    ******************************************
 

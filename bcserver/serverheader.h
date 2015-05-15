@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 #ifdef _WIN32
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_image.h>
-    #include <SDL2/SDL_net.h>
+    #include <SDL.h>
+    #include <SDL_image.h>
+    #include <SDL_net.h>
 #elif __APPLE__
     #include <SDL2/SDL.h>
     #include <SDL2_Image/SDL_Image.h>
@@ -41,6 +41,7 @@
 #define PREAMBLE_TOGGLEBOT '?'
 #define PREAMBLE_DISCONNECT "-"
 #define PREAMBLE_GAMEFREEZE "¤"
+#define PREAMBLE_GAMEEND "="
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"
@@ -100,6 +101,8 @@ extern void handleBot(int id);
 extern int getDelta(int p1, int p2);
 extern int getObjectDistance(int deltaX, int deltaY);
 extern float getObjectAngle(int deltaX, int deltaY);
+extern void removeBOT(int *id);
+extern void fetchMapData(void);
 
 //------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
@@ -115,12 +118,12 @@ extern Bullet bullets[MAX_BULLETS];
 extern Ship ships[MAX_CLIENTS];
 extern SDL_Surface* background;
 
-//byt från globala!!
 extern UDPpacket *packetOut;
 extern Uint8 gameData[1000];
 extern int packetID;
 extern bool gameIsActive;
 extern bool computerPlayerActive[MAX_CLIENTS];
 extern int computerPlayerCount;
+extern int humanPlayerCount;
 extern int GameFreezeTime;
 #endif // SERVERHEADER_H_INCLUDED

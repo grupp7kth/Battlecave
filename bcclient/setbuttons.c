@@ -57,7 +57,7 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     return;
 }
 
-static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Message Field , 1 = Leave , 2 = Start Game
+static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Message Field , 1 = Leave , 2 = Start Game , 3-10 = Player Boxes , 11-16 = Option Boxes
     buttonPlacement[0].x = 537;
     buttonPlacement[0].y = 587;
     buttonPlacement[0].h = 33;
@@ -76,6 +76,13 @@ static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Messa
         buttonPlacement[i+3].y = 112 + i*65;
         buttonPlacement[i+3].h = 45;
         buttonPlacement[i+3].w = 300;
+    }
+    // Option Boxes 1-5 :
+    for(int i = 0; i < 5; i++){
+        buttonPlacement[i+11].x = 537;
+        buttonPlacement[i+11].y = 118 + i*58;
+        buttonPlacement[i+11].h = 45;
+        buttonPlacement[i+11].w = 310;
     }
     return;
 }

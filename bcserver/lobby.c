@@ -22,6 +22,8 @@ int Lobby(void * data) {
     clearReturn(TCPsend);
     sendMessageExc(TCPsend, clientId);
     clearString(TCPsend);
+
+    humanPlayerCount++;
 // ---------------------------------------------------------------------------------------------------------------------
 
     activePlayers(); // Sending information
@@ -49,14 +51,9 @@ int Lobby(void * data) {
 
                 temporaryInt = fetchCPUname();
 
-
-
-
-                printf("FREE SLOT WAS %d\n", temporaryInt);
-
                 computerPlayerActive[botID] = !computerPlayerActive[botID];
-                clearString(clients[botID].name);
                 if(computerPlayerActive[botID]){
+                    clearString(clients[botID].name);
                     computerPlayerCount++;
                     strcpy(clients[botID].name, "CPU ");
 
@@ -66,13 +63,9 @@ int Lobby(void * data) {
                     clients[botID].ready = true;
                     clients[botID].name[4] = temporaryInt+48; // +48 because ASCII to int, +1 because we want 1-8 rather than 0-7
                 }
-                else{
-                    computerPlayerCount--;
-                    clients[botID].active = false;
-                    clients[botID].playerType = PLAYER_TYPE_HUMAN;
-                    clients[botID].ready = false;
-                    disconnect(botID);
-                }
+                else
+                    removeBOT(&botID);
+
                 clearString(TCPsend);
                 sprintf(TCPsend, "?%d", botID);
                 broadCast(TCPsend);
@@ -80,7 +73,6 @@ int Lobby(void * data) {
                 printf("computerPlayerCount=%d\n", computerPlayerCount);//***********************************************
             }
             else {
-
                 //printf("%s: %s", clients[clientId].name, TCPrecv);
                 clearString(TCPsend);
                 sprintf(TCPsend, PREAMBLE_CHAT"%c%s: %s",clients[clientId].id+54,clients[clientId].name,TCPrecv); // +54 Because we have to send the ID as ASCII, and then add 6 to get to the player-index-colors in the client color table
@@ -101,6 +93,16 @@ int Lobby(void * data) {
             clearString(TCPsend);
             activePlayers();
             disconnect(clientId);
+            humanPlayerCount--;
+            if(humanPlayerCount == 0){              // Kick all bots if there are no human players
+                for(int i=0; i < MAX_CLIENTS; i++){
+                    if(clients[i].playerType == PLAYER_TYPE_BOT){
+                        removeBOT(&i);
+                    }
+                }
+
+            }
+
             break;
         }
     }
@@ -138,11 +140,11 @@ void activePlayers() {
 }
 void sendMessageExc(char TCPsend[], int id) {
     for (int i=0;i<MAX_CLIENTS;i++) {
-        if(clients[i].active && i != id)
+        if(clients[i].active && i != id && clients[i].playerType == PLAYER_TYPE_HUMAN)
             SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
     }
-
 }
+
 void SendAndgetPort(int id) {
     int sPort,rPort;
     sPort=SDLNet_UDP_GetPeerAddress(udpRecvSock,-1)->port;
@@ -181,7 +183,8 @@ void disconnect(int id) {
 }
 void broadCast(char TCPsend[]) {
     for (int i=0;i<MAX_CLIENTS;i++) {
-        if(clients[i].active && clients[i].playerType == PLAYER_TYPE_HUMAN) SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
+        if(clients[i].active && clients[i].playerType == PLAYER_TYPE_HUMAN)
+            SDLNet_TCP_Send(clients[i].socket, TCPsend, MAX_LENGTH);
     }
 }
 
@@ -205,4 +208,15 @@ int fetchCPUname(void){
     }
     puts("Fetch CPU Name Error!");
     exit(EXIT_FAILURE);
+}
+
+void removeBOT(int *id){
+    clearString(clients[*id].name);
+    computerPlayerCount--;
+    clients[*id].active = false;
+    clients[*id].playerType = PLAYER_TYPE_HUMAN;
+    clients[*id].ready = false;
+    disconnect(*id);
+    computerPlayerActive[*id] =  false;
+    return;
 }
