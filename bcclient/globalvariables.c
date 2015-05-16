@@ -38,7 +38,7 @@ bool throttle;
 bool right;
 bool left;
 bool shooting;
-short spectatingID;
+short viewportID;
 Uint8 pressedButtons;
 UDPpacket* outPacket;
 UDPpacket* inPacket;

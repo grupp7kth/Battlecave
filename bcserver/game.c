@@ -110,6 +110,9 @@ bool initGame(){
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
 
+    for(int i=0; i < MAX_CLIENTS; i++)
+        clients[i].viewportID = i;
+
     return true;
 }
 void checkShipHealth(){
@@ -121,6 +124,13 @@ void checkShipHealth(){
             ships[i].isDead = true;
             ships[i].xVel = 0;
             ships[i].yVel = 0;
+            short attempts = 0;
+            do{                                 // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
+                clients[i].viewportID = rand() % 8;
+                attempts++;
+            } while((!clients[clients[i].viewportID].active || ships[clients[i].viewportID].isDead) && attempts < 50);
+            if(attempts >= 50)
+                clients[i].viewportID = i;
         }
         else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
             ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
@@ -132,6 +142,7 @@ void checkShipHealth(){
             ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
             ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
             ships[i].angle = 0;
+            clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
         }
     }
 }
@@ -234,31 +245,19 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         if (!clients[player].active)
             continue;
 
-        gameData[36] = ships[player].health;
+        tempint = ships[player].health/5 | clients[player].viewportID << 5;
+        gameData[36] = tempint;  // Make Health scale to 5 (Hp 0-100% is represented by 0-20) to use 5 bits of this byte, Remaining 3 bits of the byte will be the viewport ID for the client
 
-        short tempID;
-        if(!ships[player].isDead)   // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
-            tempID = player;
-        else{
-            for(int i=0; i < MAX_CLIENTS+1; i++){
-                if(clients[i].active && !ships[i].isDead && i < MAX_CLIENTS){
-                    tempID = i;
-                    break;
-                }
-                else if(i >= MAX_CLIENTS)
-                    tempID = player;
-            }
-        }
-        if (ships[tempID].xPos < GAME_AREA_WIDTH/2)
+        if (ships[clients[player].viewportID].xPos < GAME_AREA_WIDTH/2)
             viewport.x=0;
-        else if (ships[tempID].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
+        else if (ships[clients[player].viewportID].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
             viewport.x=STAGE_WIDTH-GAME_AREA_WIDTH;
-        else viewport.x=ships[tempID].xPos-GAME_AREA_WIDTH/2;
-        if (ships[tempID].yPos < GAME_AREA_HEIGHT/2)
+        else viewport.x=ships[clients[player].viewportID].xPos-GAME_AREA_WIDTH/2;
+        if (ships[clients[player].viewportID].yPos < GAME_AREA_HEIGHT/2)
             viewport.y=0;
-        else if (ships[tempID].yPos > STAGE_HEIGHT-GAME_AREA_HEIGHT/2)
+        else if (ships[clients[player].viewportID].yPos > STAGE_HEIGHT-GAME_AREA_HEIGHT/2)
             viewport.y=STAGE_HEIGHT-GAME_AREA_HEIGHT;
-        else viewport.y=ships[tempID].yPos-GAME_AREA_HEIGHT/2;
+        else viewport.y=ships[clients[player].viewportID].yPos-GAME_AREA_HEIGHT/2;
 
         // Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
 

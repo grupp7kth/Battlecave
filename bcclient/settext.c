@@ -311,10 +311,10 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_WHITE]);
         renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
 
-        if(spectatingID != client.id){
+        if(viewportID != client.id){
             textPlacement->y = 650;
-            sprintf(tempSpecStr, "Currently Spectating %s", playerName[spectatingID]);
-            gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[spectatingID+6]);
+            sprintf(tempSpecStr, "Currently Spectating %s", playerName[viewportID]);
+            gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[viewportID+6]);
             renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
         }
         TTF_CloseFont(font);

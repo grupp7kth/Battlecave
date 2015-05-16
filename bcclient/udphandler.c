@@ -50,7 +50,8 @@ void unpackPacket(void){
 		ship[player].active = (read >> 31) & 1;
 	}
 
-    client.health = inPacket->data[36];
+    client.health = (inPacket->data[36] & 0b11111) * 5;   // The first 5 bits of this byte is the player's health divided by 5 (to use fewer bits)
+    viewportID = (inPacket->data[36] >> 5) & 0b111;       // The last 3 bits is the viewport-id to use for the player
 
     for(bulletID = 0; (inPacket->data[37+(bulletID)*3] != 0xFF) && (bulletID < 300); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){

@@ -68,6 +68,7 @@ typedef struct{
     bool ready;
     Uint32 ipadress;
     int playerType;
+    int viewportID;
 }Client;
 
 typedef struct{
@@ -150,5 +151,4 @@ extern int MaxSpeedList[5];
 extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 extern bool infiniteMomentum;
-
 #endif // SERVERHEADER_H_INCLUDED

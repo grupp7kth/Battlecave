@@ -70,29 +70,17 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         // RENDER EVERYTHING GAME RELATED
         // Render Background
 
-        if(!ship[client.id].isDead)         // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
-            spectatingID = client.id;
-        else{
-            for(int i=0; i < MAX_PLAYERS+1; i++){
-                if(ship[i].active && !ship[i].isDead && i < MAX_PLAYERS){
-                    spectatingID = i;
-                    break;
-                }
-                else if(i >= MAX_PLAYERS)
-                    spectatingID = client.id;
-            }
-        }
-        gameBackground.source.x = ship[spectatingID].x - (GAME_AREA_WIDTH/2);
-        gameBackground.source.y = ship[spectatingID].y - (GAME_AREA_HEIGHT/2);
+        gameBackground.source.x = ship[viewportID].x - (GAME_AREA_WIDTH/2);
+        gameBackground.source.y = ship[viewportID].y - (GAME_AREA_HEIGHT/2);
 
-        if(ship[spectatingID].x < GAME_AREA_WIDTH/2)
+        if(ship[viewportID].x < GAME_AREA_WIDTH/2)
             gameBackground.source.x = 0;
-        else if(ship[spectatingID].x > gameBackground.w - GAME_AREA_WIDTH/2)
+        else if(ship[viewportID].x > gameBackground.w - GAME_AREA_WIDTH/2)
             gameBackground.source.x = gameBackground.w - GAME_AREA_WIDTH;
 
-        if(ship[spectatingID].y < GAME_AREA_HEIGHT/2)
+        if(ship[viewportID].y < GAME_AREA_HEIGHT/2)
             gameBackground.source.y = 0;
-        else if(ship[spectatingID].y > gameBackground.h - GAME_AREA_HEIGHT/2)
+        else if(ship[viewportID].y > gameBackground.h - GAME_AREA_HEIGHT/2)
             gameBackground.source.y = gameBackground.h - GAME_AREA_HEIGHT;
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, &gameBackground.dest);

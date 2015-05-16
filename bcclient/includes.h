@@ -162,7 +162,7 @@ extern bool throttle;
 extern bool right;
 extern bool left;
 extern bool shooting;
-extern short spectatingID;
+extern short viewportID;
 extern Uint8 pressedButtons;
 extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;
