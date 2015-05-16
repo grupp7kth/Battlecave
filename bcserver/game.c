@@ -52,7 +52,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             if (ships[i].yPos > STAGE_HEIGHT) ships[i].yPos=0;
             if (ships[i].yPos <0) ships[i].yPos=STAGE_HEIGHT;
             ships[i].angle += ships[i].angleVel;
-            if (ships[i].angle > 360) ships[i].angle-=360;
+            if (ships[i].angle >= 360) ships[i].angle-=360;
             if (ships[i].angle < 0) ships[i].angle+=360;
             if (ships[i].bulletCooldown>0) ships[i].bulletCooldown--;
         }
@@ -69,10 +69,10 @@ void addBullet(Ship* ship, int *id){
     if (freeSpot <0) {
         exit(1);
     }
-    bullets[freeSpot].xPos = ship->xPos;
-    bullets[freeSpot].yPos = ship->yPos;
-    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*6;
-    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*6;
+    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*15;
+    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*15;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*10;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*10;
 
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
@@ -174,8 +174,8 @@ int udpListener(void* data) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
-            if ((key & 3) == 1) ships[clientId].angleVel=5;
-            else if ((key & 3) == 2) ships[clientId].angleVel=-5;
+            if ((key & 3) == 1) ships[clientId].angleVel=6;
+            else if ((key & 3) == 2) ships[clientId].angleVel=-6;
             else ships[clientId].angleVel = 0;
 
             if ((key & 4) == 4) ships[clientId].acceleration=true;

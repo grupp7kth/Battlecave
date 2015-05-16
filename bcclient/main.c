@@ -31,7 +31,7 @@ int main(int argc, char* args[]){
 
         renderScreen(&mode, &select, buttonPlacement, windowPlacement);
 
-        soundHandler();
+        //soundHandler();
         SDL_Delay(10);
     }
 
