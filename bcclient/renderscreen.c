@@ -73,11 +73,13 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         if(!ship[client.id].isDead)         // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
             spectatingID = client.id;
         else{
-            for(int i=0; i < MAX_PLAYERS; i++){
-                if(ship[i].active && !ship[i].isDead){
+            for(int i=0; i < MAX_PLAYERS+1; i++){
+                if(ship[i].active && !ship[i].isDead && i < MAX_PLAYERS){
                     spectatingID = i;
                     break;
                 }
+                else if(i >= MAX_PLAYERS)
+                    spectatingID = client.id;
             }
         }
         gameBackground.source.x = ship[spectatingID].x - (GAME_AREA_WIDTH/2);
