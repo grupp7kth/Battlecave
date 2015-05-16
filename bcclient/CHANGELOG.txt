@@ -1,3 +1,9 @@
+0.51 :
+* All music now fades in slighty to combat an SDL_Mixer bug causing unwanted lound noise at the start of playback of a song.
+* Potentially fixed a bug which makes sound.c sometimes skip a song.
+* The server no longer crashes if a player dies and there's no other player alive to spectate.
+* Misc. minor tweaks.
+
 0.50 :
 * Implemented health and respawn systems. When a player reaches 0 health they'll remain dead for 10 seconds.
     While dead the player will spectate a living player.

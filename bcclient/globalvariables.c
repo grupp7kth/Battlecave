@@ -1,7 +1,7 @@
 #include "includes.h"
 
 Mix_Music* music[5] = {NULL};
-int currentSong = 1;
+int currentSong = 0;
 
 Client client;
 Ship ship[MAX_PLAYERS];

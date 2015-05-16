@@ -240,11 +240,13 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         if(!ships[player].isDead)   // If the player is alive the viewport will be his own, else it will be the first alive players going from ID 0-7
             tempID = player;
         else{
-            for(int i=0; i < MAX_CLIENTS; i++){
-                if(clients[i].active && !ships[i].isDead){
+            for(int i=0; i < MAX_CLIENTS+1; i++){
+                if(clients[i].active && !ships[i].isDead && i < MAX_CLIENTS){
                     tempID = i;
                     break;
                 }
+                else if(i >= MAX_CLIENTS)
+                    tempID = player;
             }
         }
         if (ships[tempID].xPos < GAME_AREA_WIDTH/2)
