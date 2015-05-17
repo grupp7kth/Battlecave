@@ -1,3 +1,18 @@
+0.62 : 
+* The teleport powerup no longer displaces the player instantly, instead it fades the ship out, moves it and then fades it back in.
+    The ship will be invulnerable while teleporting.
+
+0.61 :
+* Individual powerup durations is now displayer in the side-bar.
+* Powerups no longer spawn if a player is too close to the spawnpoint (mainly to prevent bugs).
+* TimeWarp, Double Bullet, Triple Bullet & Teleport work seemingly perfectly at this point.
+
+0.60 :
+* Powerups added. 
+    Currently TimeWarp and Teleport works almost flawlessly.
+    Powerup spawn-loactions are read from the BattleCave Map File.
+* Available powerups show up on the minimap.
+
 0.51 :
 * All music now fades in slighty to combat an SDL_Mixer bug causing unwanted lound noise at the start of playback of a song.
 * Potentially fixed a bug which makes sound.c sometimes skip a song.

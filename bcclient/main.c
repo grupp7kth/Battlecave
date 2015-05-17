@@ -31,7 +31,7 @@ int main(int argc, char* args[]){
 
         renderScreen(&mode, &select, buttonPlacement, windowPlacement);
 
-        soundHandler();
+        //soundHandler();
         SDL_Delay(10);
     }
 
@@ -88,6 +88,20 @@ void init(void){
     }
 
     Mix_VolumeMusic(MIX_MAX_VOLUME/2);
+
+    for(int i=0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+        powerupSpawnPoint[i].placement.w = 30;
+        powerupSpawnPoint[i].placement.h = 30;
+    }
+
+    healthBar.x = GAME_AREA_WIDTH + 24;
+    healthBar.y = 391;
+    healthBar.h = 25;
+    powerupBar.x = GAME_AREA_WIDTH + 24;
+    powerupBar.y = 445;
+    powerupBar.h = 25;
+
+    timedTextID = -1;           // Not active
     return;
 }
 

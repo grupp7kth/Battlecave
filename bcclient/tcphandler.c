@@ -8,6 +8,7 @@ void handleBots(char TCPTextIn[]);
 void handleFreezeTime(char TCPTextIn[]);
 void handleGameOptions(char TCPTextIn[]);
 void handleDeath(void);
+void handlePowerup(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -44,6 +45,9 @@ int TCPhandler(Client* client){
             handleGameOptions(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_KILLED)
             handleDeath();
+        else if(TCPTextIn[0] == PREAMBLE_POWERUP)
+            handlePowerup(TCPTextIn);
+
         if(!isConnected)
             break;
     }
@@ -124,6 +128,7 @@ void handleGameStart(void){
     gameFreezeTime = 4;
     client.health = 100;
     client.deathTimer = 0;
+    client.activePowerup = -1;
     return;
 }
 
@@ -151,14 +156,30 @@ void handleGameOptions(char TCPTextIn[]){
         activeMaxSpeed = TCPTextIn[2]-48;
     else if(TCPTextIn[1]-48 == TOGGLE_GAMELENGTH)
         activeGameLength = TCPTextIn[2]-48;
-
-    //printf("BI=%d, IM=%d, MS=%d, GL=%d\n", bulletIntervalList[activeBulletInterval], infiniteMomentum, maxSpeedList[activeMaxSpeed], gameLengthList[activeGameLength]); //***********************************************************
     return;
 }
 
 void handleDeath(void){
     client.deathTimer = 10000;
     deathTimerStart = SDL_GetTicks();
+    return;
+}
+
+void handlePowerup(char TCPTextIn[]){
+    if(TCPTextIn[1]-48 == POWERUP_TIMEWARP){
+        timeWarpStart = SDL_GetTicks();
+        timeWarpIsActive = true;
+    }
+//    else if(TCPTextIn[1]-48 == POWERUP_TELEPORT){
+//        client.powerupTimerStart = SDL_GetTicks();
+//    }
+    else if(TCPTextIn[1]-48 == POWERUP_MULTI3X || TCPTextIn[1]-48 == POWERUP_MULTI2X ||
+            TCPTextIn[1]-48 == POWERUP_DOUBLEDAMAGE || TCPTextIn[1]-48 == POWERUP_TELEPORT){
+        client.activePowerup = TCPTextIn[1] - 48;
+        client.powerupTimerStart = SDL_GetTicks();
+    }
+    timedTextStart = SDL_GetTicks();
+    timedTextID = TCPTextIn[1] - 48;
     return;
 }
 

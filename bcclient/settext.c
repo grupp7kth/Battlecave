@@ -144,13 +144,13 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
     char tempOptStr[3];
 
     textPlacement->y = 127;
-    textPlacement->x = 790;
+    textPlacement->x = 770;
     // -- RESERVED FOR GAME OPTION ID=0 --
 
     // Option 1 : Bullet Interval
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", bulletIntervalList[activeBulletInterval]);
-    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
 
     // Option 2 : Infinite Momentum
@@ -164,12 +164,12 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
     // Option 3 : Max Speed
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", maxSpeedList[activeMaxSpeed]);
-    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
     // Option 4 : Game Length
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", gameLengthList[activeGameLength]);
-    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_BLACK]);
+    gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
 
     TTF_CloseFont(font);
@@ -257,7 +257,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     char tempTimeStr[8];
     int minutes = 0, seconds;
     font = TTF_OpenFont("resources/fonts/arial.ttf", 30);
-    textPlacement->y = 325;
+    textPlacement->y = 330;
     textPlacement->x = GAME_AREA_WIDTH + 90;
 
     if(gameFreezeTime < 0)
@@ -319,6 +319,38 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         }
         TTF_CloseFont(font);
     }
+
+    // If the global timewarp-powerup is active do the following
+    if(timeWarpIsActive && !ship[viewportID].isDead){
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 18);
+        textPlacement->y = 100;
+        gTempTextMessage = TTF_RenderText_Solid(font, "Time Warp Active!", colorsRGB[TEXT_COLOR_WHITE]);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        TTF_CloseFont(font);
+    }
+    // If the player just got a powerup; show some text
+    if(timedTextID >= 0){               // -1 = Inactive
+        int tempDurationInt;
+        tempDurationInt = SDL_GetTicks() - timedTextStart;
+        if(tempDurationInt <= POWERUP_NOTIFICATION_DURATION){
+            font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
+            textPlacement->y = 50;
+            gTempTextMessage = TTF_RenderText_Solid(font, powerupNames[timedTextID], colorsRGB[TEXT_COLOR_TEAL]);
+            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+            TTF_CloseFont(font);
+        }
+        else
+            timedTextID = -1;            // If we've shown the text for its duration we turn if off
+
+    }
+//    if((SDL_GetTicks() - timedTextStart) <= 1000){
+//
+//        font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
+//        textPlacement->y = 50;
+//        gTempTextMessage = TTF_RenderText_Solid(font, "Teleported!", colorsRGB[TEXT_COLOR_TEAL]);
+//        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+//        TTF_CloseFont(font);
+//    }
     return;
 }
 

@@ -30,13 +30,15 @@ int UDPhandler(void){
 }
 
 void unpackPacket(void){
-    Uint32 read, i, tempint, bulletID;
+    Uint32 read, i, j, tempint, bulletID;
 
+    // Read packet number
 	for (i = 0, read = 0; i < 4; i++){
 		tempint = inPacket->data[i];
 		read = read | tempint << i*8;
 	}
 
+    // Read ship data
     for(int player = 0; player < MAX_PLAYERS; player++){
 		for(i = 0, read = 0; i < 4; i++){
 			tempint = inPacket->data[4+(4*player)+i];
@@ -50,12 +52,24 @@ void unpackPacket(void){
 		ship[player].active = (read >> 31) & 1;
 	}
 
-    client.health = (inPacket->data[36] & 0b11111) * 5;   // The first 5 bits of this byte is the player's health divided by 5 (to use fewer bits)
-    viewportID = (inPacket->data[36] >> 5) & 0b111;       // The last 3 bits is the viewport-id to use for the player
+    // Read powerup data
+    for(i = 0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+        for(j = 0, read = 0; j < 4; j++){
+            tempint = inPacket->data[36+(4*i)+j];
+            read = read | tempint << j*8;
+        }
+        powerupSpawnPoint[i].x = read & 0b111111111111;
+        powerupSpawnPoint[i].y = (read >> 12) & 0b111111111111;
+        powerupSpawnPoint[i].isActive = (read >> 24) & 1;
+        powerupSpawnPoint[i].type = (read >> 25) & 0b111;
+    }
 
-    for(bulletID = 0; (inPacket->data[37+(bulletID)*3] != 0xFF) && (bulletID < 300); bulletID++){
+    client.health = (inPacket->data[96] & 0b11111) * 5;   // The first 5 bits of this byte is the player's health divided by 5 (to use fewer bits)
+    viewportID = (inPacket->data[96] >> 5) & 0b111;       // The last 3 bits is the viewport-id to use for the player
+
+    for(bulletID = 0; (inPacket->data[97+(bulletID)*3] != 0xFF) && (bulletID < 250); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){
-			tempint = inPacket->data[37+(bulletID)*3+i];
+			tempint = inPacket->data[97+(bulletID)*3+i];
 			read = read | tempint << i*8;
 		}
 		bullet[bulletID].x = read & 0b11111111111;

@@ -27,7 +27,10 @@ int getObjectDistance(int deltaX, int deltaY);
 float getObjectAngle(int deltaX, int deltaY);
 void removeBOT(int *id);
 void fetchMapData(void);
-void checkShipHealth();
+void checkShipHealth(void);
+void handlePowerupSpawns(void);
+void handlePowerupGains(void);
+void handleActivePowerups(void);
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 void moveBullets(Bullet bullets[MAX_BULLETS]);
 void moveShips(Ship ships[MAX_CLIENTS]);
@@ -40,6 +43,7 @@ Client clients[MAX_CLIENTS];
 Bullet bullets[MAX_BULLETS];
 Ship ships[MAX_CLIENTS];
 PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
+PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
 SDL_Surface* background;
 
 //byt från globala!!
@@ -60,3 +64,11 @@ int MaxSpeedList[5] = {3, 5, 7, 10, 15};
 int activeBulletInterval = 1;           // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};
 bool infiniteMomentum = false;
+
+short numberOfPowerups;
+short activePowerupSpawns = 0;
+int powerupSpawnTimerStart;
+bool timeWarpIsActive = false;
+int timeWarpStartTime;
+int timeWarpFreq;
+

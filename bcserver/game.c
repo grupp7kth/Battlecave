@@ -17,6 +17,9 @@ int IdFromPort(Uint32 ip) {
  */ /// alkdjlaksjdlaskjd
 void updateShip(Ship ships[MAX_CLIENTS]) {
     for (int i=0; i<MAX_CLIENTS; i++){
+        if(ships[i].isStunned)            // Move nothing if the player's stunned
+            continue;
+
         if(clients[i].active){
             if (ships[i].acceleration) {
                 ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
@@ -45,8 +48,16 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                     ships[i].bulletCooldown = ships[i].bulletIntervall;
                 }
             }
-            ships[i].xPos += ships[i].xVel;
-            ships[i].yPos += ships[i].yVel;
+            if(timeWarpIsActive){               // If time warp is active the ships move slower
+                ships[i].xPos += ships[i].xVel/3;
+                ships[i].yPos += ships[i].yVel/3;
+            }
+            else{
+                ships[i].xPos += ships[i].xVel;
+                ships[i].yPos += ships[i].yVel;
+            }
+
+
             if (ships[i].xPos > STAGE_WIDTH) ships[i].xPos=0;
             if (ships[i].xPos <0) ships[i].xPos=STAGE_WIDTH;
             if (ships[i].yPos > STAGE_HEIGHT) ships[i].yPos=0;
@@ -66,17 +77,43 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
 
 void addBullet(Ship* ship, int *id){
     int freeSpot = findFreeBullet(bullets);
-    if (freeSpot <0) {
-        exit(1);
+    if (freeSpot < 0){
+       return;
     }
     bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*15;
     bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*15;
     bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*10;
     bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*10;
-
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
-    //	printf("Bam[%d]: %f,%f\n",antalSkott,serverSkott[antalSkott].xPos,serverSkott[antalSkott].yPos);
+
+    if(ship->activePowerup == POWERUP_MULTI3X){     // If triple shot powerup is active
+        for(int i=0; i < 2; i++){
+            int freeSpot = findFreeBullet(bullets);
+            if (freeSpot < 0){
+                return;
+            }
+            bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*15;
+            bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*15;
+            bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].active = true;
+            bullets[freeSpot].source = *id;
+        }
+    }
+    else if(ship->activePowerup == POWERUP_MULTI2X){ // If double shot powerup is active
+        int freeSpot = findFreeBullet(bullets);
+        if (freeSpot < 0){
+           return;
+        }
+        bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*15;
+        bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*15;
+        bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].active = true;
+        bullets[freeSpot].source = *id;
+    }
+
 }
 /** Hittar en ledig plats i arrayen av skott
  @var skotten: Arrayen av skott f|r spelet.
@@ -110,8 +147,15 @@ bool initGame(){
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
 
-    for(int i=0; i < MAX_CLIENTS; i++)
+    for(int i=0; i < MAX_CLIENTS; i++){
         clients[i].viewportID = i;
+        ships[i].activePowerup = -1;
+        ships[i].isStunned = false;
+        ships[i].isTeleporting = false;
+        ships[i].teleportDisplacementPerformed = false;
+    }
+
+    powerupSpawnTimerStart = POWERUP_SPAWNRATE;
 
     return true;
 }
@@ -150,13 +194,13 @@ void checkShipHealth(){
 
 void fetchMapData(void){
     char mapName[30] = {'\0'}, readNum[5] = {'\0'};
-    strcat(mapName, "cave"); //******************************************************************************* MAKE VARIABLE??
-    strcat(mapName, ".bcmf");       // BattleCave Map File
+    strcat(mapName, "cave2"); //******************************************************************************* MAKE VARIABLE??
+    strcat(mapName, ".bcmf");                           // BattleCave Map File
 
     FILE *fp;
     fp = fopen(mapName,"r");
     if(fp != NULL){
-        for(int i=0; i < MAX_CLIENTS; i++){
+        for(int i=0; i < MAX_CLIENTS; i++){             // Fetch all player's spawn points from the file
             for(int j=0; readNum[j-1] != '.' && j < 5; j++){
                 readNum[j] = fgetc(fp);
             }
@@ -168,9 +212,139 @@ void fetchMapData(void){
             playerSpawnPoint[i].y = atoi(readNum);
             ships[i].yPos = playerSpawnPoint[i].y;
         }
-    }
+        for(int i=0; readNum[i-1] != '\n' && i < 5; i++){
+            readNum[i] = fgetc(fp);
+        }
+        numberOfPowerups = atoi(readNum);               // Get how many total powerups the map has from the file
+        if(numberOfPowerups > MAX_ALLOWED_POWERUP_SPAWNPOINTS){
+            printf("Bad .bcmf file!\n");
+            exit(EXIT_FAILURE);
+        }
 
+        for(int i=0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+            powerupSpawnPoint[i].x = 0;                 // Init the powerups
+            powerupSpawnPoint[i].y = 0;
+            powerupSpawnPoint[i].type = 0;
+            powerupSpawnPoint[i].isActive = false;
+        }
+
+        for(int i=0; i < numberOfPowerups; i++){        // Set the powerup's spawn points from the file
+            for(int j=0; readNum[j-1] != '.' && j < 5; j++){
+                readNum[j] = fgetc(fp);
+            }
+            powerupSpawnPoint[i].x = atoi(readNum);
+            for(int j=0; readNum[j-1] != '\n' && j < 5; j++){
+                readNum[j] = fgetc(fp);
+            }
+            powerupSpawnPoint[i].y = atoi(readNum);
+        }
+    }
     fclose(fp);
+    return;
+}
+
+void handlePowerupSpawns(void){
+    if(activePowerupSpawns < numberOfPowerups && (SDL_GetTicks() - powerupSpawnTimerStart) >= POWERUP_SPAWNRATE){ // If theres a free spot for powerup placement and it's time to place a new one
+        short powerupID, attempts = 0;
+        int closestDistance = 1000, tempDist, deltaX, deltaY;
+
+        do{
+            powerupID = rand() % numberOfPowerups;
+
+            for(int i=0; i < MAX_CLIENTS; i++){             // We don't want to spawn a powerup if a player is too close to the spawn-point
+                if(clients[i].active && !ships[i].isDead){
+                    deltaX = getDelta(powerupSpawnPoint[powerupID].x, (int)ships[i].xPos);
+                    deltaY = getDelta(powerupSpawnPoint[powerupID].y, (int)ships[i].yPos);
+                    tempDist = getObjectDistance(deltaX, deltaY);
+                    if(closestDistance > tempDist)
+                        closestDistance = tempDist;
+                }
+            }
+            attempts++;
+        } while(attempts < 50 && (powerupSpawnPoint[powerupID].isActive || closestDistance < 150));
+        if(attempts >= 50)
+            return;
+
+        powerupSpawnTimerStart = SDL_GetTicks();            // Reset the timer for the next powerup spawn
+
+        powerupSpawnPoint[powerupID].isActive = true;
+        powerupSpawnPoint[powerupID].type = rand() % 6;     // 6 different powerups exist in the game
+        activePowerupSpawns++;
+        printf("PUT PWRUP ID=%d AT X:%d Y:%d (TYPE=%d)\n", powerupID, powerupSpawnPoint[powerupID].x, powerupSpawnPoint[powerupID].y, powerupSpawnPoint[powerupID].type);
+    }
+    return;
+}
+
+void handlePowerupGains(void){
+    for(int i=0; i < MAX_CLIENTS; i++){
+        if(clients[i].active && !ships[i].isDead){
+            for(int j=0; j < MAX_ALLOWED_POWERUP_SPAWNPOINTS; j++){
+                if(powerupSpawnPoint[j].isActive){
+                    Uint16 deltaX = getDelta((int)ships[i].xPos, powerupSpawnPoint[j].x);
+                    Uint16 deltaY = getDelta((int)ships[i].yPos, powerupSpawnPoint[j].y);
+                    if(getObjectDistance(deltaX, deltaY) < 55){                                 // If the ship is close enough to an active powerup
+                        char TCPsend[MAX_LENGTH];
+                        clearString(TCPsend);
+                        sprintf(TCPsend, PREAMBLE_POWERUP"%d", powerupSpawnPoint[j].type);
+
+                        powerupSpawnPoint[j].isActive = false;
+                        activePowerupSpawns--;
+
+                        if(powerupSpawnPoint[j].type != POWERUP_TIMEWARP && powerupSpawnPoint[j].type != POWERUP_TELEPORT) // Timewarp is not bound to a player/ship, Teleport is instant and functions server-side only
+                            ships[i].activePowerup = powerupSpawnPoint[j].type;
+                        else
+                            ships[i].activePowerup = -1;
+
+                        if(powerupSpawnPoint[j].type == POWERUP_TIMEWARP){
+                            timeWarpIsActive = true;
+                            timeWarpStartTime = SDL_GetTicks();
+                            broadCast(TCPsend);                                                 // TimeWarp affects everyone, and so it will be sent to everyone
+                        }
+                        else{
+                            if(powerupSpawnPoint[j].type == POWERUP_TELEPORT){
+                                ships[i].isStunned = true;                                      // Stun the ship for a while before and after moving it
+                                ships[i].isTeleporting = true;
+                                ships[i].teleportDisplacementPerformed = false;
+                                ships[i].stunDurationStart = SDL_GetTicks();
+                                ships[i].xVel = 0;                                              // We dont want the ship to instantly crash into a wall upon arrival
+                                ships[i].yVel = 0;
+                            }
+                            else if(powerupSpawnPoint[j].type == POWERUP_MULTI3X || powerupSpawnPoint[j].type == POWERUP_MULTI2X || powerupSpawnPoint[j].type == POWERUP_DOUBLEDAMAGE){
+                                    ships[i].powerupTimerStart = SDL_GetTicks();                // If the power up is of a type which is timed, start the timer on 10 seconds
+                            }
+                            if(clients[i].playerType == PLAYER_TYPE_HUMAN)
+                                SDLNet_TCP_Send(clients[i].socket, TCPsend, strlen(TCPsend));   // Let human players know they've gained a powerup
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+void handleActivePowerups(void){
+    for(int i=0; i < MAX_CLIENTS; i++){
+        if(ships[i].activePowerup >= 0){            // If the ships has an active powerup running (such as multishot/doubledamage) , -1 = No powerup
+            if((SDL_GetTicks() - ships[i].powerupTimerStart) >= SHIP_POWERUP_DURATION){
+                ships[i].activePowerup = -1;
+            }
+        }
+        else if(ships[i].isTeleporting){
+            int tempTeleportTimerInt;
+            tempTeleportTimerInt = SDL_GetTicks() - ships[i].stunDurationStart;                                 // Free the ship once the full duration has passed
+            if(tempTeleportTimerInt >= TELEPORT_DURATION){
+                ships[i].isTeleporting = false;
+                ships[i].isStunned = false;
+            }
+            else if(tempTeleportTimerInt >= TELEPORT_DURATION/2 && !ships[i].teleportDisplacementPerformed){    // Move the ship once half the duration has passed
+                Uint8 teleportID = rand() % MAX_CLIENTS;
+                ships[i].xPos = playerSpawnPoint[teleportID].x;
+                ships[i].yPos = playerSpawnPoint[teleportID].y;
+                ships[i].teleportDisplacementPerformed = true;
+            }
+        }
+    }
     return;
 }
 
@@ -219,7 +393,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     SDL_Rect viewport;
     viewport.w = GAME_AREA_WIDTH;
     viewport.h = GAME_AREA_HEIGHT;
-    int i, player, secondary, counter,UDPpacketLength;
+    int i, j, player, secondary, counter,UDPpacketLength;
     Uint32 tempint;
 
     packetID++;
@@ -227,14 +401,26 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     for (i=0; i<4; i++) {
         gameData[i] = packetID >> i*8;
     }
+
+    // Send ship info
     for (player=0; player<MAX_CLIENTS; player++) {
-        tempint=0;
+        tempint = 0;
         tempint = (int)ships[player].xPos | (int)ships[player].yPos << 12 | (int)(ships[player].angle/6) << 24;
         tempint = tempint | ships[player].isDead <<30 | clients[player].active << 31;
         for (i=0; i<4; i++) {
             gameData[4+player*4+i] = tempint >> i*8;
         }
     }
+
+    // Send powerup info: (4 bytes per powerup * 15 powerups) ( each uses 28 bits currently)
+    for(i=0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+        tempint = 0;
+        tempint = (int)powerupSpawnPoint[i].x | (int)powerupSpawnPoint[i].y << 12 | (int)powerupSpawnPoint[i].isActive << 24 | (int)powerupSpawnPoint[i].type << 25;
+        for (j=0; j<4; j++){
+            gameData[36+i*4+j] = tempint >> j*8;
+        }
+    }
+
     // Nu har metoden lagt in informationen om paketnummer och alla skepp. Denna information {r
     // densamma f|r ALLA spelare. Nu {r det dags att filtrera vilka skott som ska skickas med.
     // D{rf|r k|r vi en ny player-loop, d{r den kollar spelarens position, och skickar med
@@ -246,8 +432,9 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
             continue;
 
         tempint = ships[player].health/5 | clients[player].viewportID << 5;
-        gameData[36] = tempint;  // Make Health scale to 5 (Hp 0-100% is represented by 0-20) to use 5 bits of this byte, Remaining 3 bits of the byte will be the viewport ID for the client
+        gameData[96] = tempint;                             // Make Health scale to 5 (Hp 0-100% is represented by 0-20) to use 5 bits of this byte, Remaining 3 bits of the byte will be the viewport ID for the client
 
+        // Calculate viewport:
         if (ships[clients[player].viewportID].xPos < GAME_AREA_WIDTH/2)
             viewport.x=0;
         else if (ships[clients[player].viewportID].xPos > STAGE_WIDTH-GAME_AREA_WIDTH/2)
@@ -266,19 +453,18 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
                 tempint=0;
                 tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].source) << 21;
                 for (i=0; i<3; i++) {
-                    gameData[37+counter*3+i] = tempint >> i*8;
+                    gameData[97+counter*3+i] = tempint >> i*8;
                 }
                 counter++;
             }
         }
-        UDPpacketLength = 37+counter*3;
+        UDPpacketLength = 97+counter*3;
         gameData[UDPpacketLength++]=0xFF;
         packetOut->data = gameData;
         packetOut->len = UDPpacketLength;
         packetOut->address.host=clients[player].ipadress;
         packetOut->address.port=clients[player].recvPort;
         SDLNet_UDP_Send(udpSendSock,-1,packetOut);
-   		//printf("Skickade paket till %s (IP=%x)\n",clients[player].name, clients[player].ipadress);
     }
 }
 
@@ -289,8 +475,14 @@ void moveBullets(Bullet bullets[MAX_BULLETS]){
     int i;
     for (i=0; i<MAX_BULLETS; i++) {
         if (bullets[i].active) {
-            bullets[i].xPos += bullets[i].xVel;
-            bullets[i].yPos += bullets[i].yVel;
+            if(timeWarpIsActive){       // If time warp is active the bullets move slower
+                bullets[i].xPos += bullets[i].xVel/3;
+                bullets[i].yPos += bullets[i].yVel/3;
+            }
+            else{
+                bullets[i].xPos += bullets[i].xVel;
+                bullets[i].yPos += bullets[i].yVel;
+            }
             if (bullets[i].xPos > STAGE_WIDTH || bullets[i].xPos < 0 || bullets[i].yPos<0 || bullets[i].yPos>STAGE_HEIGHT) {
                 bullets[i].active=false;
             }
@@ -320,7 +512,7 @@ void handleBot(int id){
     float closestAngle;
 
     for(int i=0; i < MAX_CLIENTS; i++){
-        if(i != id && clients[i].active && !ships[i].isDead){
+        if(i != id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
             deltaX = getDelta(ships[id].xPos, ships[i].xPos);
             deltaY = getDelta(ships[id].yPos, ships[i].yPos);
             distance = getObjectDistance(deltaX, deltaY);

@@ -92,6 +92,8 @@ typedef struct{
     Uint16 ServerRecvUDPPort;
     short health;
     int deathTimer;
+    int powerupTimerStart;
+	short activePowerup, shipAlpha;
 } Client;
 extern Client client;
 
@@ -117,6 +119,7 @@ typedef struct{
     SDL_Texture* texture;
 	SDL_Rect source;
 	SDL_Rect dest;
+	SDL_Rect mapPreviewPlacement;
 } GameBackground;
 extern GameBackground gameBackground;
 
@@ -130,8 +133,21 @@ typedef struct{
 	SDL_Rect mapPlacement;
     SDL_Texture* playerTexture[MAX_PLAYERS];
 	SDL_Rect playerPlacement[MAX_PLAYERS];
+	SDL_Texture* powerupTexture;
+	SDL_Rect powerupPlacement;
 } MiniMap;
 extern MiniMap miniMap;
+
+typedef struct{
+    Uint16 x,y;
+    bool isActive;
+    short type;
+    SDL_Rect placement;
+} PowerupSpawnPoint;
+extern PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
+
+extern SDL_Rect healthBar;
+extern SDL_Rect powerupBar;
 
 extern int mode;                               // Modes as specified in "definitions.h"
 extern int keyboardMode;
@@ -157,6 +173,8 @@ extern IPaddress ip;                           // Contains the information (host
 extern int gameTimeStart;
 extern int gameTimeRemaining;
 extern int deathTimerStart;
+extern int timedTextStart;
+extern short timedTextID;
 
 extern bool throttle;
 extern bool right;
@@ -178,9 +196,13 @@ extern bool infiniteMomentum;
 extern int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 
+extern bool timeWarpIsActive;                      // Whether the timewarp powerup is active for the game
+extern int timeWarpStart;
+extern SDL_Rect timeWarpRect;
+
 extern SDL_Color colorsRGB[14];                    // SDL_Color format RGB
 extern Uint8 colorsPlayer[24];                     // Split colors (3 entries per color: R/G/B)
-
+extern char powerupNames[6][14];                   // Contains all the powerup's names
 // ********************************    TCPHANDLER.C    ******************************************
 
 int TCPhandler(Client* client);

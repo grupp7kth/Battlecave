@@ -9,6 +9,9 @@ SDL_Texture* mLobbyWindow = NULL;
 SDL_Texture* mReady = NULL;
 SDL_Texture* mNameWindow = NULL;
 SDL_Texture* mHealthBar = NULL;
+SDL_Texture* mPowerupBar = NULL;
+SDL_Texture* mTimeWarpBar = NULL;
+SDL_Texture* mPowerupIcon[6] = {NULL};
 
 SDL_Texture* loadTexture(char* filname);
 
@@ -36,6 +39,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     else if(*mode == LOBBY){
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
         SDL_RenderCopy(gRenderer, mLobbyWindow, NULL, &windowPlacement[1]);
+
+        SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &gameBackground.mapPreviewPlacement);  // Shows a preview of the map
 
         setText(mode, gRenderer, select);
 
@@ -85,7 +90,29 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, &gameBackground.dest);
 
-        // Render Ships
+        // If the client is currently teleporting; change the alpha of his ship to tone it in/out
+        if(client.activePowerup == POWERUP_TELEPORT){
+            int tempTeleInt;
+            tempTeleInt = SDL_GetTicks() - client.powerupTimerStart;
+
+            if(tempTeleInt < TELEPORT_DURATION/2)               // For the first half of the teleport duration; fade out
+                client.shipAlpha = 255 - ((tempTeleInt)/(TELEPORT_DURATION/(2*255)));
+            else                                                // For the second half of the teleport duration; fade in again as we've now been teleported
+                client.shipAlpha = (tempTeleInt-1500)/(TELEPORT_DURATION/(2*255));
+
+            if(client.shipAlpha > 255)
+                client.shipAlpha = 255;
+            else if(client.shipAlpha < 0)
+                client.shipAlpha = 0;
+            SDL_SetTextureAlphaMod(ship[client.id].texture, client.shipAlpha);
+
+            if(tempTeleInt >= TELEPORT_DURATION)                // Disable it once the duration is over
+                client.activePowerup = -1;
+        }
+        else
+            SDL_SetTextureAlphaMod(ship[client.id].texture, 0xFF);
+
+        // Render ships
         for(int i = 0; i < MAX_PLAYERS; i++){
             if(!ship[i].active || ship[i].isDead)
                 continue;
@@ -101,6 +128,17 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
                 SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
         }
 
+        // Render powerups
+        for(int i = 0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+            if(!powerupSpawnPoint[i].isActive)
+                continue;
+            powerupSpawnPoint[i].placement.x = powerupSpawnPoint[i].x - gameBackground.source.x;
+            powerupSpawnPoint[i].placement.y = powerupSpawnPoint[i].y - gameBackground.source.y;
+            if(powerupSpawnPoint[i].placement.x < GAME_AREA_WIDTH)                  // Don't bother rendering it if it's under the side-bar
+                SDL_RenderCopy(gRenderer, mPowerupIcon[powerupSpawnPoint[i].type], NULL, &powerupSpawnPoint[i].placement);
+
+        }
+
         SDL_Rect bulletPlacement;
         bulletPlacement.w = 4;
         bulletPlacement.h = 4;
@@ -111,8 +149,45 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             SDL_RenderCopy(gRenderer, miniMap.playerTexture[bullet[i].source] , NULL, &bulletPlacement);
         }
 
+        // Render a time-warp duration bar if it's active
+        if(timeWarpIsActive && !ship[viewportID].isDead){                                         // If the global powerup 'timewarp' is active, we graphically show its duration
+            SDL_SetRenderDrawColor(gRenderer, 0x88, 0x00, 0x15, 0xFF);
+            timeWarpRect.x = 265;
+            timeWarpRect.y = 100;
+            timeWarpRect.h = 20;
+
+            timeWarpRect.w = 500 - (SDL_GetTicks() - timeWarpStart)/20;
+            SDL_RenderCopy(gRenderer, mTimeWarpBar, NULL, &timeWarpRect);
+
+            timeWarpRect.w = 500;
+
+            SDL_RenderDrawRect(gRenderer, &timeWarpRect);
+
+            if((SDL_GetTicks() - timeWarpStart) >= TIMEWARP_DURATION)
+                timeWarpIsActive = false;
+
+            SDL_SetRenderDrawColor(gRenderer, 0x50, 0x50, 0x50, 0xFF);
+        }
+
         // RENDER EVERYTHING SIDEBAR RELATED
+        // Health-bar
+        healthBar.w = 2*client.health;
+        SDL_RenderCopy(gRenderer, mHealthBar, NULL, &healthBar);
+        // Powerup-bar
+        if(client.activePowerup == POWERUP_MULTI3X || client.activePowerup == POWERUP_MULTI2X || client.activePowerup == POWERUP_DOUBLEDAMAGE){ // Only these powerups have a duration on the powerup-bar
+            int tempTimeInt;
+            tempTimeInt = SDL_GetTicks() - client.powerupTimerStart;
+            if(tempTimeInt <= SHIP_POWERUP_DURATION){
+                powerupBar.w = (SHIP_POWERUP_DURATION - tempTimeInt)/50;    // Scale the width to match the remaining time within the 200pix width window
+                SDL_RenderCopy(gRenderer, mPowerupBar, NULL, &powerupBar);
+            }
+            else
+                client.activePowerup = -1;                                  // If the time has run out, no powerup is active
+        }
+
+        // Render the sidebar texture
         SDL_RenderCopy(gRenderer, sideBar.texture, NULL, &sideBar.placement);
+
         // Render MiniMap
         SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &miniMap.mapPlacement);
         for(int i=0; i < MAX_PLAYERS; i++){
@@ -122,14 +197,14 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
                 SDL_RenderCopy(gRenderer, miniMap.playerTexture[i], NULL, &miniMap.playerPlacement[i]);
             }
         }
+        for(int i=0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
+            if(powerupSpawnPoint[i].isActive){
+                miniMap.powerupPlacement.x = powerupSpawnPoint[i].x/10 +  + miniMap.mapPlacement.x - 5;
+                miniMap.powerupPlacement.y = powerupSpawnPoint[i].y/10 +  + miniMap.mapPlacement.y - 5;
+                SDL_RenderCopy(gRenderer, miniMap.powerupTexture, NULL, &miniMap.powerupPlacement);
+            }
+        }
 
-        // Health-bar
-        SDL_Rect health;
-        health.x = GAME_AREA_WIDTH + 27;
-        health.y = 391;
-        health.w = 2*client.health;
-        health.h = 25;
-        SDL_RenderCopy(gRenderer, mHealthBar, NULL, &health);
 
 
 
@@ -156,6 +231,15 @@ void loadMedia(void){
     mLobbyWindow = loadTexture("resources/images/lobbybackground.png");
     mReady = loadTexture("resources/images/ready.png");
     mHealthBar = loadTexture("resources/images/healthbar.png");
+    mPowerupBar = loadTexture("resources/images/powerupbar.png");
+    mTimeWarpBar = loadTexture("resources/images/timewarpbar.png");
+
+    mPowerupIcon[0] = loadTexture("resources/images/tripleshoticon.png");  // There are 6 different powerups available currently
+    mPowerupIcon[1] = loadTexture("resources/images/doubleshoticon.png");
+    mPowerupIcon[2] = loadTexture("resources/images/blackholeicon.png");
+    mPowerupIcon[3] = loadTexture("resources/images/timewarpicon.png");
+    mPowerupIcon[4] = loadTexture("resources/images/doubledamageicon.png");
+    mPowerupIcon[5] = loadTexture("resources/images/teleporticon.png");
 
     sideBar.texture = loadTexture("resources/images/sidebar.png");
     sideBar.placement.x = GAME_AREA_WIDTH;
@@ -169,12 +253,16 @@ void loadMedia(void){
         miniMap.playerTexture[i] = loadTexture("resources/images/playericon.png");
         SDL_SetTextureColorMod(miniMap.playerTexture[i], colorsPlayer[i*3], colorsPlayer[i*3+1], colorsPlayer[i*3+2]);       // Assign each player-icon colors to match their ID-color
     }
+    miniMap.powerupTexture = loadTexture("resources/images/powerupicon.png");
+    miniMap.powerupPlacement.w = 10;
+    miniMap.powerupPlacement.h = 10;
+
     miniMap.mapPlacement.x = GAME_AREA_WIDTH + 7;
     miniMap.mapPlacement.y = 490;
     miniMap.mapPlacement.w = 240;
     miniMap.mapPlacement.h = 160;
 
-    gameBackground.texture = loadTexture("resources/images/cave.png");
+    gameBackground.texture = loadTexture("resources/images/cave2.png");
     gameBackground.source.w = SCREENWIDTH-250;
     gameBackground.source.h = SCREENHEIGHT;
     gameBackground.dest.x = 0;
@@ -182,6 +270,10 @@ void loadMedia(void){
     gameBackground.dest.w = SCREENWIDTH-250;
     gameBackground.dest.h = SCREENHEIGHT;
     SDL_QueryTexture(gameBackground.texture, NULL, NULL, &gameBackground.w, &gameBackground.h);
+    gameBackground.mapPreviewPlacement.x = 879;
+    gameBackground.mapPreviewPlacement.y = 124;
+    gameBackground.mapPreviewPlacement.w = 240;
+    gameBackground.mapPreviewPlacement.h = 160;
 
     for(int i=0; i < MAX_PLAYERS; i++){
         ship[i].texture = loadTexture("resources/images/ship.png");
@@ -221,7 +313,7 @@ void initSDL(void){
         printf("SDL Net Init failed!\n");
         exit(EXIT_FAILURE);
     }
-    SDL_SetRenderDrawColor(gRenderer, 0xED, 0x1C, 0x24, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 0x50, 0x50, 0x50, 0xFF);
     return;
 }
 

@@ -44,7 +44,19 @@
 #define PREAMBLE_DISCONNECT "-"
 #define PREAMBLE_GAMEFREEZE "¤"
 #define PREAMBLE_GAMEEND "="
-#define PREAMBLE_KILLED "}\0"
+#define PREAMBLE_KILLED "}"
+#define PREAMBLE_POWERUP "+"
+#define POWERUP_MULTI3X 0
+#define POWERUP_MULTI2X 1
+#define POWERUP_BLACKHOLE 2
+#define POWERUP_TIMEWARP 3
+#define POWERUP_DOUBLEDAMAGE 4
+#define POWERUP_TELEPORT 5
+#define TIMEWARP_DURATION 10000
+#define POWERUP_SPAWNRATE 10000
+#define SHIP_POWERUP_DURATION 10000         // Duration for non instant powerups gained by ships, such as double/triple shot or double damage
+#define TELEPORT_DURATION 3000
+#define MAX_ALLOWED_POWERUP_SPAWNPOINTS 15
 #define READY "1"
 #define NOT_READY "0"
 #define SHIP_TEXTURE "skepp.png"
@@ -77,8 +89,10 @@ typedef struct{
     double xPos,yPos,xVel,yVel;
     short angle,angleVel;
     Uint8 health;
-    bool acceleration,shooting, isDead;
+    bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
     int deathTimer,deathTimerStart;
+    short activePowerup;
+    int powerupTimerStart, stunDurationStart;
 }Ship;
 
 typedef struct{
@@ -91,6 +105,12 @@ typedef struct{
 typedef struct{
     Uint16 x, y;
 }PlayerSpawnPoint;
+
+typedef struct{
+    Uint16 x,y;
+    bool isActive;
+    short type;
+}PowerupSpawnPoint;
 
 extern bool init();
 extern bool initGame();
@@ -119,7 +139,10 @@ extern int getObjectDistance(int deltaX, int deltaY);
 extern float getObjectAngle(int deltaX, int deltaY);
 extern void removeBOT(int *id);
 extern void fetchMapData(void);
-extern void checkShipHealth();
+extern void checkShipHealth(void);
+extern void handlePowerupSpawns(void);
+extern void handlePowerupGains(void);
+extern void handleActivePowerups(void);
 //------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 extern void moveBullets(Bullet bullets[MAX_BULLETS]);
@@ -133,6 +156,7 @@ extern Client clients[MAX_CLIENTS];
 extern Bullet bullets[MAX_BULLETS];
 extern Ship ships[MAX_CLIENTS];
 extern PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
+extern PowerupSpawnPoint powerupSpawnPoint[];
 extern SDL_Surface* background;
 
 extern UDPpacket *packetOut;
@@ -151,4 +175,11 @@ extern int MaxSpeedList[5];
 extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 extern bool infiniteMomentum;
+
+extern short numberOfPowerups;
+extern short activePowerupSpawns;
+extern int powerupSpawnTimerStart;
+extern bool timeWarpIsActive;
+extern int timeWarpStartTime;
+extern int timeWarpFreq;
 #endif // SERVERHEADER_H_INCLUDED

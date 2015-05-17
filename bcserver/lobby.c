@@ -101,8 +101,9 @@ int Lobby(void * data) {
                }
             }
             else {
-                //printf("%s: %s", clients[clientId].name, TCPrecv);
-                ships[0].health-= 50; //***************************************************************************************************
+                ships[0].health -= 25;
+
+
                 clearString(TCPsend);
                 sprintf(TCPsend, PREAMBLE_CHAT"%c%s: %s",clients[clientId].id+54,clients[clientId].name,TCPrecv); // +54 Because we have to send the ID as ASCII, and then add 6 to get to the player-index-colors in the client color table
                 clearReturn(TCPsend);

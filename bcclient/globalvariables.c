@@ -9,6 +9,10 @@ Bullet bullet[MAX_BULLETS];
 GameBackground gameBackground;
 SideBar sideBar;
 MiniMap miniMap;
+PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
+
+SDL_Rect healthBar;
+SDL_Rect powerupBar;
 
 int mode;                               // Modes as specified in "definitions.h"
 int keyboardMode;
@@ -33,6 +37,8 @@ IPaddress ip;                               // Contains the information (host + 
 int gameTimeStart;
 int gameTimeRemaining;
 int deathTimerStart;
+int timedTextStart;
+short timedTextID;
 
 bool throttle;
 bool right;
@@ -55,6 +61,10 @@ bool infiniteMomentum;
 int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};
 
+bool timeWarpIsActive = false;              // Whether the timewarp powerup is active for the game
+int timeWarpStart;
+SDL_Rect timeWarpRect;
+
 SDL_Color colorsRGB[14] = {{225, 225, 255},     // 0  = White
                            {255, 255, 150},     // 1  = Bright Yellow
                            {0, 0, 0},           // 2  = Black
@@ -70,11 +80,17 @@ SDL_Color colorsRGB[14] = {{225, 225, 255},     // 0  = White
                            {255,128,192},       // 12 = Pink
                            {128,64,0}};         // 13 = Brown
 
-Uint8 colorsPlayer[24] = {255,0,0,         //   0-2  = Red
-                          0,0,255,         //   3-5  = Blue
-                          0,255,0,         //   6-8  = Green
-                          255,255,0,       //  9-11  = Yellow
-                          128,0,255,       // 12-14 = Purple
-                          255,128,0,       // 15-17 = Orange
-                          255,128,192,     // 18-20 = Pink
-                          128,64,0};       // 21-23 = Brown
+Uint8 colorsPlayer[24] = {255,0,0,              //   0-2  = Red
+                          0,0,255,              //   3-5  = Blue
+                          0,255,0,              //   6-8  = Green
+                          255,255,0,            //  9-11  = Yellow
+                          128,0,255,            // 12-14 = Purple
+                          255,128,0,            // 15-17 = Orange
+                          255,128,192,          // 18-20 = Pink
+                          128,64,0};            // 21-23 = Brown
+
+char powerupNames[6][14] = {"Triple Shot",      // Contains all the powerup's names
+                            "Double Shot",
+                            "Blackhole",
+                            "Time Warp","Double Damage",
+                            "Teleport"};

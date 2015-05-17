@@ -1,7 +1,7 @@
 #ifndef MODEDEFINITIONS
 #define MODEDEFINITIONS
 
-#define CLIENT_VERSION "v 0.51"
+#define CLIENT_VERSION "v 0.62"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -55,6 +55,20 @@
 #define PREAMBLE_GAMEEND '='
 #define PREAMBLE_OPTIONS '*'
 #define PREAMBLE_KILLED '}'
+#define PREAMBLE_POWERUP '+'
+
+#define POWERUP_MULTI3X 0
+#define POWERUP_MULTI2X 1
+#define POWERUP_BLACKHOLE 2
+#define POWERUP_TIMEWARP 3
+#define POWERUP_DOUBLEDAMAGE 4
+#define POWERUP_TELEPORT 5
+
+#define TIMEWARP_DURATION 10000
+#define MAX_ALLOWED_POWERUP_SPAWNPOINTS 15
+#define SHIP_POWERUP_DURATION 10000         // Duration for non instant powerups gained by ships, such as double/triple shot or double damage
+#define POWERUP_NOTIFICATION_DURATION 1500
+#define TELEPORT_DURATION 3000
 
 #define TOGGLE_BULLETINTERVAL 1
 #define TOGGLE_INFINITEMOMENTUM 2

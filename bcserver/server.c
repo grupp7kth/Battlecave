@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         packetID=0;
         createAndSendUDPPackets(ships, bullets);
         char gameCounter[MAX_LENGTH];
-        GameFreezeTime = 3; // -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
+        GameFreezeTime = 3;                 // -1 = Game Active, 0 = Game Just Started, 1-3 = N seconds left
         while (GameFreezeTime>=-1) {
             sprintf(gameCounter,PREAMBLE_GAMEFREEZE"%d",GameFreezeTime);
             broadCast(gameCounter);
@@ -39,9 +39,16 @@ int main(int argc, char *argv[]) {
             if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             if(computerPlayerCount > 0)
                 updateBots();
+
+            if(timeWarpIsActive && (SDL_GetTicks() - timeWarpStartTime) >= TIMEWARP_DURATION) // If timewarp is active and has run for its duration; turn it off
+                timeWarpIsActive = false;
+
             updateShip(ships);
             moveBullets(bullets);
             checkShipHealth();
+            handlePowerupSpawns();          // Places the powerups on the map
+            handlePowerupGains();           // Checks whether players aquire the placed powerups
+            handleActivePowerups();       // Tests whether player's powerups run out
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000){      // *1000 for MS to S, *60 for Minutes
