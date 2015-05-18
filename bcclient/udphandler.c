@@ -8,23 +8,15 @@ int UDPhandler(void){
     outPacket->address.port = client.ServerRecvUDPPort;
     outPacket->address.host = SDLNet_TCP_GetPeerAddress(client.TCPSock)->host;
     inPacket = SDLNet_AllocPacket(1024);
-short fakka = 0;
+
     for(;;){
         if(mode == IN_GAME){
             // Send key-press data to server
-            if(fakka >= 3){
-
-                if(!ship[client.id].isDead && gameFreezeTime < 0){
-                    outPacket->data[0] = pressedButtons;
-                    outPacket->len = sizeof(pressedButtons);
-                    SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
-                }
-                fakka=0;
-
+            if(!ship[client.id].isDead && gameFreezeTime < 0){
+                outPacket->data[0] = pressedButtons;
+                outPacket->len = sizeof(pressedButtons);
+                SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);
             }
-            else
-                fakka++;
-
 
             // Recieve placement data from server
             if(SDLNet_UDP_Recv(client.UDPRecvSock, inPacket) > 0){
