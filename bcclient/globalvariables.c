@@ -46,7 +46,7 @@ bool left;
 bool shooting;
 short viewportID;
 Uint8 pressedButtons;
-Uint8 lastPressedButton;
+Uint8 lastPressedButtons;
 UDPpacket* outPacket;
 UDPpacket* inPacket;
 

@@ -182,6 +182,7 @@ extern bool left;
 extern bool shooting;
 extern short viewportID;
 extern Uint8 pressedButtons;
+extern Uint8 lastPressedButtons;
 extern UDPpacket* outPacket;
 extern UDPpacket* inPacket;
 
