@@ -32,7 +32,7 @@ int main(int argc, char* args[]){
         renderScreen(&mode, &select, buttonPlacement, windowPlacement);
 
         //soundHandler();
-        SDL_Delay(10);
+        SDL_Delay(75);
     }
 
     closeRenderer();
