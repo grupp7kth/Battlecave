@@ -48,7 +48,14 @@ int main(int argc, char *argv[]) {
             checkShipHealth();
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
-            handleActivePowerups();       // Tests whether player's powerups run out
+            handleActivePowerups();         // Tests whether player's powerups run out
+
+            lastLaptime = laptime;
+            laptime = SDL_GetTicks();
+
+            printf("Took MS=%d\n", laptime - lastLaptime);
+
+
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000){      // *1000 for MS to S, *60 for Minutes
@@ -115,12 +122,14 @@ void acceptConnection() {
         SDL_Delay(500);
     }
 }
+
 int getClientId() {
     for (int i=0; i<MAX_CLIENTS; i++) {
         if (!clients[i].active) return i;
     }
     return -1;
 }
+
 bool loadMedia() {
 	background=IMG_Load(BACKGROUND_TEXTURE);
 	if (background==NULL) return false;

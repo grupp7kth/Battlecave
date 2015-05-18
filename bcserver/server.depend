@@ -68,7 +68,7 @@
 1431946277 source:c:\users\johan\documents\github\battlecave\bcserver\game.c
 	"serverheader.h"
 
-1431946277 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
+1431946947 c:\users\johan\documents\github\battlecave\bcserver\serverheader.h
 	<stdio.h>
 	<stdbool.h>
 	<string.h>
@@ -88,9 +88,9 @@
 1431885527 source:c:\users\johan\documents\github\battlecave\bcserver\lobby.c
 	"serverheader.h"
 
-1431946277 source:c:\users\johan\documents\github\battlecave\bcserver\server.c
+1431946945 source:c:\users\johan\documents\github\battlecave\bcserver\server.c
 	"serverheader.h"
 
-1431897180 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
+1431946877 source:c:\users\johan\documents\github\battlecave\bcserver\serverheader.c
 	"serverheader.h"
 

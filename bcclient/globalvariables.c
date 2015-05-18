@@ -94,3 +94,6 @@ char powerupNames[6][14] = {"Triple Shot",      // Contains all the powerup's na
                             "Blackhole",
                             "Time Warp","Double Damage",
                             "Teleport"};
+
+int laptime;
+int lastLaptime;

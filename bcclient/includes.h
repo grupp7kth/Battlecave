@@ -203,6 +203,9 @@ extern SDL_Rect timeWarpRect;
 extern SDL_Color colorsRGB[14];                    // SDL_Color format RGB
 extern Uint8 colorsPlayer[24];                     // Split colors (3 entries per color: R/G/B)
 extern char powerupNames[6][14];                   // Contains all the powerup's names
+
+extern int laptime;
+extern int lastLaptime;
 // ********************************    TCPHANDLER.C    ******************************************
 
 int TCPhandler(Client* client);

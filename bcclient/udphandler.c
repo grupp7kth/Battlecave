@@ -24,6 +24,10 @@ int UDPhandler(void){
             }
 
         }
+        lastLaptime = laptime;
+        laptime = SDL_GetTicks();
+        printf("Took MS=%d\n", laptime - lastLaptime);
+
         SDL_Delay(20);
     }
     return 0;
