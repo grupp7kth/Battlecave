@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
                 activeMaxSpeed = 1;
                 activeBulletInterval = 1;
                 infiniteMomentum = false;
+                activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }
             SDL_Delay(20);
