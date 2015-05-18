@@ -26,6 +26,9 @@ int UDPhandler(void){
 
         }
         SDL_Delay(20);
+
+        if(!isConnected)
+            break;
     }
     return 0;
 }

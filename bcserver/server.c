@@ -36,7 +36,6 @@ int main(int argc, char *argv[]) {
         gameStartTime = SDL_GetTicks();
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
         while (gameIsActive) {
-            if (!ClientsAreReady()) { gameIsActive = false; puts("All clients gone, game resset"); }
             if(computerPlayerCount > 0)
                 updateBots();
 
@@ -51,7 +50,7 @@ int main(int argc, char *argv[]) {
             handleActivePowerups();         // Tests whether player's powerups run out
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
-            if(gameRunningTime >= gameLenghtList[activeGameLength]*60000){      // *1000 for MS to S, *60 for Minutes
+            if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){      // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);
                 gameIsActive = false;
                 for(int i=0; i < MAX_CLIENTS; i++){
@@ -64,6 +63,7 @@ int main(int argc, char *argv[]) {
                 activeMaxSpeed = 1;
                 activeBulletInterval = 1;
                 infiniteMomentum = false;
+                puts("All clients gone, game reset");
             }
             SDL_Delay(20);
         }
