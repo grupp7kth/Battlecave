@@ -27,6 +27,8 @@ int UDPhandler(void){
         lastLaptime = laptime;
         laptime = SDL_GetTicks();
         printf("Took MS=%d\n", laptime - lastLaptime);
+
+        SDL_Delay(10);
     }
     return 0;
 }
