@@ -69,6 +69,7 @@
 #define TOGGLE_GAMELENGTH 4
 #define MAX_HEALTH 100
 #define RESPAWN_TIME_MS 10000
+#define BACKGROUND_NONBUMPCOLOUR -16777216
 
 typedef struct{
     TCPsocket socket;
@@ -93,6 +94,7 @@ typedef struct{
     int deathTimer,deathTimerStart;
     short activePowerup;
     int powerupTimerStart, stunDurationStart;
+    SDL_Point* pixlar;
 }Ship;
 
 typedef struct{
@@ -158,6 +160,7 @@ extern Ship ships[MAX_CLIENTS];
 extern PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
 extern PowerupSpawnPoint powerupSpawnPoint[];
 extern SDL_Surface* background;
+extern Uint8* bumpmap;
 
 extern UDPpacket *packetOut;
 extern Uint8 gameData[1000];

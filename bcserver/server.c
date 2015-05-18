@@ -44,6 +44,10 @@ int main(int argc, char *argv[]) {
 
             updateShip(ships);
             moveBullets(bullets);
+
+            
+            
+            
             checkShipHealth();
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
@@ -128,7 +132,21 @@ int getClientId() {
 bool loadMedia() {
 	background=IMG_Load(BACKGROUND_TEXTURE);
 	if (background==NULL) return false;
-	SDL_SetColorKey(background,SDL_TRUE,SDL_MapRGB(background->format,255,255,255));
+
+	printf("Bakgrund W: %d, H: %d\n",background->w,background->h);
+	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(laddadyta->w * laddadyta->h));
+	bumpmap = malloc(sizeof(Uint8)*(laddadyta->w * laddadyta->h));
+	printf("Pitch: %d\n",laddadyta->pitch);
+	int i,j;
+	void* pixlar = background->pixels;
+	int* siffra = (int*)pixlar;
+	for (i=0; i<background->h; i++) {
+		for (j=0; j<packground->w;j++) {
+			bumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
+		}
+	}
+	
+//	SDL_SetColorKey(background,SDL_TRUE,SDL_MapRGB(background->format,255,255,255));
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;
