@@ -59,7 +59,7 @@
 #define MAX_ALLOWED_POWERUP_SPAWNPOINTS 15
 #define READY "1"
 #define NOT_READY "0"
-#define SHIP_TEXTURE "skepp.png"
+#define SHIP_TEXTURE "ship.png"
 #define BACKGROUND_TEXTURE "cave.png"
 #define PLAYER_TYPE_HUMAN 0
 #define PLAYER_TYPE_BOT 1

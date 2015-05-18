@@ -144,6 +144,7 @@ bool initGame(){
 	}
     fetchMapData();
 
+
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
 
