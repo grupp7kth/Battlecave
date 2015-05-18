@@ -195,7 +195,7 @@ void checkShipHealth(){
 
 void fetchMapData(void){
     char mapName[30] = {'\0'}, readNum[5] = {'\0'};
-    strcat(mapName, "cave2"); //******************************************************************************* MAKE VARIABLE??
+    strcat(mapName, "cave");
     strcat(mapName, ".bcmf");                           // BattleCave Map File
 
     FILE *fp;
