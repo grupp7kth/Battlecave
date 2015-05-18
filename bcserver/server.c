@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
             handleActivePowerups();         // Tests whether player's powerups run out
             createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
-            if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){      // *1000 for MS to S, *60 for Minutes
+            if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){ // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);
                 gameIsActive = false;
                 for(int i=0; i < MAX_CLIENTS; i++){
@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
                 activeMaxSpeed = 1;
                 activeBulletInterval = 1;
                 infiniteMomentum = false;
-                activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }
             SDL_Delay(20);
@@ -72,6 +71,7 @@ int main(int argc, char *argv[]) {
     closeServer();
     return 0;
 }
+
 void acceptConnection() {
     int clientId;
     TCPsocket incomming;
