@@ -157,7 +157,6 @@ bool initGame(){
     }
 
     powerupSpawnTimerStart = POWERUP_SPAWNRATE;
-    activePowerupSpawns = 0;
     return true;
 }
 void checkShipHealth(){
