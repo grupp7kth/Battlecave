@@ -182,6 +182,4 @@ extern int powerupSpawnTimerStart;
 extern bool timeWarpIsActive;
 extern int timeWarpStartTime;
 extern int timeWarpFreq;
-extern int lastLaptime;
-extern int laptime;
 #endif // SERVERHEADER_H_INCLUDED

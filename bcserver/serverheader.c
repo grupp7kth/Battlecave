@@ -71,5 +71,3 @@ int powerupSpawnTimerStart;
 bool timeWarpIsActive = false;
 int timeWarpStartTime;
 int timeWarpFreq;
-int lastLaptime;
-int laptime;
