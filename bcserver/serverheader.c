@@ -37,6 +37,8 @@ void moveShips(Ship ships[MAX_CLIENTS]);
 void updateShip(Ship* ship);
 void addBullet(Ship* ship, int *id);
 int findFreeBullet(Bullet bullets[MAX_BULLETS]);
+void checkCollisions(Ship* skepp, Bullet* skotten);
+
 
 UDPsocket udpSendSock, udpRecvSock;
 Client clients[MAX_CLIENTS];
@@ -45,6 +47,7 @@ Ship ships[MAX_CLIENTS];
 PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
 PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
 SDL_Surface* background;
+Uint8* backgroundBumpmap;
 
 //byt från globala!!
 UDPpacket *packetOut;

@@ -44,10 +44,7 @@ int main(int argc, char *argv[]) {
 
             updateShip(ships);
             moveBullets(bullets);
-
-            
-            
-            
+            checkCollisions(ships,bullets);
             checkShipHealth();
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
@@ -70,7 +67,7 @@ int main(int argc, char *argv[]) {
                 activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }
-            SDL_Delay(20);
+            SDL_Delay(33);
         }
     }
     closeServer();
@@ -134,23 +131,59 @@ bool loadMedia() {
 	if (background==NULL) return false;
 
 	printf("Bakgrund W: %d, H: %d\n",background->w,background->h);
-	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(laddadyta->w * laddadyta->h));
-	bumpmap = malloc(sizeof(Uint8)*(laddadyta->w * laddadyta->h));
-	printf("Pitch: %d\n",laddadyta->pitch);
+	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(background->w * background->h));
+	backgroundBumpmap = malloc(sizeof(Uint8)*(background->w * background->h));
+	printf("Pitch: %d\n",background->pitch);
 	int i,j;
 	void* pixlar = background->pixels;
 	int* siffra = (int*)pixlar;
 	for (i=0; i<background->h; i++) {
-		for (j=0; j<packground->w;j++) {
-			bumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
+		for (j=0; j<background->w;j++) {
+			backgroundBumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
 		}
 	}
 	
-//	SDL_SetColorKey(background,SDL_TRUE,SDL_MapRGB(background->format,255,255,255));
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;
-		SDL_SetColorKey(ships[i].surface,SDL_TRUE,SDL_MapRGB(ships[i].surface->format,255,255,255));
+		
+		printf("Sprajten: W: %d, H: %d\n",ships[i].surface->w,ships[i].surface->h);
+		int bredd = ships[i].surface->w;
+		int hojd = ships[i].surface->h;
+		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
+			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
+			exit(1);
+		}
+		SDL_Point mittpunkt;
+		mittpunkt.x = ships[i].surface->w/2;
+		mittpunkt.y = ships[i].surface->h/2;
+//		printf("Mittpunkten {r (%d:%d)\n",mittpunkt.x,mittpunkt.y);
+//		printf("Pitch: %d\n",laddadyta->pitch);
+		//Kolla hur m}nga krockbara pixlar som finns i spriten.
+		int j,k,l,counter;
+		void* pixlar = ships[i].surface->pixels;
+		int* siffra = (int*)pixlar;
+		// Leta upp krockbara pixlar i ytan, och malloca pixlar efter det.
+		for (j=0,counter=0; j<ships[i].surface->h; j++) {
+			for (k=0; k<ships[i].surface->w;k++) {
+				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) counter++;;
+			}
+		}
+		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
+		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
+		// Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
+		ships[i].antalPixlar = counter;
+	
+		for (j=0, counter=0; j<ships[i].surface->h; j++) {
+			for (k=0; k<ships[i].surface->w;k++) {
+				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) {
+					ships[i].pixlar[counter].x = k-mittpunkt.x;
+					ships[i].pixlar[counter].y = j-mittpunkt.y;
+					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
+					counter++;
+				}
+			}
+		}
 	}
 	return true;
 }

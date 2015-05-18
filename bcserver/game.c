@@ -1,4 +1,5 @@
 #include "serverheader.h"
+#define PI 3.14159265359
 
 double getRadians(int a) {
 	return (a+90)*3.14159265/180;
@@ -12,9 +13,27 @@ int IdFromPort(Uint32 ip) {
 	}
 	return -1;
 }
+
+void checkCollisions(Ship* skepp, Bullet* skotten) {
+	int i, j, xcoord, ycoord;
+	for (i=0; i<MAX_CLIENTS; i++) {
+		if (!clients[i].active) continue;
+		printf("Checking ship %d\n",i);
+		double angleCos = cos(skepp[i].angle*PI/180);
+		double angleSin = sin(skepp[i].angle*PI/180);
+		for (j=0; j<skepp[i].antalPixlar; j++) {
+			int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+			int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+			if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
+				skepp[i].health=0;
+			}
+		}
+	}
+}
+
 /** uppdaterar ett skepps position baserat p} hastighet.
  @var skeppet: Det skepp som ska uppdateras.
- */ /// alkdjlaksjdlaskjd
+ */
 void updateShip(Ship ships[MAX_CLIENTS]) {
     for (int i=0; i<MAX_CLIENTS; i++){
         if(ships[i].isStunned)            // Move nothing if the player's stunned
@@ -168,6 +187,7 @@ void checkShipHealth(){
             ships[i].isDead = true;
             ships[i].xVel = 0;
             ships[i].yVel = 0;
+            ships[i].acceleration =0;
             short attempts = 0;
             do{                                 // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
                 clients[i].viewportID = rand() % 8;
@@ -183,8 +203,10 @@ void checkShipHealth(){
             ships[i].health = 100;
             ships[i].isDead = false;
             int tempSpawnID = rand() % 8;
-            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
-            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
+            ships[i].xPos = 400;
+            ships[i].yPos = 400;
+//            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
+//            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
             ships[i].angle = 0;
             clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
         }
@@ -349,7 +371,6 @@ void handleActivePowerups(void){
 }
 
 int udpListener(void* data) {
-
 	UDPpacket *packetIn;
 	packetIn = SDLNet_AllocPacket(16);
 	short clientId=0, key=0;
@@ -360,7 +381,7 @@ int udpListener(void* data) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
             if ((key & 3) == 1) ships[clientId].angleVel=6;
-            else if ((key & 3) == 2) ships[clientId].angleVel=-6;
+	    else if ((key & 3) == 2) ships[clientId].angleVel=-6;
             else ships[clientId].angleVel = 0;
 
             if ((key & 4) == 4) ships[clientId].acceleration=true;
@@ -375,16 +396,16 @@ int udpListener(void* data) {
 }
 
 /** skapar en en Uint8-array (dataToClient) av alla skeppspositioner och skottpositioner.
- * Denna skr{ddarsys för varje klient, eftersom den bara skickar de skottpositioner
- * som klienten ska se p} sin skärm. Rent konkret inneh}ller varje paket:
- * Byte 0–3 (4 bytes) en int som {r en tidsangivelse (paketnumrering).
- * Byte 4–35 (32 bytes) information om det skeppen (4 bytes * 8 skepp).
- * Byte 36– (max –935) Upp till 300 positioner (3 bytes var).
+ * Denna skr{ddarsys f|r varje klient, eftersom den bara skickar de skottpositioner
+ * som klienten ska se p} sin sk{rm. Rent konkret inneh}ller varje paket:
+ * Byte 0-3 (4 bytes) en int som {r en tidsangivelse (paketnumrering).
+ * Byte 4-35 (32 bytes) information om det skeppen (4 bytes * 8 skepp).
+ * Byte 36- (max -935) Upp till 300 positioner (3 bytes var).
  *	Alla dessa {r skottpositioner f|r klientens sk{rm, plus 4 kontrollbitar per skott.
  *	Metoden kontrollerar vilka skott som ska vara med p} spelarens sk{rm, och skickar positionen
  *	endast f|r detta skott.
  *	Efter sista relevanta skottet skickar den en byte '11111111' som markerar slutet.
- *	Arrayen {r allts} 937 bytes stor (0–936).
+ *	Arrayen {r allts} 937 bytes stor (0-936).
  * Fult nog {r dataToClient global f|r tillf{llet.
  @var skeppen: en serverShip-array av de skepp som finns i spelet.
  @var skotten: en serverBullet-array av de skott som finns i spelet.

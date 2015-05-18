@@ -70,6 +70,7 @@
 #define MAX_HEALTH 100
 #define RESPAWN_TIME_MS 10000
 #define BACKGROUND_NONBUMPCOLOUR -16777216
+#define SHIP_NONBUMPCOLOUR -1
 
 typedef struct{
     TCPsocket socket;
@@ -95,6 +96,7 @@ typedef struct{
     short activePowerup;
     int powerupTimerStart, stunDurationStart;
     SDL_Point* pixlar;
+    short antalPixlar;
 }Ship;
 
 typedef struct{
@@ -152,6 +154,8 @@ extern void moveShips(Ship ships[MAX_CLIENTS]);
 extern void updateShip(Ship* ship);
 extern void addBullet(Ship* ship, int *id);
 extern int findFreeBullet(Bullet bullets[MAX_BULLETS]);
+extern void checkCollisions(Ship* skepp, Bullet* skotten);
+
 
 extern UDPsocket udpSendSock, udpRecvSock;
 extern Client clients[MAX_CLIENTS];
@@ -160,7 +164,7 @@ extern Ship ships[MAX_CLIENTS];
 extern PlayerSpawnPoint playerSpawnPoint[MAX_CLIENTS];
 extern PowerupSpawnPoint powerupSpawnPoint[];
 extern SDL_Surface* background;
-extern Uint8* bumpmap;
+extern Uint8* backgroundBumpmap;
 
 extern UDPpacket *packetOut;
 extern Uint8 gameData[1000];
