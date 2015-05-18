@@ -510,8 +510,9 @@ void updateBots(void){
 void handleBot(int id){
     int closestDistance = 0, distance, deltaX, deltaY;
     float closestAngle;
+    short closestType;                      // 0 = Enemy ship , 1 = Powerup Spawn
 
-    for(int i=0; i < MAX_CLIENTS; i++){
+    for(int i=0; i < MAX_CLIENTS; i++){     // First determine the closest enemy ship
         if(i != id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
             deltaX = getDelta(ships[id].xPos, ships[i].xPos);
             deltaY = getDelta(ships[id].yPos, ships[i].yPos);
@@ -519,6 +520,7 @@ void handleBot(int id){
 
             if(closestDistance <= 0 || distance < closestDistance){
                 closestDistance = distance;
+                closestType = 0;
 
                 closestAngle = getObjectAngle(deltaX, deltaY);
                 if(deltaX <= 0)              // The angle will be relative to the ship; 0-180 means it's to the right, 0-(-180) means left
@@ -529,6 +531,28 @@ void handleBot(int id){
             }
         }
     }
+    for(int i=0; i < numberOfPowerups; i++){  // Secondly determine the closest powerup
+        if(powerupSpawnPoint[i].isActive){
+            deltaX = getDelta(ships[id].xPos, powerupSpawnPoint[i].x);
+            deltaY = getDelta(ships[id].yPos, powerupSpawnPoint[i].y);
+            distance = getObjectDistance(deltaX, deltaY);
+
+
+            if(closestDistance <= 0 || distance < closestDistance){
+                closestDistance = distance;
+                closestType = 1;
+
+                closestAngle = getObjectAngle(deltaX, deltaY);
+                if(deltaX <= 0)              // The angle will be relative to the ship; 0-180 means it's to the right, 0-(-180) means left
+                    closestAngle += 90;
+                else
+                    closestAngle += 270;
+                closestAngle = closestAngle - ships[id].angle;
+            }
+        }
+
+    }
+
     if(closestDistance <= 0)
         return;
 
@@ -539,16 +563,25 @@ void handleBot(int id){
     else
         ships[id].angleVel = 0;
 
-    if(abs(closestAngle) < 5){
-        if(closestDistance <= 400)
-            ships[id].shooting = true;
-        else
-            ships[id].shooting = false;
 
-        if(closestDistance > 300)
-            ships[id].acceleration = true;
-        else
-            ships[id].acceleration = false;
+    if(abs(closestAngle) < 5){               // If we've facing our target
+        if(closestType == 0){                // If the target is an enemy ship
+            if(closestDistance <= 400)
+                ships[id].shooting = true;
+            else
+                ships[id].shooting = false;
+
+            if(closestDistance > 300)
+                ships[id].acceleration = true;
+            else
+                ships[id].acceleration = false;
+        }
+        else{
+            if(closestDistance > 100)
+                ships[id].acceleration = true;
+            else
+                ships[id].acceleration = false;
+        }
     }
 
 

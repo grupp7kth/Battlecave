@@ -1,3 +1,6 @@
+0.63 :
+* Bots now attempt to aquire powerups in addition to kill enemies.
+
 0.62 : 
 * The teleport powerup no longer displaces the player instantly, instead it fades the ship out, moves it and then fades it back in.
     The ship will be invulnerable while teleporting.
