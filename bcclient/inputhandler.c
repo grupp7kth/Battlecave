@@ -322,8 +322,8 @@ void joinLobby(int *mode){
     SDLNet_TCP_Send(client.TCPSock, textString[ENTERING_NAME], MAX_NAME_LENGTH);
 
     // Open the UDP Sockets; Recieve & Send
-    client.UDPRecvSock = SDLNet_UDP_Open(4447);
-    client.UDPSendSock = SDLNet_UDP_Open(4448);
+    client.UDPRecvSock = SDLNet_UDP_Open(60003);
+    client.UDPSendSock = SDLNet_UDP_Open(60004);
     if(client.UDPRecvSock == NULL || client.UDPSendSock == NULL){
         printf("Opening of UDP sockets failed!\n");
         exit(EXIT_FAILURE);

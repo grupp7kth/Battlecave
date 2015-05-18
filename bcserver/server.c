@@ -144,12 +144,12 @@ bool init() {
 
     if(!loadMedia()) printf("Init failed at step: 4\n");
 
-    udpSendSock = SDLNet_UDP_Open(4446);
-    udpRecvSock = SDLNet_UDP_Open(4445);
+    udpSendSock = SDLNet_UDP_Open(60002);
+    udpRecvSock = SDLNet_UDP_Open(60001);
     packetOut=SDLNet_AllocPacket(16);
 
     if (udpSendSock == NULL || udpRecvSock == NULL) printf("Init failed at step: 5\n");
-    SDLNet_ResolveHost(&serverIP, NULL, 4444);
+    SDLNet_ResolveHost(&serverIP, NULL, 60000);
     TCPsock = SDLNet_TCP_Open(&serverIP);
     if(TCPsock==NULL)printf("Init failed at step: 6\n");
 
