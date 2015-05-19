@@ -18,7 +18,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 	// F|rst kolla varje skepp
 	int i, j, k, xcoord, ycoord;
 	for (i=0; i<MAX_CLIENTS; i++) {
-		if (!clients[i].active) continue;
+		if (!clients[i].active && !skepp[i].isDead) continue;
 //		printf("Checking ship %d\n",i);
 		double angleCos = cos(skepp[i].angle*PI/180);
 		double angleSin = sin(skepp[i].angle*PI/180);
@@ -223,6 +223,19 @@ void checkShipHealth(){
             ships[i].xVel = 0;
             ships[i].yVel = 0;
             ships[i].acceleration =0;
+            int freespot;
+            double j;
+            for (j=0; j<2*PI; j+=PI/12) {
+		    freespot = findFreeBullet(bullets);
+		    if (freespot < 0) continue;
+		    bullets[freespot].xPos = ships[i].xPos - cos(j)*15;
+		    bullets[freespot].yPos = ships[i].yPos - sin(j)*15;
+		    bullets[freespot].xVel = - cos(j)*1.6;
+		    bullets[freespot].yVel = - sin(j)*1.6;
+		    bullets[freespot].active = true;
+		    bullets[freespot].source = i;
+//		    printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
+	    }
             short attempts = 0;
             do{                                 // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
                 clients[i].viewportID = rand() % 8;
@@ -239,7 +252,20 @@ void checkShipHealth(){
             ships[i].xVel = 0;
             ships[i].yVel = 0;
             ships[i].acceleration =0;
-                   }
+            int freespot;
+            double j;
+            for (j=0; j<2*PI; j+=PI/12) {
+		    freespot = findFreeBullet(bullets);
+		    if (freespot < 0) continue;
+		    bullets[freespot].xPos = ships[i].xPos - cos(j)*15;
+		    bullets[freespot].yPos = ships[i].yPos - sin(j)*15;
+		    bullets[freespot].xVel = - cos(j)*1.6;
+		    bullets[freespot].yVel = - sin(j)*1.6;
+		    bullets[freespot].active = true;
+		    bullets[freespot].source = i;
+//		    printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
+	    }
+        }
         else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
             ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
         }
