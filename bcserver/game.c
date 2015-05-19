@@ -31,12 +31,15 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 			}
 		}
 	}
-/*	// Kolla om skotten krockar med bakgrunden
+	// Kolla om skotten krockar med bakgrunden
 	for (i=0; i<MAX_BULLETS; i++) {
 		if (bullets[i].active) {
-			if (backgroundBumpmap[(int)(bullets[i].yPos*STAGE_WIDTH+bullets[i].xPos)]) bullets[i].active=false;
+			printf("Checking bullet %d\n",i);
+			if (backgroundBumpmap[(int)bullets[i].yPos*STAGE_WIDTH+(int)bullets[i].xPos]) {
+				bullets[i].active=false;
+			}
 		}
-	}*/
+	}
 }
 
 /** uppdaterar ett skepps position baserat p} hastighet.
