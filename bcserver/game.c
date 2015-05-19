@@ -207,6 +207,15 @@ void checkShipHealth(){
             if(attempts >= 50)
                 clients[i].viewportID = i;
         }
+        else if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_BOT) {
+            //SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
+            ships[i].deathTimer=RESPAWN_TIME_MS;
+            ships[i].deathTimerStart = SDL_GetTicks();
+            ships[i].isDead = true;
+            ships[i].xVel = 0;
+            ships[i].yVel = 0;
+            ships[i].acceleration =0;
+                   }
         else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
             ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
         }
@@ -532,7 +541,7 @@ void moveBullets(Bullet bullets[MAX_BULLETS]){
 
 void updateBots(void){
     for(int i=0; i < MAX_CLIENTS; i++){
-        if(clients[i].playerType == PLAYER_TYPE_BOT){
+        if(clients[i].playerType == PLAYER_TYPE_BOT && !ships[i].isDead){
             handleBot(i);
         }
     }
