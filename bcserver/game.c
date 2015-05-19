@@ -34,10 +34,20 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 	// Kolla om skotten krockar med bakgrunden
 	for (i=0; i<MAX_BULLETS; i++) {
 		if (bullets[i].active) {
-			printf("Checking bullet %d\n",i);
+//			printf("Checking bullet %d\n",i);
 			if (backgroundBumpmap[(int)bullets[i].yPos*STAGE_WIDTH+(int)bullets[i].xPos]) {
 				bullets[i].active=false;
 			}
+		}
+	}
+	// Kolla om skotten krockar med skepp
+	double distance;
+	for (i=0; i<MAX_BULLETS; i++) {
+		for (j=0; j<MAX_CLIENTS; j++) {
+			if (!bullets[i].active || !clients[j].active) continue;
+			distance = sqrt(pow(bullets[i].xPos-ships[i].xPos,2)+pow(bullets[i].yPos-ships[i].yPos,2));
+			printf("Bullet %d ship %d: %f\n",i,j,distance);
+			if (distance <20) puts("Danger!");
 		}
 	}
 }
@@ -52,8 +62,8 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
 
         if(clients[i].active){
             if (ships[i].acceleration) {
-                ships[i].yVel-=sin(getRadians(ships[i].angle))*0.1;
-                ships[i].xVel-=cos(getRadians(ships[i].angle))*0.1;
+                ships[i].yVel-=sin(getRadians(ships[i].angle))*0.01;
+                ships[i].xVel-=cos(getRadians(ships[i].angle))*0.01;
                 if(ships[i].yVel > MaxSpeedList[activeMaxSpeed])
                     ships[i].yVel = MaxSpeedList[activeMaxSpeed];
                 else if(ships[i].yVel < -MaxSpeedList[activeMaxSpeed])
@@ -110,10 +120,10 @@ void addBullet(Ship* ship, int *id){
     if (freeSpot < 0){
        return;
     }
-    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*15;
-    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*15;
-    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*10;
-    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*10;
+    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*10;
+    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*10;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*3;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*3;
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
 
@@ -123,10 +133,10 @@ void addBullet(Ship* ship, int *id){
             if (freeSpot < 0){
                 return;
             }
-            bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*15;
-            bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*15;
-            bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*10;
-            bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*3;
+            bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*3;
             bullets[freeSpot].active = true;
             bullets[freeSpot].source = *id;
         }
@@ -136,10 +146,10 @@ void addBullet(Ship* ship, int *id){
         if (freeSpot < 0){
            return;
         }
-        bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*15;
-        bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*15;
-        bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*10;
-        bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*3;
+        bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*3;
         bullets[freeSpot].active = true;
         bullets[freeSpot].source = *id;
     }
@@ -400,8 +410,8 @@ int udpListener(void* data) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
-            if ((key & 3) == 1) ships[clientId].angleVel=6;
-	    else if ((key & 3) == 2) ships[clientId].angleVel=-6;
+            if ((key & 3) == 1) ships[clientId].angleVel=1;
+	    else if ((key & 3) == 2) ships[clientId].angleVel=-1;
             else ships[clientId].angleVel = 0;
 
             if ((key & 4) == 4) ships[clientId].acceleration=true;

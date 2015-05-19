@@ -3,6 +3,15 @@
 IPaddress serverIP;
 TCPsocket TCPsock;
 
+int spamUDPpackets(void* data) {
+	while (gameIsActive) {
+//		puts("Sending UDP.");
+		createAndSendUDPPackets(ships, bullets);
+		SDL_Delay(33);
+	}
+	return 1;
+}
+
 int main(int argc, char *argv[]) {
     int gameStartTime;
     int gameRunningTime;
@@ -35,6 +44,7 @@ int main(int argc, char *argv[]) {
         gameIsActive = true;
         gameStartTime = SDL_GetTicks();
         SDL_DetachThread(SDL_CreateThread(udpListener, "udpThread", NULL));
+        SDL_DetachThread(SDL_CreateThread(spamUDPpackets, "udpSpamThread", NULL));
         while (gameIsActive) {
             if(computerPlayerCount > 0)
                 updateBots();
@@ -49,7 +59,7 @@ int main(int argc, char *argv[]) {
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
             handleActivePowerups();         // Tests whether player's powerups run out
-            createAndSendUDPPackets(ships, bullets);
+//            createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){ // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);
@@ -67,7 +77,7 @@ int main(int argc, char *argv[]) {
                 activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }
-            SDL_Delay(33);
+            SDL_Delay(5);
         }
     }
     closeServer();
