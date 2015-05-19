@@ -60,7 +60,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
         if(ships[i].isStunned)            // Move nothing if the player's stunned
             continue;
 
-        if(clients[i].active){
+        if(clients[i].active && !ships[i].isDead){
             if (ships[i].acceleration) {
                 ships[i].yVel-=sin(getRadians(ships[i].angle))*0.01;
                 ships[i].xVel-=cos(getRadians(ships[i].angle))*0.01;
