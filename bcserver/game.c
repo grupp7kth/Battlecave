@@ -25,8 +25,9 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		
 		// Kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
 		for (j=0; j<skepp[i].antalPixlar; j++) {
-			int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-			int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+			xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+			ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+//			printf("Pixel (%d,%d)\n",xcoord,ycoord); 
 			if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
 				skepp[i].health=0;
 			}
@@ -34,16 +35,21 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		// Kolla avst}ndet till varje skott; om mindre {n 15, kolla pixelkrock.
 		for (k=0; k<MAX_BULLETS; k++) {
 			if (!skotten[k].active) continue;
-			double distance = sqrt(pow(bullets[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
+			double distance = sqrt(pow(skotten[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
 //			printf("Skott %d skepp %d: %d\n",k,i,distance);
 			if (distance < 15) {
 				printf("Fara! Skepp %d skott %d, avst}nd %f\n",i,k,distance);
 				for (j=0; j<skepp[i].antalPixlar; j++) {
-					int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-					int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-					if (skotten[k].xPos == xcoord && skotten[k].yPos == ycoord) {
+					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+//					printf("Skott (%d;%d), pixel (%d,%d)\n",(int)skotten[k].xPos,(int)skotten[k].yPos,xcoord,ycoord); 
+					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord) {
 						puts("Bam!");
-						skepp[i].health=0;
+						skepp[i].health-=10;
+						skepp[i].xVel+=skotten[k].xVel*0.04;
+						skepp[i].yVel+=skotten[k].yVel*0.04;
+						skotten[k].active = false;
+						break;
 					}
 				}
 			}
@@ -128,10 +134,10 @@ void addBullet(Ship* ship, int *id){
     if (freeSpot < 0){
        return;
     }
-    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*1;
-    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*1;
-    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*1.1;
-    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*1.1;
+    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*15;
+    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*15;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*3;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*3;
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
 
@@ -141,8 +147,8 @@ void addBullet(Ship* ship, int *id){
             if (freeSpot < 0){
                 return;
             }
-            bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*10;
-            bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*10;
+            bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*15;
+            bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*15;
             bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*3;
             bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*3;
             bullets[freeSpot].active = true;
@@ -154,8 +160,8 @@ void addBullet(Ship* ship, int *id){
         if (freeSpot < 0){
            return;
         }
-        bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*10;
-        bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*10;
+        bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*15;
+        bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*15;
         bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*3;
         bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*3;
         bullets[freeSpot].active = true;
@@ -241,10 +247,10 @@ void checkShipHealth(){
             ships[i].health = 100;
             ships[i].isDead = false;
             int tempSpawnID = rand() % 8;
-            ships[i].xPos = 400;
-            ships[i].yPos = 400;
-//            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
-//            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
+//            ships[i].xPos = 400;
+//            ships[i].yPos = 400;
+            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
+            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
             ships[i].angle = 0;
             clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
         }
