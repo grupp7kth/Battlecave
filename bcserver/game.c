@@ -15,19 +15,37 @@ int IdFromPort(Uint32 ip) {
 }
 
 void checkCollisions(Ship* skepp, Bullet* skotten) {
-	// Kolla efter skeppskrockar med bakgrunden.
-	int i, j, xcoord, ycoord;
+	// F|rst kolla varje skepp
+	int i, j, k, xcoord, ycoord;
 	for (i=0; i<MAX_CLIENTS; i++) {
 		if (!clients[i].active) continue;
 //		printf("Checking ship %d\n",i);
 		double angleCos = cos(skepp[i].angle*PI/180);
 		double angleSin = sin(skepp[i].angle*PI/180);
-		// Kolla position f|r varje krockbar pixel i skeppet och kolla 
+		
+		// Kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
 		for (j=0; j<skepp[i].antalPixlar; j++) {
 			int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 			int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
 			if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
 				skepp[i].health=0;
+			}
+		}
+		// Kolla avst}ndet till varje skott; om mindre {n 15, kolla pixelkrock.
+		for (k=0; k<MAX_BULLETS; k++) {
+			if (!skotten[k].active) continue;
+			double distance = sqrt(pow(bullets[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
+//			printf("Skott %d skepp %d: %d\n",k,i,distance);
+			if (distance < 15) {
+				printf("Fara! Skepp %d skott %d, avst}nd %f\n",i,k,distance);
+				for (j=0; j<skepp[i].antalPixlar; j++) {
+					int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+					int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+					if (skotten[k].xPos == xcoord && skotten[k].yPos == ycoord) {
+						puts("Bam!");
+						skepp[i].health=0;
+					}
+				}
 			}
 		}
 	}
@@ -38,16 +56,6 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 			if (backgroundBumpmap[(int)bullets[i].yPos*STAGE_WIDTH+(int)bullets[i].xPos]) {
 				bullets[i].active=false;
 			}
-		}
-	}
-	// Kolla om skotten krockar med skepp
-	double distance;
-	for (i=0; i<MAX_BULLETS; i++) {
-		for (j=0; j<MAX_CLIENTS; j++) {
-			if (!bullets[i].active || !clients[j].active) continue;
-			distance = sqrt(pow(bullets[i].xPos-ships[i].xPos,2)+pow(bullets[i].yPos-ships[i].yPos,2));
-			printf("Bullet %d ship %d: %f\n",i,j,distance);
-			if (distance <20) puts("Danger!");
 		}
 	}
 }
@@ -120,10 +128,10 @@ void addBullet(Ship* ship, int *id){
     if (freeSpot < 0){
        return;
     }
-    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*10;
-    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*10;
-    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*3;
-    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*3;
+    bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*1;
+    bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*1;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*1.1;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*1.1;
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
 
