@@ -158,8 +158,8 @@ extern char textString[11][STRINGLENGTH];      // Used for both chat messages an
 extern int textStringColor[11];                // Decides colors for text messages
 extern int textStringCurrent[11];              // Which index in the string are we currently addressing?
 
-extern char defaultIP[15];                     // The IP and port used to connect to the default server
-extern char defaultPort[5];
+extern char defaultIP[16];                     // The IP and port used to connect to the default server
+extern char defaultPort[6];
 
 extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 extern bool playerReady[8];

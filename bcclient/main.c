@@ -1,4 +1,5 @@
 #include "includes.h"
+#include <string.h>
 
 int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], int *keyboardMode, bool *quit);
 void initModeMaxButtons(int modeMaxButtons[]);
@@ -13,6 +14,7 @@ int main(int argc, char* args[]){
     SDL_Event event;
     SDL_Rect buttonPlacement[MAXBUTTONS];   // Interactable buttons
     SDL_Rect windowPlacement[3];            // Window backgrounds
+//    SDL_Delay(10000);
 
     init();
     initSDL();
@@ -21,14 +23,12 @@ int main(int argc, char* args[]){
     setWindows(windowPlacement);
     clearTextStrings(11);
     //SDL_StartTextInput();
-
     strcpy(defaultIP, "130.229.133.233");// 83.250.47.232
     strcpy(defaultPort, "4444");
 
     while(!quit){
         while (SDL_PollEvent(&event))
             handleEvent(&event, buttonPlacement, &select, &mode, modeMaxButtons, &keyboardMode, &quit);
-
         renderScreen(&mode, &select, buttonPlacement, windowPlacement);
 
         //soundHandler();

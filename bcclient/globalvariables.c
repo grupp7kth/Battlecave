@@ -22,8 +22,8 @@ char textString[11][STRINGLENGTH];      // Used for both chat messages and for e
 int textStringColor[11];                // Decides colors for text messages
 int textStringCurrent[11];              // Which index in the string are we currently addressing?
 
-char defaultIP[15];                     // The IP and port used to connect to the default server
-char defaultPort[5];
+char defaultIP[16];                     // The IP and port used to connect to the default server
+char defaultPort[6];
 
 char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 bool playerReady[8];

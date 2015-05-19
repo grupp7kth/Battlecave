@@ -15,12 +15,14 @@ int IdFromPort(Uint32 ip) {
 }
 
 void checkCollisions(Ship* skepp, Bullet* skotten) {
+	// Kolla efter skeppskrockar med bakgrunden.
 	int i, j, xcoord, ycoord;
 	for (i=0; i<MAX_CLIENTS; i++) {
 		if (!clients[i].active) continue;
-		printf("Checking ship %d\n",i);
+//		printf("Checking ship %d\n",i);
 		double angleCos = cos(skepp[i].angle*PI/180);
 		double angleSin = sin(skepp[i].angle*PI/180);
+		// Kolla position f|r varje krockbar pixel i skeppet och kolla 
 		for (j=0; j<skepp[i].antalPixlar; j++) {
 			int xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 			int ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
@@ -29,6 +31,12 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 			}
 		}
 	}
+/*	// Kolla om skotten krockar med bakgrunden
+	for (i=0; i<MAX_BULLETS; i++) {
+		if (bullets[i].active) {
+			if (backgroundBumpmap[(int)(bullets[i].yPos*STAGE_WIDTH+bullets[i].xPos)]) bullets[i].active=false;
+		}
+	}*/
 }
 
 /** uppdaterar ett skepps position baserat p} hastighet.

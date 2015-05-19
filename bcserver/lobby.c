@@ -12,10 +12,12 @@ int Lobby(void * data) {
     clearReturn(clients[clientId].name);
     printf("lobby thread created by: %s %d\n", clients[clientId].name,clients[clientId].id);
     SendAndgetPort(clientId);
+    SDL_Delay(400);
 
     //send client id
     SDLNet_TCP_Send(clients[clientId].socket, &clientId, sizeof(int));
     clearString(TCPsend);
+    SDL_Delay(400);
 
     //create connection message
     sprintf(TCPsend,PREAMBLE_CONN"%s has connected",clients[clientId].name);

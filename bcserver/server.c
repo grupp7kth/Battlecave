@@ -169,7 +169,7 @@ bool loadMedia() {
 				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) counter++;;
 			}
 		}
-		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
+//		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
 		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
 		// Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
 		ships[i].antalPixlar = counter;
@@ -179,7 +179,7 @@ bool loadMedia() {
 				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) {
 					ships[i].pixlar[counter].x = k-mittpunkt.x;
 					ships[i].pixlar[counter].y = j-mittpunkt.y;
-					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
+//					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
 					counter++;
 				}
 			}
