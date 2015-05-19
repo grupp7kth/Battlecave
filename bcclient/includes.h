@@ -103,13 +103,13 @@ typedef struct{
 	bool active, isDead;
 	SDL_Texture* texture;
 	SDL_Rect placement;
-    int score;      //**************************************************************************
+    int score;          //**************************************************************************
 } Ship;
 extern Ship ship[MAX_PLAYERS];
 
 typedef struct{
 	int x, y;
-	short type; // ***********************************************************************
+	short type;         // *************************************************************************
 	short source;
 } Bullet;
 extern Bullet bullet[MAX_BULLETS];

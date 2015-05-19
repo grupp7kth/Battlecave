@@ -42,8 +42,6 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &gameBackground.mapPreviewPlacement);  // Shows a preview of the map
 
-        setText(mode, gRenderer, select);
-
         for(int i=0; i < MAX_PLAYERS; i++){     // Ready icons
             if(playerReady[i]){
                 readyIcon.x = 485;
@@ -53,6 +51,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
                 SDL_RenderCopy(gRenderer, mReady, NULL, &readyIcon);
             }
         }
+        setText(mode, gRenderer, select);
     }
 //********************** MODE 4 : JOIN DEFAULT SERVER *********************
     else if(*mode == JOIN_DEFAULT){
