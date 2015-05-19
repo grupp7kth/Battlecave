@@ -46,8 +46,8 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord) {
 						puts("Bam!");
 						skepp[i].health-=10;
-						skepp[i].xVel+=skotten[k].xVel*0.04;
-						skepp[i].yVel+=skotten[k].yVel*0.04;
+						skepp[i].xVel+=skotten[k].xVel*0.1;
+						skepp[i].yVel+=skotten[k].yVel*0.1;
 						skotten[k].active = false;
 						break;
 					}
