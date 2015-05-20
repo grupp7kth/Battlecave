@@ -38,8 +38,9 @@ int main(int argc, char *argv[]) {
         while (GameFreezeTime>=-1) {
             sprintf(gameCounter,PREAMBLE_GAMEFREEZE"%d",GameFreezeTime);
             broadCast(gameCounter);
-            GameFreezeTime--;
+            if (GameFreezeTime== -1) break;
             SDL_Delay(1000);
+            GameFreezeTime--;
         }
         gameIsActive = true;
         gameStartTime = SDL_GetTicks();
@@ -118,7 +119,6 @@ void acceptConnection() {
                     if (ClientsAreReady() && humanPlayerCount > 0) {
                         printf("!GO\n");
                         broadCast("!GO");
-                        SDL_Delay(500);
                         break;
                     }
                 }
@@ -158,8 +158,6 @@ bool loadMedia() {
 		if (ships[i].surface==NULL) return false;
 		
 		printf("Sprajten: W: %d, H: %d\n",ships[i].surface->w,ships[i].surface->h);
-		int bredd = ships[i].surface->w;
-		int hojd = ships[i].surface->h;
 		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
 			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
 			exit(1);
@@ -170,7 +168,7 @@ bool loadMedia() {
 //		printf("Mittpunkten {r (%d:%d)\n",mittpunkt.x,mittpunkt.y);
 //		printf("Pitch: %d\n",laddadyta->pitch);
 		//Kolla hur m}nga krockbara pixlar som finns i spriten.
-		int j,k,l,counter;
+		int j,k,counter;
 		void* pixlar = ships[i].surface->pixels;
 		int* siffra = (int*)pixlar;
 		// Leta upp krockbara pixlar i ytan, och malloca pixlar efter det.

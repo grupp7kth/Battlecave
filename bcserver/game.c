@@ -450,8 +450,8 @@ int udpListener(void* data) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
-            if ((key & 3) == 1) ships[clientId].angleVel=1;
-	    else if ((key & 3) == 2) ships[clientId].angleVel=-1;
+            if ((key & 3) == 1) ships[clientId].angleVel=1.5;
+	    else if ((key & 3) == 2) ships[clientId].angleVel=-1.5;
             else ships[clientId].angleVel = 0;
 
             if ((key & 4) == 4) ships[clientId].acceleration=true;
