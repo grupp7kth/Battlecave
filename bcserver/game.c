@@ -600,8 +600,8 @@ void updateBots(void){
 
 void handleBot(int id){
     int closestDistance = 0, distance, deltaX, deltaY;
-    float closestAngle;
-    short closestType;                      // 0 = Enemy ship , 1 = Powerup Spawn
+    float closestAngle = 0;
+    short closestType = 0;                      // 0 = Enemy ship , 1 = Powerup Spawn
 
     for(int i=0; i < MAX_CLIENTS; i++){     // First determine the closest enemy ship
         if(i != id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
