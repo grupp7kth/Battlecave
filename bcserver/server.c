@@ -144,14 +144,33 @@ bool loadMedia() {
 	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(background->w * background->h));
 	backgroundBumpmap = malloc(sizeof(Uint8)*(background->w * background->h));
 	printf("Pitch: %d\n",background->pitch);
-	int i,j;
+	int pixelSize = background->pitch/background->w;
+	printf("Det {r allts} %d bytes per pixel.\n",pixelSize);
+	int i,j,k;
+	Uint32 pixelResult;
+	Uint8* pixlar = (Uint8*)background->pixels;
+	for (i=0; i<background->h; i++) {
+		for (j=0; j<background->w;j++) {
+			pixelResult = 0;
+			for (k=0; k<3; k++) {
+				// LOL FOR THIS!
+				pixelResult = pixlar[(i*(background->w)+j)*pixelSize+k] << k*8;
+			}
+			backgroundBumpmap[i*(background->w)+j]=pixelResult!=BACKGROUND_NONBUMPCOLOUR;
+		}
+	}
+	
+	
+	
+// Gammal bumpmapkod	
+/*	int i,j;
 	void* pixlar = background->pixels;
 	int* siffra = (int*)pixlar;
 	for (i=0; i<background->h; i++) {
 		for (j=0; j<background->w;j++) {
 			backgroundBumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
 		}
-	}
+	}*/
 	
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
@@ -170,7 +189,7 @@ bool loadMedia() {
 		//Kolla hur m}nga krockbara pixlar som finns i spriten.
 		int j,k,counter;
 		void* pixlar = ships[i].surface->pixels;
-		int* siffra = (int*)pixlar;
+		Uint32* siffra = (Uint32*)pixlar;
 		// Leta upp krockbara pixlar i ytan, och malloca pixlar efter det.
 		for (j=0,counter=0; j<ships[i].surface->h; j++) {
 			for (k=0; k<ships[i].surface->w;k++) {
