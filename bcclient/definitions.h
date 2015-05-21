@@ -68,6 +68,7 @@
 #define MAX_ALLOWED_POWERUP_SPAWNPOINTS 15
 #define SHIP_POWERUP_DURATION 10000         // Duration for non instant powerups gained by ships, such as double/triple shot or double damage
 #define POWERUP_NOTIFICATION_DURATION 1500
+#define DEATH_NOTIFICATION_DURATION 2000
 #define TELEPORT_DURATION 3000
 
 #define TOGGLE_BULLETINTERVAL 1

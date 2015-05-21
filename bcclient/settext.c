@@ -329,7 +329,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         TTF_CloseFont(font);
     }
     // If the player just got a powerup; show some text
-    if(timedTextID >= 0){               // -1 = Inactive
+    if(timedTextID >= 0 && timedTextID <= 5){               // -1 = Inactive, 0-5 = Powerup Gained, 6 = Player Killed
         int tempDurationInt;
         tempDurationInt = SDL_GetTicks() - timedTextStart;
         if(tempDurationInt <= POWERUP_NOTIFICATION_DURATION){
@@ -340,17 +340,37 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             TTF_CloseFont(font);
         }
         else
-            timedTextID = -1;            // If we've shown the text for its duration we turn if off
+            timedTextID = -1;                               // If we've shown the text for its duration we turn if off
 
     }
-//    if((SDL_GetTicks() - timedTextStart) <= 1000){
-//
-//        font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
-//        textPlacement->y = 50;
-//        gTempTextMessage = TTF_RenderText_Solid(font, "Teleported!", colorsRGB[TEXT_COLOR_TEAL]);
-//        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
-//        TTF_CloseFont(font);
-//    }
+    // If a player just died; show some text
+    else if(timedTextID == 6){                              // -1 = Inactive, 0-5 = Powerup Gained, 6 = Player Killed
+        char tempDeathStr[50];
+        int tempDurationInt;
+        tempDurationInt = SDL_GetTicks() - timedTextStart;
+        if(tempDurationInt <= DEATH_NOTIFICATION_DURATION){
+            font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
+            textPlacement->y = 50;
+
+            if(killedID == client.id && killerID == client.id)
+                sprintf(tempDeathStr, "You commited suicide!");
+            else if(killedID == client.id)
+                sprintf(tempDeathStr, "You were killed by %s!", playerName[killerID]);
+            else if(killerID == client.id)
+                sprintf(tempDeathStr, "You killed %s!", playerName[killedID]);
+            else if(killerID == killedID)
+                sprintf(tempDeathStr, "%s commited suicide!", playerName[killerID]);
+            else
+                sprintf(tempDeathStr, "%s killed %s!", playerName[killerID], playerName[killedID]);
+
+            gTempTextMessage = TTF_RenderText_Solid(font, tempDeathStr, colorsRGB[TEXT_COLOR_ORANGE]);
+            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+            TTF_CloseFont(font);
+        }
+        else
+            timedTextID = -1;                               // If we've shown the text for its duration we turn if off
+    }
+
     return;
 }
 

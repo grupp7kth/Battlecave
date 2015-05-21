@@ -39,6 +39,8 @@ int gameTimeRemaining;
 int deathTimerStart;
 int timedTextStart;
 short timedTextID;
+short killerID, killedID;                   // killedID = ship that just got killed; killerID = the killer
+int playerScore[MAX_PLAYERS];               // Contains the players' current scores
 
 bool throttle;
 bool right;

@@ -7,7 +7,7 @@ void handleGameStart(void);
 void handleBots(char TCPTextIn[]);
 void handleFreezeTime(char TCPTextIn[]);
 void handleGameOptions(char TCPTextIn[]);
-void handleDeath(char TCPTextIn[], Client* me);
+void handleDeath(char TCPTextIn[]);
 void handlePowerup(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
@@ -44,7 +44,7 @@ int TCPhandler(Client* client){
         else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
             handleGameOptions(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_KILLED)
-            handleDeath(TCPTextIn,me);
+            handleDeath(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_POWERUP)
             handlePowerup(TCPTextIn);
 
@@ -129,6 +129,8 @@ void handleGameStart(void){
     client.health = 100;
     client.deathTimer = 0;
     client.activePowerup = -1;
+    for(int i=0; i < MAX_PLAYERS; i++)       // Reset all players' scores
+        playerScore[i] = 0;
     return;
 }
 
@@ -159,15 +161,16 @@ void handleGameOptions(char TCPTextIn[]){
     return;
 }
 
-void handleDeath(char TCPTextIn[], Client* me){
-	short killedGuy = TCPTextIn[1]-'0';
-	short killer = TCPTextIn[2]-'0';
-    if (killedGuy == me->id) {
+void handleDeath(char TCPTextIn[]){
+	killedID = TCPTextIn[1] - 48;
+	killerID = TCPTextIn[2] - 48;
+    if (killedID == client.id){
 	    client.deathTimer = 10000;
 	    deathTimerStart = SDL_GetTicks();
-	    return;
     }
-    
+    timedTextStart = SDL_GetTicks();
+    timedTextID = 6;
+    return;
 }
 
 void handlePowerup(char TCPTextIn[]){
@@ -175,9 +178,6 @@ void handlePowerup(char TCPTextIn[]){
         timeWarpStart = SDL_GetTicks();
         timeWarpIsActive = true;
     }
-//    else if(TCPTextIn[1]-48 == POWERUP_TELEPORT){
-//        client.powerupTimerStart = SDL_GetTicks();
-//    }
     else if(TCPTextIn[1]-48 == POWERUP_MULTI3X || TCPTextIn[1]-48 == POWERUP_MULTI2X ||
             TCPTextIn[1]-48 == POWERUP_DOUBLEDAMAGE || TCPTextIn[1]-48 == POWERUP_TELEPORT){
         client.activePowerup = TCPTextIn[1] - 48;
