@@ -33,8 +33,9 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 						printf("Bounce yVel %f\n",skepp[i].yVel);	
 						skepp[i].xPos += skepp[i].xVel;
 						skepp[i].yPos -= skepp[i].yVel;
-						if (skepp[i].yVel < 0.3) {
-							puts("Touchdown");
+						if (skepp[i].yVel < 0.2) {
+							printf("Ship %d touchdown",i);
+							skepp[i].reloadTime=0;
 							skepp[i].yVel=0;skepp[i].xVel=0;skepp[i].angle=0;skepp[i].angleVel=0;
 							skepp[i].landed=true;
 						}
@@ -137,7 +138,9 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             continue;
 
         if(clients[i].active && !ships[i].isDead){
-            if (ships[i].acceleration) {
+            if (ships[i].acceleration && ships[i].fuel >0) {
+            	ships[i].fuel--;
+            	printf("Skepp %d br{nsle %d\n",i,ships[i].fuel);
                 ships[i].yVel-=sin(getRadians(ships[i].angle))*0.01;
                 ships[i].xVel-=cos(getRadians(ships[i].angle))*0.01;
                 if(ships[i].yVel > MaxSpeedList[activeMaxSpeed])
@@ -150,6 +153,12 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                     ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
             if (!ships[i].landed) ships[i].yVel+=0.0015;
+            else {
+            	    ships[i].reloadTime++;
+            	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 4000) ships[i].fuel++;
+            	    if (ships[i].reloadTime%20==0 && ships[i].ammo < 60) ships[i].ammo++;
+            	    printf("Skepp %d br{nsle %d ammo %d\n",i,ships[i].fuel,ships[i].ammo);
+            } 
             if (!infiniteMomentum) {
                 ships[i].yVel /= 1.002;
                 ships[i].xVel /= 1.002;
@@ -160,9 +169,11 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                     ships[i].xVel = 0;
             }
             if (ships[i].shooting) {
-                if (ships[i].bulletCooldown ==0) {
+                if (ships[i].bulletCooldown ==0 && ships[i].ammo>0) {
                     addBullet(&ships[i] , &i);
                     ships[i].bulletCooldown = ships[i].bulletIntervall;
+                    ships[i].ammo--;
+                    printf("Skepp %d ammo %d\n",i,ships[i].ammo);
                 }
             }
             if(timeWarpIsActive){               // If time warp is active the ships move slower
@@ -246,22 +257,28 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
     return -1;
 }
 
+void resetShip(Ship* skepp, int i) {
+	skepp->xVel=0;
+	skepp->yVel=0;
+	skepp->bulletIntervall = bulletIntervalList[activeBulletInterval];
+	skepp->bulletCooldown = 0;
+	skepp->angleVel = 0;
+	skepp->angle = 0;
+	skepp->acceleration = false;
+	skepp->shooting = false;
+	skepp->isDead = false;
+	skepp->deathTimer=0;
+	skepp->health=100;
+	skepp->latestTag = i;
+	skepp->landed=false;
+	skepp->ammo=60;
+	skepp->fuel=4000;
+}
+
 bool initGame(){
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
-		ships[i].xVel = 0;
-		ships[i].yVel = 0;
-		ships[i].bulletIntervall = bulletIntervalList[activeBulletInterval];
-		ships[i].bulletCooldown = 0;
-		ships[i].angleVel = 0;
-		ships[i].angle = 0;
-		ships[i].acceleration = false;
-		ships[i].shooting = false;
-		ships[i].isDead = false;
-		ships[i].deathTimer=0;
-		ships[i].health=100;
-		ships[i].latestTag = i;
-		ships[i].landed=false;
+		resetShip(&ships[i],i);
 	}
     fetchMapData();
 
@@ -325,16 +342,10 @@ void checkShipHealth(){
 			ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
 		}
 		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
-			ships[i].health = 100;
-			ships[i].isDead = false;
 			int tempSpawnID = rand() % 8;
 			ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
 			ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
-			ships[i].xVel = 0;
-			ships[i].yVel = 0;
-			ships[i].angle = 0;
-			ships[i].acceleration = 0;
-			ships[i].landed =false;
+			resetShip(&ships[i],i);
 			clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
 		}
 	}
@@ -437,7 +448,7 @@ void handlePowerupGains(void){
 
                         powerupSpawnPoint[j].isActive = false;
                         activePowerupSpawns--;
-
+                        
                         if(powerupSpawnPoint[j].type != POWERUP_TIMEWARP && powerupSpawnPoint[j].type != POWERUP_TELEPORT) // Timewarp is not bound to a player/ship, Teleport is instant and functions server-side only
                             ships[i].activePowerup = powerupSpawnPoint[j].type;
                         else
