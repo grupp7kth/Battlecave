@@ -1,3 +1,10 @@
+0.71 :
+* The client now displays current score.
+* Minor adjustments.
+
+0.70 :
+* Pixel collision implemented.
+
 0.63 :
 * Bots now attempt to aquire powerups in addition to kill enemies.
 

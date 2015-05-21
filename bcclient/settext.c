@@ -285,7 +285,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         }
     }
     // And then the names, colored by player ID
-    textPlacement->x = GAME_AREA_WIDTH + 30;
+    textPlacement->x = GAME_AREA_WIDTH + 35;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
         if(ship[tempScoreID[i]].active){
@@ -296,7 +296,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         }
     }
     // And then the score, colored by player ID
-    textPlacement->x = GAME_AREA_WIDTH + 80;
+    textPlacement->x = GAME_AREA_WIDTH + 185;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
         if(ship[tempScoreID[i]].active){
@@ -354,12 +354,6 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     if(ship[client.id].isDead){
         char tempSpecStr[50];
 
-        font = TTF_OpenFont("resources/fonts/arial.ttf", 60);
-        textPlacement->y = 30;
-        gTempTextMessage = TTF_RenderText_Solid(font, "YOU ARE DEAD", colorsRGB[TEXT_COLOR_RED]);
-        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
-        TTF_CloseFont(font);
-
         font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
         textPlacement->y = 130;
         client.deathTimer = 10000 - (SDL_GetTicks() - deathTimerStart);
@@ -405,7 +399,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         int tempDurationInt;
         tempDurationInt = SDL_GetTicks() - timedTextStart;
         if(tempDurationInt <= DEATH_NOTIFICATION_DURATION){
-            font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
+            font = TTF_OpenFont("resources/fonts/arial.ttf", 40);
             textPlacement->y = 50;
 
             if(killedID == client.id && killerID == client.id)

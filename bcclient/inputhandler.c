@@ -287,7 +287,7 @@ void handleBackspace(int id){
 }
 
 void addCharToString(int id, int maxLen, SDL_Event *event){
-    if(textStringCurrent[id] < maxLen){
+    if(textStringCurrent[id] < maxLen-1){
         textString[id][textStringCurrent[id]] = event->key.keysym.sym;
         textStringCurrent[id]++;
     }
