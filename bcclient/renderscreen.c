@@ -20,7 +20,7 @@ SDL_Texture* loadTexture(char* filname);
 //**************************************************************************
 
 void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){
-    SDL_SetRenderDrawColor(gRenderer,255,0,255,255);
+    SDL_SetRenderDrawColor(gRenderer,0,0,0,255);
     SDL_RenderClear(gRenderer);
 
     setButtons(buttonPlacement, mode);
