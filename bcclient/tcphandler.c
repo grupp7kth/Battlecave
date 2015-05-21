@@ -7,7 +7,7 @@ void handleGameStart(void);
 void handleBots(char TCPTextIn[]);
 void handleFreezeTime(char TCPTextIn[]);
 void handleGameOptions(char TCPTextIn[]);
-void handleDeath(void);
+void handleDeath(char TCPTextIn[], Client* me);
 void handlePowerup(char TCPTextIn[]);
 void shiftString(char string[], int steps);
 
@@ -44,7 +44,7 @@ int TCPhandler(Client* client){
         else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
             handleGameOptions(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_KILLED)
-            handleDeath();
+            handleDeath(TCPTextIn,me);
         else if(TCPTextIn[0] == PREAMBLE_POWERUP)
             handlePowerup(TCPTextIn);
 
@@ -159,10 +159,15 @@ void handleGameOptions(char TCPTextIn[]){
     return;
 }
 
-void handleDeath(void){
-    client.deathTimer = 10000;
-    deathTimerStart = SDL_GetTicks();
-    return;
+void handleDeath(char TCPTextIn[], Client* me){
+	short killedGuy = TCPTextIn[1]-'0';
+	short killer = TCPTextIn[2]-'0';
+    if (killedGuy == me->id) {
+	    client.deathTimer = 10000;
+	    deathTimerStart = SDL_GetTicks();
+	    return;
+    }
+    
 }
 
 void handlePowerup(char TCPTextIn[]){

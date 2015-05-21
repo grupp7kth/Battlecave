@@ -294,12 +294,12 @@ void checkShipHealth(){
     for (int i=0; i<MAX_CLIENTS; i++) {
         if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_HUMAN) {
             char sendMessage[4];
-            sendMessage[0]=PREAMBLE_KILLED
+            sendMessage[0]='}';
             sendMessage[1]=i+'0';
             sendMessage[2]=ships[i].latestTag+'0';
             sendMessage[3]='\0';
-	    broadcast(sendMessage);
-            if (ships[i].latestTag != i) ships[latestTag].score+=1;
+	    broadCast(sendMessage);
+            if (ships[i].latestTag != i) clients[ships[i].latestTag].score+=1;
 //            SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
             ships[i].deathTimer=RESPAWN_TIME_MS;
             ships[i].deathTimerStart = SDL_GetTicks();
