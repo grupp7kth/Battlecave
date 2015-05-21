@@ -159,8 +159,8 @@ bool loadMedia() {
 			backgroundBumpmap[i*(background->w)+j]=pixelResult!=BACKGROUND_NONBUMPCOLOUR;
 		}
 	}
-	
-// Gammal bumpmapkod	
+
+// Gammal bumpmapkod
 /*	int i,j;
 	void* pixlar = background->pixels;
 	int* siffra = (int*)pixlar;
@@ -169,11 +169,11 @@ bool loadMedia() {
 			backgroundBumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
 		}
 	}*/
-	
+
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;
-		
+
 		printf("Sprajten: W: %d, H: %d\n",ships[i].surface->w,ships[i].surface->h);
 		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
 			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
@@ -206,7 +206,7 @@ bool loadMedia() {
 			}
 		}*/
 		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
-		
+
 		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
 //		Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
 		ships[i].antalPixlar = counter;
