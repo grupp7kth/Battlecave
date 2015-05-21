@@ -16,12 +16,13 @@ int IdFromPort(Uint32 ip) {
 
 void checkCollisions(Ship* skepp, Bullet* skotten) {
 	// F|rst kolla varje skepp
-	int i, j, k, xcoord, ycoord;
+	int i, j, k, l, xcoord, ycoord, xcoord2, ycoord2;
+	double angleCos, angleSin, angleCos2, angleSin2;
 	for (i=0; i<MAX_CLIENTS; i++) {
-		if (!clients[i].active && !skepp[i].isDead) continue;
+		if (!clients[i].active || skepp[i].isDead) continue;
 //		printf("Checking ship %d\n",i);
-		double angleCos = cos(skepp[i].angle*PI/180);
-		double angleSin = sin(skepp[i].angle*PI/180);
+		angleCos = cos(skepp[i].angle*PI/180);
+		angleSin = sin(skepp[i].angle*PI/180);
 		
 		// Kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
 		for (j=0; j<skepp[i].antalPixlar; j++) {
@@ -38,7 +39,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 			double distance = sqrt(pow(skotten[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
 //			printf("Skott %d skepp %d: %d\n",k,i,distance);
 			if (distance < 15) {
-				printf("Fara! Skepp %d skott %d, avst}nd %f\n",i,k,distance);
+//				printf("Fara! Skepp %d skott %d, avst}nd %f\n",i,k,distance);
 				for (j=0; j<skepp[i].antalPixlar; j++) {
 					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
@@ -49,9 +50,84 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 						skepp[i].xVel+=skotten[k].xVel*0.1;
 						skepp[i].yVel+=skotten[k].yVel*0.1;
 						skotten[k].active = false;
+						skepp[i].latestTag = skotten[k].source;
 						break;
 					}
 				}
+			}
+		}
+		// Kolla avst}ndet till varje |vrigt skepp, om mindre {n 30, kolla pixelkrock.
+		bool krock;
+		for (k=i+1; k<MAX_CLIENTS; k++) {
+			if (!clients[k].active || skepp[k].isDead) continue;
+			double distance = sqrt(pow(skepp[k].xPos-ships[i].xPos,2)+pow(skepp[k].yPos-ships[i].yPos,2));
+//			printf("Skott %d skepp %d: %d\n",k,i,distance);
+			krock=false;
+			if (distance < 30) {
+//				printf("Fara skepp %d och %d\n",i,k);
+				angleCos2 = cos(skepp[k].angle*PI/180);
+				angleSin2 = sin(skepp[k].angle*PI/180);
+				for (j=0; j<skepp[i].antalPixlar; j++) {
+					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+					for (l=0; l<skepp[k].antalPixlar; l++) {
+						xcoord2 = (int)skepp[k].xPos+(angleCos2*skepp[k].pixlar[l].x-angleSin2*skepp[k].pixlar[l].y);
+						ycoord2 = (int)skepp[k].yPos+(angleSin2*skepp[k].pixlar[l].x+angleCos2*skepp[k].pixlar[l].y);
+						if (xcoord2 == xcoord && ycoord2 == ycoord) {
+							krock = true;
+							break;
+						}
+					}
+					if (krock) break;
+				}
+			}
+			if (krock) {
+				krock=false;
+//				printf("Krock: skepp %d (%f.2;%f.2) och %d (%f.2;%f.2)\n",i,skepp[i].xVel,skepp[i].yVel,k,skepp[k].xVel,skepp[k].yVel);
+				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
+				deltaX = skepp[i].xPos-skepp[k].xPos;	
+				deltaY = skepp[i].yPos-skepp[k].yPos;
+				totVelX = skepp[i].xVel-skepp[k].xVel;
+				totVelY = skepp[i].yVel-skepp[k].yVel;
+				int subjectWeight, objectWeight;
+				deltaR=1;
+				if (deltaX!=0) deltaR = deltaY/deltaX;
+				// subjectWeight = ship[i].weight;
+				// objectWeight = ship[k].weight;
+				subjectWeight = 1;
+				objectWeight = 1;
+				weightConstant = 2/(subjectWeight+objectWeight);
+				bX = ((totVelX+totVelY*deltaR)/(1+pow(deltaR,2)));
+				bY = bX*deltaR;
+				skepp[i].xVel = totVelX-weightConstant*objectWeight*bX + skepp[k].xVel;
+				skepp[i].yVel = totVelY-weightConstant*objectWeight*bY + skepp[k].yVel;
+				skepp[k].xVel = weightConstant*subjectWeight*bX + skepp[k].xVel;
+				skepp[k].yVel = weightConstant*subjectWeight*bY + skepp[k].yVel;
+//				printf("Efter: skepp %d (%f;%f) och %d (%f;%f)\n",i,skepp[i].xVel,skepp[i].yVel,k,skepp[k].xVel,skepp[k].yVel);
+				skepp[i].latestTag=k;
+				skepp[k].latestTag=i;
+				/* Javakod f|r kollisionerna.
+				int deltaX = s.getxPos()-s2.getxPos();
+				int deltaY = s.getyPos()-s2.getyPos();
+				int totVelX = s.getxVel()-s2.getxVel();
+				int totVelY = s.getyVel()-s2.getyVel();
+				int deltaR =1;
+				if (deltaX!=0) deltaR = deltaY/deltaX;
+				// int subjectWeight = Math.pow(subject.storlek,3);
+				int subjectWeight = 1;
+				//				int objectWeight = Math.pow(object.storlek,3);
+				int objectWeight = 1;
+				int weightConstant = 2/(subjectWeight+objectWeight);
+				int bX = (int)((totVelX+totVelY*deltaR)/(1+Math.pow(deltaR,2)));
+				int bY = bX*deltaR;
+				
+				s.setxVel(totVelX-weightConstant*objectWeight*bX + s2.getxVel());
+				s.setyVel(totVelY-weightConstant*objectWeight*bY + s2.getyVel());
+				s2.setxVel(weightConstant*subjectWeight*bX + s2.getxVel());
+				s2.setyVel(weightConstant*subjectWeight*bY + s2.getyVel());
+				s.move(CPS);
+				s2.move(CPS);*/
+
 			}
 		}
 	}
@@ -195,6 +271,7 @@ bool initGame(){
 		ships[i].isDead = false;
 		ships[i].deathTimer=0;
 		ships[i].health=100;
+		ships[i].latestTag = i;
 	}
     fetchMapData();
 
@@ -216,7 +293,14 @@ bool initGame(){
 void checkShipHealth(){
     for (int i=0; i<MAX_CLIENTS; i++) {
         if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_HUMAN) {
-            SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
+            char sendMessage[4];
+            sendMessage[0]=PREAMBLE_KILLED
+            sendMessage[1]=i+'0';
+            sendMessage[2]=ships[i].latestTag+'0';
+            sendMessage[3]='\0';
+	    broadcast(sendMessage);
+            if (ships[i].latestTag != i) ships[latestTag].score+=1;
+//            SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
             ships[i].deathTimer=RESPAWN_TIME_MS;
             ships[i].deathTimerStart = SDL_GetTicks();
             ships[i].isDead = true;

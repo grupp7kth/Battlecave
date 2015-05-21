@@ -96,7 +96,7 @@ typedef struct{
     short activePowerup;
     int powerupTimerStart, stunDurationStart;
     SDL_Point* pixlar;
-    short antalPixlar;
+    short antalPixlar, latestTag;
 }Ship;
 
 typedef struct{

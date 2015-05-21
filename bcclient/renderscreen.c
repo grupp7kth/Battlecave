@@ -20,6 +20,7 @@ SDL_Texture* loadTexture(char* filname);
 //**************************************************************************
 
 void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){
+    SDL_SetRenderDrawColor(gRenderer,255,0,255,255);
     SDL_RenderClear(gRenderer);
 
     setButtons(buttonPlacement, mode);
@@ -321,7 +322,7 @@ SDL_Texture* loadTexture(char* filename){
 	if(temp == NULL){
 		printf("Failed to load image %s: %s\n",filename,IMG_GetError());
 	}
-	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255,0, 255));
+	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
 	SDL_Texture* returnTexture = SDL_CreateTextureFromSurface(gRenderer, temp);
 	if(returnTexture == NULL){
 		printf("Failed to convert the surface %s to a texture: %s\n",filename,IMG_GetError());

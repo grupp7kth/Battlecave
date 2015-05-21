@@ -160,8 +160,6 @@ bool loadMedia() {
 		}
 	}
 	
-	
-	
 // Gammal bumpmapkod	
 /*	int i,j;
 	void* pixlar = background->pixels;
@@ -187,30 +185,56 @@ bool loadMedia() {
 //		printf("Mittpunkten {r (%d:%d)\n",mittpunkt.x,mittpunkt.y);
 //		printf("Pitch: %d\n",laddadyta->pitch);
 		//Kolla hur m}nga krockbara pixlar som finns i spriten.
-		int j,k,counter;
-		void* pixlar = ships[i].surface->pixels;
-		Uint32* siffra = (Uint32*)pixlar;
+		int j,k,l,counter;
+		Uint8* pixlar = (Uint8*)ships[i].surface->pixels;
 		// Leta upp krockbara pixlar i ytan, och malloca pixlar efter det.
+		for (j=0,counter=0; j<ships[i].surface->h; j++) {
+			for (k=0; k<ships[i].surface->w;k++) {
+				pixelResult = 0;
+				for (l=0; l<3; l++) {
+					// LOL FOR THIS!
+					pixelResult = pixlar[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
+				}
+				if (pixelResult!=SHIP_NONBUMPCOLOUR) counter++;
+			}
+		}
+		// Gammal bumpmapkod
+/*		int* siffra = (int*)ships[i].surface->pixels;
 		for (j=0,counter=0; j<ships[i].surface->h; j++) {
 			for (k=0; k<ships[i].surface->w;k++) {
 				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) counter++;;
 			}
-		}
-//		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
+		}*/
+		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
+		
 		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
-		// Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
+//		Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
 		ships[i].antalPixlar = counter;
-	
-		for (j=0, counter=0; j<ships[i].surface->h; j++) {
+		for (j=0,counter=0; j<ships[i].surface->h; j++) {
 			for (k=0; k<ships[i].surface->w;k++) {
-				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) {
+				pixelResult = 0;
+				for (l=0; l<3; l++) {
+					// LOL FOR THIS!
+					pixelResult = pixlar[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
+				}
+				if (pixelResult!=SHIP_NONBUMPCOLOUR) {
 					ships[i].pixlar[counter].x = k-mittpunkt.x;
 					ships[i].pixlar[counter].y = j-mittpunkt.y;
-//					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
 					counter++;
 				}
 			}
 		}
+//		Gammal bumpmapkod
+/*		for (j=0, counter=0; j<ships[i].surface->h; j++) {
+			for (k=0; k<ships[i].surface->w;k++) {
+				if ((Uint32)siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) {
+					ships[i].pixlar[counter].x = k-mittpunkt.x;
+					ships[i].pixlar[counter].y = j-mittpunkt.y;
+					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
+					counter++;
+				}
+			}
+		}*/
 	}
 	return true;
 }
