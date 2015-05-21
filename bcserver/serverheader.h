@@ -92,7 +92,7 @@ typedef struct{
     double xPos,yPos,xVel,yVel;
     double angle,angleVel;
     Uint8 health;
-    bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
+    bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed,landed;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
     int deathTimer,deathTimerStart;
     short activePowerup;
     int powerupTimerStart, stunDurationStart;

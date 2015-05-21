@@ -23,17 +23,29 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		angleCos = cos(skepp[i].angle*PI/180);
 		angleSin = sin(skepp[i].angle*PI/180);
 		
-		// Kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
-		for (j=0; j<skepp[i].antalPixlar; j++) {
-			xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-			ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-			if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
-				if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<10 || skepp[i].angle>350)) {
-					skepp[i].yVel*=-0.5;
-					skepp[i].xVel*=0.8;
-					break;
+		// Om skeppet inte har landat, kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
+		if (!skepp[i].landed) {
+			for (j=0; j<skepp[i].antalPixlar; j++) {
+				xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
+				ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+				if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
+					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<10 || skepp[i].angle>350)  && skepp[i].yVel <1) {
+						printf("Bounce yVel %f\n",skepp[i].yVel);	
+						skepp[i].xPos += skepp[i].xVel;
+						skepp[i].yPos -= skepp[i].yVel;
+						if (skepp[i].yVel < 0.3) {
+							puts("Touchdown");
+							skepp[i].yVel=0;skepp[i].xVel=0;skepp[i].angle=0;skepp[i].angleVel=0;
+							skepp[i].landed=true;
+						}
+						else {
+							skepp[i].yVel*=-0.5;
+							skepp[i].xVel*=0.5;
+						}
+						break;
+					}
+					else skepp[i].health=0;
 				}
-				else skepp[i].health=0;
 			}
 		}
 		// Kolla avst}ndet till varje skott; om mindre {n 15, kolla pixelkrock.
@@ -79,6 +91,8 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				}
 			}
 			if (krock) {
+				skepp[i].landed=false;
+				skepp[k].landed=false;
 				krock=false;
 				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
 				deltaX = skepp[i].xPos-skepp[k].xPos;	
@@ -135,7 +149,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                 else if(ships[i].xVel < -MaxSpeedList[activeMaxSpeed])
                     ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
-            ships[i].yVel+=0.0015;
+            if (!ships[i].landed) ships[i].yVel+=0.0015;
             if (!infiniteMomentum) {
                 ships[i].yVel /= 1.002;
                 ships[i].xVel /= 1.002;
@@ -189,6 +203,8 @@ void addBullet(Ship* ship, int *id){
     bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*2.2;
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
+    ship->xVel -= bullets[freeSpot].xVel*0.02;
+    ship->yVel -= bullets[freeSpot].yVel*0.02;
 
     if(ship->activePowerup == POWERUP_MULTI3X){     // If triple shot powerup is active
         for(int i=0; i < 2; i++){
@@ -245,6 +261,7 @@ bool initGame(){
 		ships[i].deathTimer=0;
 		ships[i].health=100;
 		ships[i].latestTag = i;
+		ships[i].landed=false;
 	}
     fetchMapData();
 
@@ -317,6 +334,7 @@ void checkShipHealth(){
 			ships[i].yVel = 0;
 			ships[i].angle = 0;
 			ships[i].acceleration = 0;
+			ships[i].landed =false;
 			clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
 		}
 	}
@@ -488,14 +506,17 @@ int udpListener(void* data) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
-            if ((key & 3) == 1) ships[clientId].angleVel=1.5;
-	    else if ((key & 3) == 2) ships[clientId].angleVel=-1.5;
+            if (((key & 3) == 1) && !ships[clientId].landed) ships[clientId].angleVel=1.5;
+	    else if (((key & 3) == 2) && !ships[clientId].landed) ships[clientId].angleVel=-1.5;
             else ships[clientId].angleVel = 0;
 
-            if ((key & 4) == 4) ships[clientId].acceleration=true;
+            if ((key & 4) == 4) {
+            	    ships[clientId].acceleration=true;
+            	    ships[clientId].landed=false;
+            }
             else ships[clientId].acceleration=false;
 
-            if ((key & 8) == 8) ships[clientId].shooting=true;
+            if (((key & 8) == 8) && !ships[clientId].landed) ships[clientId].shooting=true;
             else ships[clientId].shooting=false;
         }
 		SDL_Delay(5);
