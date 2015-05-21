@@ -1,3 +1,6 @@
+0.72 :
+* Users can no longer join a lobby without entering a name.
+
 0.71 :
 * The client now displays current score.
 * Minor adjustments.

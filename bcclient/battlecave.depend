@@ -265,11 +265,7 @@
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-<<<<<<< Updated upstream
 1432223801 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
-=======
-1432212741 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
->>>>>>> Stashed changes
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	"includes.h"
@@ -277,7 +273,7 @@
 1432212741 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
 	"includes.h"
 
-1432223070 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
+1432225916 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
 	"includes.h"
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\inputhandler.h
@@ -291,11 +287,7 @@
 	<SDL_net.h>
 	"globalvariables.h"
 
-<<<<<<< Updated upstream
 1432223040 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
-=======
-1432212868 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
->>>>>>> Stashed changes
 	"includes.h"
 	<string.h>
 
@@ -317,24 +309,16 @@
 1431785628 source:c:\users\johan\documents\github\battlecave\bcclient\setbuttons.c
 	"includes.h"
 
-<<<<<<< Updated upstream
-1432223016 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
-=======
-1432212741 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
->>>>>>> Stashed changes
+1432224734 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
 	"includes.h"
 
 1431352742 source:c:\users\johan\documents\github\battlecave\bcclient\setwindows.c
 	"includes.h"
 
-<<<<<<< Updated upstream
 1432223016 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
-=======
-1432212741 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
->>>>>>> Stashed changes
 	"includes.h"
 
-1432209409 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
+1432225773 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
 	"includes.h"
 
 1432212741 c:\users\johan\documents\github\battlecave\bcclient\includes.h

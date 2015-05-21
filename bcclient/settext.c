@@ -301,13 +301,12 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     for(int i=0; i < MAX_PLAYERS; i++){
         if(ship[tempScoreID[i]].active){
             sprintf(tempScoreString, "%d", playerScore[tempScoreID[i]]);
-            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[tempScoreID[i]+6]); // Add 6 to get to the player color span
+            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[TEXT_COLOR_YELLOW]);
             renderText(textPlacement, gRenderer);
             textPlacement->y += 32;
         }
     }
     TTF_CloseFont(font);
-
 
     // Remaining time of the current game countdown
     char tempTimeStr[8];
