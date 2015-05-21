@@ -23,7 +23,7 @@ int main(int argc, char* args[]){
     setWindows(windowPlacement);
     clearTextStrings(11);
     //SDL_StartTextInput();
-    strcpy(defaultIP, "193.10.39.101");//jungfrun TA BORT SEN
+    strcpy(defaultIP, "193.10.39.101");//193.10.39.101 = jungfrun TA BORT SEN
     strcpy(defaultPort, "4444");
 
     while(!quit){
