@@ -1,3 +1,9 @@
+0.74 :
+* Far distance backdrop added.
+
+0.73 :
+* There's now support for an option to show players' names below their ships. Will be implemented with the options screen.
+
 0.72 :
 * Users can no longer join a lobby without entering a name.
 

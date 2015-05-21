@@ -10,7 +10,7 @@ void setTextMode4(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
-void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width);
+void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width, int padding);
 void showClientVersion(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 
 void setText(int *mode, SDL_Renderer* gRenderer, int *select){
@@ -249,7 +249,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         else if(gameFreezeTime == 0)
             gTempTextMessage = TTF_RenderText_Solid(font, "GO!", colorsRGB[TEXT_COLOR_GREEN]);
 
-        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
         TTF_CloseFont(font);
     }
     // Render the players' scores
@@ -284,7 +284,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             textPlacement->y += 32;
         }
     }
-    // And then the names, colored by player ID
+    // ...Then the names, colored by player ID...
     textPlacement->x = GAME_AREA_WIDTH + 35;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
@@ -295,7 +295,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             textPlacement->y += 32;
         }
     }
-    // And then the score, colored by player ID
+    // ...Then the score, colored by player ID
     textPlacement->x = GAME_AREA_WIDTH + 185;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
@@ -358,13 +358,13 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         client.deathTimer = 10000 - (SDL_GetTicks() - deathTimerStart);
         sprintf(tempSpecStr, "Respawning in %d", client.deathTimer/1000);
         gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[TEXT_COLOR_WHITE]);
-        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
 
         if(viewportID != client.id){
             textPlacement->y = 650;
             sprintf(tempSpecStr, "Currently Spectating %s", playerName[viewportID]);
             gTempTextMessage = TTF_RenderText_Solid(font, tempSpecStr, colorsRGB[viewportID+6]);
-            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
         }
         TTF_CloseFont(font);
     }
@@ -374,7 +374,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         font = TTF_OpenFont("resources/fonts/arial.ttf", 18);
         textPlacement->y = 100;
         gTempTextMessage = TTF_RenderText_Solid(font, "Time Warp Active!", colorsRGB[TEXT_COLOR_WHITE]);
-        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+        renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
         TTF_CloseFont(font);
     }
     // If the player just got a powerup; show some text
@@ -385,7 +385,7 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             font = TTF_OpenFont("resources/fonts/arial.ttf", 50);
             textPlacement->y = 50;
             gTempTextMessage = TTF_RenderText_Solid(font, powerupNames[timedTextID], colorsRGB[TEXT_COLOR_TEAL]);
-            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
             TTF_CloseFont(font);
         }
         else
@@ -413,12 +413,25 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
                 sprintf(tempDeathStr, "%s killed %s!", playerName[killerID], playerName[killedID]);
 
             gTempTextMessage = TTF_RenderText_Solid(font, tempDeathStr, colorsRGB[TEXT_COLOR_ORANGE]);
-            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH);
+            renderTextCentered(textPlacement, gRenderer, GAME_AREA_WIDTH, 0);
             TTF_CloseFont(font);
         }
         else
             timedTextID = -1;                               // If we've shown the text for its duration we turn if off
     }
+
+    // If the player has the option to show player-names below ships below
+    //if() OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    font = TTF_OpenFont("resources/fonts/arial.ttf", 14);
+    for(int i=0; i < MAX_PLAYERS; i++){
+        if(ship[i].active && !ship[i].isDead &&  ship[i].placement.x < GAME_AREA_WIDTH){
+            textPlacement->x = ship[i].placement.x - 50 + SHIP_WIDTH/2;
+            textPlacement->y = ship[i].placement.y + 35;
+            gTempTextMessage = TTF_RenderText_Solid(font, playerName[i], colorsRGB[TEXT_COLOR_WHITE]);
+            renderTextCentered(textPlacement, gRenderer, 100, ship[i].placement.x - 50 + SHIP_WIDTH/2);      // Center the text below the player
+        }
+    }
+    TTF_CloseFont(font);
 
     return;
 }
@@ -434,10 +447,10 @@ void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     return;
 }
 
-void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width){       // Renders the text in the middle of the width specified
+void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width, int padding){       // Renders the text in the middle of the width specified
     mText = SDL_CreateTextureFromSurface(gRenderer, gTempTextMessage);
     SDL_QueryTexture(mText, NULL, NULL, &textPlacement->w, &textPlacement->h);
-    textPlacement->x = (width - textPlacement->w) / 2;
+    textPlacement->x = padding + (width - textPlacement->w) / 2;
     SDL_RenderCopy(gRenderer, mText, NULL, textPlacement);
 
     SDL_FreeSurface(gTempTextMessage);
