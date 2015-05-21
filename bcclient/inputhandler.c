@@ -128,11 +128,13 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
 //**************************************************************************
 static void checkMouseMode4(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode){
     for(int i=0; i < modeMaxButtons[4]; i++){
-        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
+        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){			// Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
-                if(i == 1)          // GO!
-                    joinLobby(mode);
-                else                // Close
+                if(i == 1){           											// GO!
+                    if(textString[ENTERING_NAME][0] != '\0')					// The player must enter a name
+						joinLobby(mode);
+				}
+                else                										  // Close
                     *mode = FIND_SERVERS;
             }
         }
@@ -143,17 +145,18 @@ static void checkMouseMode4(SDL_Event *event, SDL_Point *currentMouseLocation, S
 //**************************************************************************
 static void checkMouseMode5(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode){
     for(int i=0; i < modeMaxButtons[5]; i++){
-        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
+        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ 	// Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = NONE;
 
-                if(i == 4){         // GO!
-                    joinLobby(mode);
+                if(i == 4){     										// GO!
+                    if(textString[ENTERING_NAME][0] != '\0')			// The player must enter a name
+						joinLobby(mode);
                 }
-                else if(i == 3){    // Close
+                else if(i == 3){    									// Close
                     *mode = FIND_SERVERS;
                 }
-                else{               // Enter IP _OR_ Port _OR_ Name Field
+                else{               									// Enter IP _OR_ Port _OR_ Name Field
                     *select = i;
                     *keyboardMode = ENTERING_TEXT;
                     *match = true;
@@ -195,7 +198,8 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
 //******************* MODE : JOIN DEFAULT SERVER *****************************
     if(*mode == JOIN_DEFAULT && event->type == SDL_KEYDOWN){
         if(event->key.keysym.sym == SDLK_RETURN){
-            joinLobby(mode);
+			if(textString[ENTERING_NAME][0] != '\0')			// The player must enter a name
+				joinLobby(mode);
         }
         else{
             if(event->key.keysym.sym == SDLK_BACKSPACE)
@@ -213,7 +217,8 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
                 *select = 0;
         }
         else if(event->key.keysym.sym == SDLK_RETURN){
-            joinLobby(mode);
+            if(textString[ENTERING_NAME][0] != '\0')			// The player must enter a name
+				joinLobby(mode);
         }
 
         else{
@@ -287,7 +292,7 @@ void handleBackspace(int id){
 }
 
 void addCharToString(int id, int maxLen, SDL_Event *event){
-    if(textStringCurrent[id] < maxLen){
+    if(textStringCurrent[id] < maxLen-1){
         textString[id][textStringCurrent[id]] = event->key.keysym.sym;
         textStringCurrent[id]++;
     }

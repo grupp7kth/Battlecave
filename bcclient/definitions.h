@@ -1,12 +1,14 @@
 #ifndef MODEDEFINITIONS
 #define MODEDEFINITIONS
 
-#define CLIENT_VERSION "v 0.63"
+#define CLIENT_VERSION "v 0.74"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
 #define GAME_AREA_WIDTH 1030
 #define GAME_AREA_HEIGHT 720
+#define SHIP_HEIGHT 31
+#define SHIP_WIDTH 23
 
 #define MAXBUTTONS 16
 
@@ -68,7 +70,7 @@
 #define MAX_ALLOWED_POWERUP_SPAWNPOINTS 15
 #define SHIP_POWERUP_DURATION 10000         // Duration for non instant powerups gained by ships, such as double/triple shot or double damage
 #define POWERUP_NOTIFICATION_DURATION 1500
-#define DEATH_NOTIFICATION_DURATION 2000
+#define DEATH_NOTIFICATION_DURATION 3000
 #define TELEPORT_DURATION 3000
 
 #define TOGGLE_BULLETINTERVAL 1
@@ -91,6 +93,6 @@
 #define TEXT_COLOR_PINK 12
 #define TEXT_COLOR_BROWN 13
 
-#define MAX_BULLETS 300
+#define MAX_BULLETS 250
 
 #endif // MODEDEFINITIONS

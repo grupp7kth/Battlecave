@@ -120,8 +120,15 @@ typedef struct{
 	SDL_Rect source;
 	SDL_Rect dest;
 	SDL_Rect mapPreviewPlacement;
-} GameBackground;
-extern GameBackground gameBackground;
+} GameMapBackground;
+extern GameMapBackground gameMapBackground;
+
+typedef struct{
+    SDL_Texture* texture;
+    SDL_Rect source;
+	SDL_Rect dest;
+} GameLowLayerBackground;
+extern GameLowLayerBackground gameLowLayerBackground;
 
 typedef struct{
     SDL_Texture* texture;

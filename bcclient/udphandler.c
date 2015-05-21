@@ -12,7 +12,7 @@ int UDPhandler(void){
     for(;;){
         if(mode == IN_GAME){
             // Send key-press data to server
-            if(!ship[client.id].isDead && gameFreezeTime < 0 && pressedButtons != lastPressedButtons){ // We only want to send if the pressed buttons have changed
+            if(!ship[client.id].isDead && gameFreezeTime <= 0 && pressedButtons != lastPressedButtons){ // We only want to send if the pressed buttons have changed
                 outPacket->data[0] = pressedButtons;
                 outPacket->len = sizeof(pressedButtons);
                 SDLNet_UDP_Send(client.UDPSendSock, -1, outPacket);

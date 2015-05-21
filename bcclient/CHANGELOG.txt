@@ -1,3 +1,19 @@
+0.74 :
+* Far distance backdrop added.
+
+0.73 :
+* There's now support for an option to show players' names below their ships. Will be implemented with the options screen.
+
+0.72 :
+* Users can no longer join a lobby without entering a name.
+
+0.71 :
+* The client now displays current score.
+* Minor adjustments.
+
+0.70 :
+* Pixel collision implemented.
+
 0.63 :
 * Bots now attempt to aquire powerups in addition to kill enemies.
 

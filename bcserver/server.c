@@ -179,7 +179,6 @@ bool loadMedia() {
 			}
 		}
 	}
-	
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;

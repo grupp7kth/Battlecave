@@ -41,7 +41,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
         SDL_RenderCopy(gRenderer, mLobbyWindow, NULL, &windowPlacement[1]);
 
-        SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &gameBackground.mapPreviewPlacement);  // Shows a preview of the map
+        SDL_RenderCopy(gRenderer, gameMapBackground.texture, NULL, &gameMapBackground.mapPreviewPlacement);  // Shows a preview of the map
 
         for(int i=0; i < MAX_PLAYERS; i++){     // Ready icons
             if(playerReady[i]){
@@ -73,22 +73,27 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 //*********************** MODE 6 : In Game *********************************
     else if(*mode == IN_GAME){
         // RENDER EVERYTHING GAME RELATED
-        // Render Background
-
-        gameBackground.source.x = ship[viewportID].x - (GAME_AREA_WIDTH/2);
-        gameBackground.source.y = ship[viewportID].y - (GAME_AREA_HEIGHT/2);
+        // Decide Map Background Placement
+                gameMapBackground.source.x = ship[viewportID].x - (GAME_AREA_WIDTH/2);
+        gameMapBackground.source.y = ship[viewportID].y - (GAME_AREA_HEIGHT/2);
 
         if(ship[viewportID].x < GAME_AREA_WIDTH/2)
-            gameBackground.source.x = 0;
-        else if(ship[viewportID].x > gameBackground.w - GAME_AREA_WIDTH/2)
-            gameBackground.source.x = gameBackground.w - GAME_AREA_WIDTH;
+            gameMapBackground.source.x = 0;
+        else if(ship[viewportID].x > gameMapBackground.w - GAME_AREA_WIDTH/2)
+            gameMapBackground.source.x = gameMapBackground.w - GAME_AREA_WIDTH;
 
         if(ship[viewportID].y < GAME_AREA_HEIGHT/2)
-            gameBackground.source.y = 0;
-        else if(ship[viewportID].y > gameBackground.h - GAME_AREA_HEIGHT/2)
-            gameBackground.source.y = gameBackground.h - GAME_AREA_HEIGHT;
+            gameMapBackground.source.y = 0;
+        else if(ship[viewportID].y > gameMapBackground.h - GAME_AREA_HEIGHT/2)
+            gameMapBackground.source.y = gameMapBackground.h - GAME_AREA_HEIGHT;
 
-        SDL_RenderCopy(gRenderer, gameBackground.texture, &gameBackground.source, &gameBackground.dest);
+        // Render Low (Far) Layer Background
+        gameLowLayerBackground.source.x = gameMapBackground.source.x/3;
+        gameLowLayerBackground.source.y = gameMapBackground.source.y/3;
+        SDL_RenderCopy(gRenderer, gameLowLayerBackground.texture, &gameLowLayerBackground.source, &gameLowLayerBackground.dest);
+
+        // Render Map Background
+        SDL_RenderCopy(gRenderer, gameMapBackground.texture, &gameMapBackground.source, &gameMapBackground.dest);
 
         // If the client is currently teleporting; change the alpha of his ship to tone it in/out
         if(client.activePowerup == POWERUP_TELEPORT){
@@ -117,8 +122,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             if(!ship[i].active || ship[i].isDead)
                 continue;
             int temp;
-            ship[i].placement.x = ship[i].x - gameBackground.source.x - ship[i].w/2;
-            ship[i].placement.y = ship[i].y - gameBackground.source.y - ship[i].h/2;
+            ship[i].placement.x = ship[i].x - gameMapBackground.source.x - ship[i].w/2;
+            ship[i].placement.y = ship[i].y - gameMapBackground.source.y - ship[i].h/2;
 
             if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)                    // Decide whether the ship is within the game area of the window
                 temp = ship[i].placement.x - ship[client.id].placement.x;
@@ -132,13 +137,14 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         for(int i = 0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
             if(!powerupSpawnPoint[i].isActive)
                 continue;
-            powerupSpawnPoint[i].placement.x = powerupSpawnPoint[i].x - gameBackground.source.x;
-            powerupSpawnPoint[i].placement.y = powerupSpawnPoint[i].y - gameBackground.source.y;
+            powerupSpawnPoint[i].placement.x = powerupSpawnPoint[i].x - gameMapBackground.source.x;
+            powerupSpawnPoint[i].placement.y = powerupSpawnPoint[i].y - gameMapBackground.source.y;
             if(powerupSpawnPoint[i].placement.x < GAME_AREA_WIDTH)                  // Don't bother rendering it if it's under the side-bar
                 SDL_RenderCopy(gRenderer, mPowerupIcon[powerupSpawnPoint[i].type], NULL, &powerupSpawnPoint[i].placement);
 
         }
 
+        // Render bullets
         SDL_Rect bulletPlacement;
         bulletPlacement.w = 4;
         bulletPlacement.h = 4;
@@ -189,7 +195,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         SDL_RenderCopy(gRenderer, sideBar.texture, NULL, &sideBar.placement);
 
         // Render MiniMap
-        SDL_RenderCopy(gRenderer, gameBackground.texture, NULL, &miniMap.mapPlacement);
+        SDL_RenderCopy(gRenderer, gameMapBackground.texture, NULL, &miniMap.mapPlacement);
         for(int i=0; i < MAX_PLAYERS; i++){
             if(ship[i].active && !ship[i].isDead){
                 miniMap.playerPlacement[i].x = ship[i].x/10 + miniMap.mapPlacement.x - 5;
@@ -262,18 +268,26 @@ void loadMedia(void){
     miniMap.mapPlacement.w = 240;
     miniMap.mapPlacement.h = 160;
 
-    gameBackground.texture = loadTexture("resources/images/cave.png");
-    gameBackground.source.w = SCREENWIDTH-250;
-    gameBackground.source.h = SCREENHEIGHT;
-    gameBackground.dest.x = 0;
-    gameBackground.dest.y = 0;
-    gameBackground.dest.w = SCREENWIDTH-250;
-    gameBackground.dest.h = SCREENHEIGHT;
-    SDL_QueryTexture(gameBackground.texture, NULL, NULL, &gameBackground.w, &gameBackground.h);
-    gameBackground.mapPreviewPlacement.x = 879;
-    gameBackground.mapPreviewPlacement.y = 124;
-    gameBackground.mapPreviewPlacement.w = 240;
-    gameBackground.mapPreviewPlacement.h = 160;
+    gameMapBackground.texture = loadTexture("resources/images/cave.png");
+    gameMapBackground.source.w = SCREENWIDTH-250;
+    gameMapBackground.source.h = SCREENHEIGHT;
+    gameMapBackground.dest.x = 0;
+    gameMapBackground.dest.y = 0;
+    gameMapBackground.dest.w = SCREENWIDTH-250;
+    gameMapBackground.dest.h = SCREENHEIGHT;
+    SDL_QueryTexture(gameMapBackground.texture, NULL, NULL, &gameMapBackground.w, &gameMapBackground.h);
+    gameMapBackground.mapPreviewPlacement.x = 879;
+    gameMapBackground.mapPreviewPlacement.y = 124;
+    gameMapBackground.mapPreviewPlacement.w = 240;
+    gameMapBackground.mapPreviewPlacement.h = 160;
+
+    gameLowLayerBackground.texture = loadTexture("resources/images/ingamebackground.png");
+    gameLowLayerBackground.dest.x = 0;
+    gameLowLayerBackground.dest.y = 0;
+    gameLowLayerBackground.dest.w = GAME_AREA_WIDTH;
+    gameLowLayerBackground.dest.h = GAME_AREA_HEIGHT;
+    gameLowLayerBackground.source.w = GAME_AREA_WIDTH;
+    gameLowLayerBackground.source.h = GAME_AREA_HEIGHT;
 
     for(int i=0; i < MAX_PLAYERS; i++){
         ship[i].texture = loadTexture("resources/images/ship.png");
