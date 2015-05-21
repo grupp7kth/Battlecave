@@ -70,6 +70,7 @@
 #define MAX_HEALTH 100
 #define RESPAWN_TIME_MS 10000
 #define BACKGROUND_NONBUMPCOLOUR 0
+#define BACKGROUND_BUMPMAP_LANDING_SPOT 2
 #define SHIP_NONBUMPCOLOUR 0
 
 typedef struct{
@@ -87,7 +88,7 @@ typedef struct{
 
 typedef struct{
     SDL_Surface* surface;
-    int bulletIntervall,bulletCooldown;
+    int bulletIntervall,bulletCooldown, ammo, fuel;
     double xPos,yPos,xVel,yVel;
     double angle,angleVel;
     Uint8 health;

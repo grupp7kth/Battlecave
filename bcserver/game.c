@@ -20,7 +20,6 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 	double angleCos, angleSin, angleCos2, angleSin2;
 	for (i=0; i<MAX_CLIENTS; i++) {
 		if (!clients[i].active || skepp[i].isDead) continue;
-//		printf("Checking ship %d\n",i);
 		angleCos = cos(skepp[i].angle*PI/180);
 		angleSin = sin(skepp[i].angle*PI/180);
 		
@@ -28,25 +27,25 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		for (j=0; j<skepp[i].antalPixlar; j++) {
 			xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 			ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-//			printf("Pixel (%d,%d)\n",xcoord,ycoord); 
 			if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
-				skepp[i].health=0;
+				if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<10 || skepp[i].angle>350)) {
+					skepp[i].yVel*=-0.5;
+					skepp[i].xVel*=0.8;
+					break;
+				}
+				else skepp[i].health=0;
 			}
 		}
 		// Kolla avst}ndet till varje skott; om mindre {n 15, kolla pixelkrock.
 		for (k=0; k<MAX_BULLETS; k++) {
 			if (!skotten[k].active) continue;
 			double distance = sqrt(pow(skotten[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
-//			printf("Skott %d skepp %d: %d\n",k,i,distance);
 			if (distance < 15) {
-//				printf("Fara! Skepp %d skott %d, avst}nd %f\n",i,k,distance);
 				for (j=0; j<skepp[i].antalPixlar; j++) {
 					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-//					printf("Skott (%d;%d), pixel (%d,%d)\n",(int)skotten[k].xPos,(int)skotten[k].yPos,xcoord,ycoord); 
 					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord) {
-						puts("Bam!");
-						skepp[i].health-=10;
+						skepp[i].health-=10*(1+(skepp[skotten[k].source].activePowerup==POWERUP_DOUBLEDAMAGE));
 						skepp[i].xVel+=skotten[k].xVel*0.1;
 						skepp[i].yVel+=skotten[k].yVel*0.1;
 						skotten[k].active = false;
@@ -61,10 +60,8 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		for (k=i+1; k<MAX_CLIENTS; k++) {
 			if (!clients[k].active || skepp[k].isDead) continue;
 			double distance = sqrt(pow(skepp[k].xPos-ships[i].xPos,2)+pow(skepp[k].yPos-ships[i].yPos,2));
-//			printf("Skott %d skepp %d: %d\n",k,i,distance);
 			krock=false;
 			if (distance < 30) {
-//				printf("Fara skepp %d och %d\n",i,k);
 				angleCos2 = cos(skepp[k].angle*PI/180);
 				angleSin2 = sin(skepp[k].angle*PI/180);
 				for (j=0; j<skepp[i].antalPixlar; j++) {
@@ -83,7 +80,6 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 			}
 			if (krock) {
 				krock=false;
-//				printf("Krock: skepp %d (%f.2;%f.2) och %d (%f.2;%f.2)\n",i,skepp[i].xVel,skepp[i].yVel,k,skepp[k].xVel,skepp[k].yVel);
 				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
 				deltaX = skepp[i].xPos-skepp[k].xPos;	
 				deltaY = skepp[i].yPos-skepp[k].yPos;
@@ -103,38 +99,14 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				skepp[i].yVel = totVelY-weightConstant*objectWeight*bY + skepp[k].yVel;
 				skepp[k].xVel = weightConstant*subjectWeight*bX + skepp[k].xVel;
 				skepp[k].yVel = weightConstant*subjectWeight*bY + skepp[k].yVel;
-//				printf("Efter: skepp %d (%f;%f) och %d (%f;%f)\n",i,skepp[i].xVel,skepp[i].yVel,k,skepp[k].xVel,skepp[k].yVel);
 				skepp[i].latestTag=k;
 				skepp[k].latestTag=i;
-				/* Javakod f|r kollisionerna.
-				int deltaX = s.getxPos()-s2.getxPos();
-				int deltaY = s.getyPos()-s2.getyPos();
-				int totVelX = s.getxVel()-s2.getxVel();
-				int totVelY = s.getyVel()-s2.getyVel();
-				int deltaR =1;
-				if (deltaX!=0) deltaR = deltaY/deltaX;
-				// int subjectWeight = Math.pow(subject.storlek,3);
-				int subjectWeight = 1;
-				//				int objectWeight = Math.pow(object.storlek,3);
-				int objectWeight = 1;
-				int weightConstant = 2/(subjectWeight+objectWeight);
-				int bX = (int)((totVelX+totVelY*deltaR)/(1+Math.pow(deltaR,2)));
-				int bY = bX*deltaR;
-				
-				s.setxVel(totVelX-weightConstant*objectWeight*bX + s2.getxVel());
-				s.setyVel(totVelY-weightConstant*objectWeight*bY + s2.getyVel());
-				s2.setxVel(weightConstant*subjectWeight*bX + s2.getxVel());
-				s2.setyVel(weightConstant*subjectWeight*bY + s2.getyVel());
-				s.move(CPS);
-				s2.move(CPS);*/
-
 			}
 		}
 	}
 	// Kolla om skotten krockar med bakgrunden
 	for (i=0; i<MAX_BULLETS; i++) {
 		if (bullets[i].active) {
-//			printf("Checking bullet %d\n",i);
 			if (backgroundBumpmap[(int)bullets[i].yPos*STAGE_WIDTH+(int)bullets[i].xPos]) {
 				bullets[i].active=false;
 			}
@@ -163,9 +135,10 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                 else if(ships[i].xVel < -MaxSpeedList[activeMaxSpeed])
                     ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
-            else if (!infiniteMomentum) {
-                ships[i].yVel /= 1.005;
-                ships[i].xVel /= 1.005;
+            ships[i].yVel+=0.0015;
+            if (!infiniteMomentum) {
+                ships[i].yVel /= 1.002;
+                ships[i].xVel /= 1.002;
 
                 if(ships[i].yVel <= 0.2 && ships[i].yVel >= -0.2)
                     ships[i].yVel = 0;
@@ -212,8 +185,8 @@ void addBullet(Ship* ship, int *id){
     }
     bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle))*15;
     bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle))*15;
-    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*3;
-    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*3;
+    bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle))*2.2;
+    bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle))*2.2;
     bullets[freeSpot].active = true;
     bullets[freeSpot].source = *id;
 
@@ -225,8 +198,8 @@ void addBullet(Ship* ship, int *id){
             }
             bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 20 + i*40))*15;
             bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 20 + i*40))*15;
-            bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*3;
-            bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*3;
+            bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 20 + i*40))*1.6;
+            bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 20 + i*40))*1.6;
             bullets[freeSpot].active = true;
             bullets[freeSpot].source = *id;
         }
@@ -238,8 +211,8 @@ void addBullet(Ship* ship, int *id){
         }
         bullets[freeSpot].xPos = ship->xPos - cos(getRadians(ship->angle - 180))*15;
         bullets[freeSpot].yPos = ship->yPos - sin(getRadians(ship->angle - 180))*15;
-        bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*3;
-        bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*3;
+        bullets[freeSpot].xVel = ship->xVel - cos(getRadians(ship->angle - 180))*0.8;
+        bullets[freeSpot].yVel = ship->yVel - sin(getRadians(ship->angle - 180))*0.8;
         bullets[freeSpot].active = true;
         bullets[freeSpot].source = *id;
     }
@@ -291,83 +264,63 @@ bool initGame(){
     return true;
 }
 void checkShipHealth(){
-    for (int i=0; i<MAX_CLIENTS; i++) {
-        if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_HUMAN) {
-            char sendMessage[4];
-            sendMessage[0]='}';
-            sendMessage[1]=i+'0';
-            sendMessage[2]=ships[i].latestTag+'0';
-            sendMessage[3]='\0';
-	    broadCast(sendMessage);
-            if (ships[i].latestTag != i) clients[ships[i].latestTag].score+=1;
-//            SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
-            ships[i].deathTimer=RESPAWN_TIME_MS;
-            ships[i].deathTimerStart = SDL_GetTicks();
-            ships[i].isDead = true;
-            ships[i].xVel = 0;
-            ships[i].yVel = 0;
-            ships[i].acceleration =0;
-            ships[i].latestTag = i;
-            int freespot;
-            double j;
-            for (j=0; j<2*PI; j+=PI/12) {
-		    freespot = findFreeBullet(bullets);
-		    if (freespot < 0) continue;
-		    bullets[freespot].xPos = ships[i].xPos - cos(j)*15;
-		    bullets[freespot].yPos = ships[i].yPos - sin(j)*15;
-		    bullets[freespot].xVel = - cos(j)*1.6;
-		    bullets[freespot].yVel = - sin(j)*1.6;
-		    bullets[freespot].active = true;
-		    bullets[freespot].source = i;
-//		    printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
-	    }
-            short attempts = 0;
-            do{                                 // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
-                clients[i].viewportID = rand() % 8;
-                attempts++;
-            } while((!clients[clients[i].viewportID].active || ships[clients[i].viewportID].isDead) && attempts < 50);
-            if(attempts >= 50)
-                clients[i].viewportID = i;
-        }
-        else if(clients[i].active && ships[i].health<=0 && !ships[i].isDead && clients[i].playerType == PLAYER_TYPE_BOT) {
-            //SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
-            ships[i].deathTimer=RESPAWN_TIME_MS;
-            ships[i].deathTimerStart = SDL_GetTicks();
-            ships[i].isDead = true;
-            ships[i].xVel = 0;
-            ships[i].yVel = 0;
-            ships[i].acceleration =0;
-            int freespot;
-            double j;
-            for (j=0; j<2*PI; j+=PI/12) {
-		    freespot = findFreeBullet(bullets);
-		    if (freespot < 0) continue;
-		    bullets[freespot].xPos = ships[i].xPos - cos(j)*15;
-		    bullets[freespot].yPos = ships[i].yPos - sin(j)*15;
-		    bullets[freespot].xVel = - cos(j)*1.6;
-		    bullets[freespot].yVel = - sin(j)*1.6;
-		    bullets[freespot].active = true;
-		    bullets[freespot].source = i;
-//		    printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
-	    }
-        }
-        else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
-            ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
-        }
-        else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
-            ships[i].health = 100;
-            ships[i].isDead = false;
-            int tempSpawnID = rand() % 8;
-//            ships[i].xPos = 400;
-//            ships[i].yPos = 400;
-            ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
-            ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
-            ships[i].angle = 0;
-            clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
-        }
-    }
+	for (int i=0; i<MAX_CLIENTS; i++) {
+		if(clients[i].active && ships[i].health<=0 && !ships[i].isDead) {
+			char sendMessage[4];
+			sendMessage[0]='}';
+			sendMessage[1]=i+'0';
+			sendMessage[2]=ships[i].latestTag+'0';
+			sendMessage[3]='\0';
+			broadCast(sendMessage);
+//			SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
+			ships[i].deathTimer=RESPAWN_TIME_MS;
+			ships[i].deathTimerStart = SDL_GetTicks();
+			ships[i].isDead = true;
+			ships[i].xVel = 0;
+			ships[i].yVel = 0;
+			ships[i].acceleration =0;
+			ships[i].latestTag = i;
+			if (ships[i].latestTag != i) clients[ships[i].latestTag].score+=1;
+			int freespot;
+			double j;
+			for (j=0; j<2*PI; j+=PI/12) {
+				freespot = findFreeBullet(bullets);
+				if (freespot < 0) continue;
+				bullets[freespot].xPos = ships[i].xPos - cos(j)*15;
+				bullets[freespot].yPos = ships[i].yPos - sin(j)*15;
+				bullets[freespot].xVel = - cos(j)*1.6;
+				bullets[freespot].yVel = - sin(j)*1.6;
+				bullets[freespot].active = true;
+				bullets[freespot].source = i;
+//				printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
+			}
+			if (clients[i].playerType == PLAYER_TYPE_HUMAN) {
+				short attempts = 0;
+				do{ // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
+					clients[i].viewportID = rand() % 8;
+					attempts++;
+				} while((!clients[clients[i].viewportID].active || ships[clients[i].viewportID].isDead) && attempts < 50);
+				if(attempts >= 50)
+					clients[i].viewportID = i;
+			}
+		}
+		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
+			ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
+		}
+		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
+			ships[i].health = 100;
+			ships[i].isDead = false;
+			int tempSpawnID = rand() % 8;
+			ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
+			ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
+			ships[i].xVel = 0;
+			ships[i].yVel = 0;
+			ships[i].angle = 0;
+			ships[i].acceleration = 0;
+			clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
+		}
+	}
 }
-
 
 void fetchMapData(void){
     char mapName[30] = {'\0'}, readNum[5] = {'\0'};

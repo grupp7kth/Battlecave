@@ -3,6 +3,18 @@
 IPaddress serverIP;
 TCPsocket TCPsock;
 
+void itoa(int n, char s[],int bas) { // Fr}n Kerninghan & Ritchie
+	int c,i,j;
+	i=0;
+	do s[i++]=n%bas+'0'; while ((n/=bas)>0);
+	s[i]='\0';
+	for (i=0, j=strlen(s)-1;i<j;i++,j--) {
+		c=s[i];
+		s[i]=s[j];
+		s[j]=c;
+	}
+}
+
 int spamUDPpackets(void* data) {
 	while (gameIsActive) {
 //		puts("Sending UDP.");
@@ -25,7 +37,6 @@ int main(int argc, char *argv[]) {
     }
 
     for (int i=0; i<MAX_CLIENTS; i++){ clients[i].id = i; }
-
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
@@ -149,32 +160,32 @@ bool loadMedia() {
 	int i,j,k;
 	Uint32 pixelResult;
 	Uint8* pixlar = (Uint8*)background->pixels;
+	char* binary;
+	binary=malloc(33);
 	for (i=0; i<background->h; i++) {
 		for (j=0; j<background->w;j++) {
 			pixelResult = 0;
 			for (k=0; k<3; k++) {
-				// LOL FOR THIS!
-				pixelResult = pixlar[(i*(background->w)+j)*pixelSize+k] << k*8;
+//				printf("%d:",pixlar[(i*(background->w)+j)*pixelSize+k]);
+				pixelResult = pixelResult | pixlar[(i*(background->w)+j)*pixelSize+k] << k*8;
 			}
+//			puts("");
+			itoa(pixelResult,binary,2);
+//			printf("Pixel: %d (%s)\n",pixelResult,binary);
 			backgroundBumpmap[i*(background->w)+j]=pixelResult!=BACKGROUND_NONBUMPCOLOUR;
+			if (pixelResult==(256*256*256-1)) {
+				backgroundBumpmap[i*(background->w)+j]=BACKGROUND_BUMPMAP_LANDING_SPOT;
+//				puts("Found some white.");
+			}
 		}
 	}
-	
-// Gammal bumpmapkod	
-/*	int i,j;
-	void* pixlar = background->pixels;
-	int* siffra = (int*)pixlar;
-	for (i=0; i<background->h; i++) {
-		for (j=0; j<background->w;j++) {
-			backgroundBumpmap[i* (background->w)+j]=(siffra[i* (background->w)+j]!=BACKGROUND_NONBUMPCOLOUR);
-		}
-	}*/
 	
 	for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;
+		pixelSize = ships[i].surface->pitch/ships[i].surface->w;
 		
-		printf("Sprajten: W: %d, H: %d\n",ships[i].surface->w,ships[i].surface->h);
+		printf("Sprajten: (%d;%d), pixelstorlek %d\n",ships[i].surface->w,ships[i].surface->h,pixelSize);
 		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
 			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
 			exit(1);
@@ -198,15 +209,7 @@ bool loadMedia() {
 				if (pixelResult!=SHIP_NONBUMPCOLOUR) counter++;
 			}
 		}
-		// Gammal bumpmapkod
-/*		int* siffra = (int*)ships[i].surface->pixels;
-		for (j=0,counter=0; j<ships[i].surface->h; j++) {
-			for (k=0; k<ships[i].surface->w;k++) {
-				if (siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) counter++;;
-			}
-		}*/
 		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
-		
 		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
 //		Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
 		ships[i].antalPixlar = counter;
@@ -224,17 +227,6 @@ bool loadMedia() {
 				}
 			}
 		}
-//		Gammal bumpmapkod
-/*		for (j=0, counter=0; j<ships[i].surface->h; j++) {
-			for (k=0; k<ships[i].surface->w;k++) {
-				if ((Uint32)siffra[j* (ships[i].surface->w)+k]!=SHIP_NONBUMPCOLOUR) {
-					ships[i].pixlar[counter].x = k-mittpunkt.x;
-					ships[i].pixlar[counter].y = j-mittpunkt.y;
-					printf("Krockbar pixel hittad p} (%d:%d)\n",ships[i].pixlar[counter].x,ships[i].pixlar[counter].y);
-					counter++;
-				}
-			}
-		}*/
 	}
 	return true;
 }

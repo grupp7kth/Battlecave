@@ -20,7 +20,7 @@ SDL_Texture* loadTexture(char* filname);
 //**************************************************************************
 
 void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){
-    SDL_SetRenderDrawColor(gRenderer,0,0,0,255);
+    SDL_SetRenderDrawColor(gRenderer,48,0,0,255);
     SDL_RenderClear(gRenderer);
 
     setButtons(buttonPlacement, mode);
@@ -144,8 +144,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         bulletPlacement.h = 4;
 
         for(int i = 0; i < currentBulletAmmount; i++){
-            bulletPlacement.x = bullet[i].x;
-            bulletPlacement.y = bullet[i].y;
+            bulletPlacement.x = bullet[i].x-1;
+            bulletPlacement.y = bullet[i].y-1;
             SDL_RenderCopy(gRenderer, miniMap.playerTexture[bullet[i].source] , NULL, &bulletPlacement);
         }
 
