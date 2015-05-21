@@ -307,6 +307,7 @@ void checkShipHealth(){
             ships[i].xVel = 0;
             ships[i].yVel = 0;
             ships[i].acceleration =0;
+            ships[i].latestTag = i;
             int freespot;
             double j;
             for (j=0; j<2*PI; j+=PI/12) {
