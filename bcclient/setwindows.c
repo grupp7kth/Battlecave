@@ -13,5 +13,9 @@ void setWindows(SDL_Rect windowPlacement[]){
     windowPlacement[2].y = SCREENHEIGHT/2 - 100;
     windowPlacement[2].h = 123;
     windowPlacement[2].w = 300;
+    windowPlacement[3].x = SCREENWIDTH/2 - 150;         // 3 = Options Window
+    windowPlacement[3].y = SCREENHEIGHT/2 - 220;
+    windowPlacement[3].h = 275;
+    windowPlacement[3].w = 300;
     return;
 }

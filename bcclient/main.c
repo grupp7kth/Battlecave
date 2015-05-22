@@ -12,7 +12,7 @@ int main(int argc, char* args[]){
 
     SDL_Event event;
     SDL_Rect buttonPlacement[MAXBUTTONS];   // Interactable buttons
-    SDL_Rect windowPlacement[3];            // Window backgrounds
+    SDL_Rect windowPlacement[4];            // Window backgrounds
 
     init();
     initSDL();
@@ -51,7 +51,7 @@ int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
 void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N have?
     modeMaxButtons[STARTUP]       =  3;
     modeMaxButtons[FIND_SERVERS]  =  3;
-    modeMaxButtons[OPTIONS]       =  0;          // UNUSED ATM
+    modeMaxButtons[OPTIONS]       =  1;
     modeMaxButtons[LOBBY]         = 16;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;

@@ -4,6 +4,7 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 SDL_Texture* mBackground = NULL;
 SDL_Texture* mBlackOverlay = NULL;
+SDL_Texture* mOptionsWindow = NULL;
 SDL_Texture* mIPPortWindow = NULL;
 SDL_Texture* mLobbyWindow = NULL;
 SDL_Texture* mReady = NULL;
@@ -40,6 +41,8 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     else if(*mode == OPTIONS){
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
         SDL_RenderCopy(gRenderer, mBlackOverlay, NULL, NULL);
+
+        SDL_RenderCopy(gRenderer, mOptionsWindow, NULL, &windowPlacement[3]);  // Shows a preview of the map
     }
 //********************** MODE 3 : LOBBY SCREEN ****************************
     else if(*mode == LOBBY){
@@ -237,6 +240,7 @@ void loadMedia(void){
     SDL_SetTextureAlphaMod(mBlackOverlay, 100);
     SDL_SetTextureBlendMode(mBlackOverlay, SDL_BLENDMODE_BLEND);
 
+    mOptionsWindow = loadTexture("resources/images/optionswindow.png");
     mIPPortWindow = loadTexture("resources/images/ipportwindow.png");
     mNameWindow = loadTexture("resources/images/namewindow.png");
     mLobbyWindow = loadTexture("resources/images/lobbybackground.png");

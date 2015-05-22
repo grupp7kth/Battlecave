@@ -59,10 +59,10 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
 }
 
 static void setButtonsMode2(SDL_Rect buttonPlacement[]){ // 0 = Apply
-    buttonPlacement[0].x = 537;
-    buttonPlacement[0].y = 587;
-    buttonPlacement[0].h = 33;
-    buttonPlacement[0].w = 590;
+    buttonPlacement[0].x = SCREENWIDTH/2 - 49;
+    buttonPlacement[0].y = SCREENHEIGHT/2 + 16;
+    buttonPlacement[0].h = 31;
+    buttonPlacement[0].w = 100;
     return;
 }
 

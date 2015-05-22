@@ -2,6 +2,7 @@
 
 static void checkMouseMode0(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, bool *quit);
 static void checkMouseMode1(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match);
+static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
 static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
 static void checkMouseMode4(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
 static void checkMouseMode5(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
@@ -31,6 +32,8 @@ void checkMouse(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
         checkMouseMode0(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, quit);
     else if(*mode == FIND_SERVERS)
         checkMouseMode1(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match);
+    else if(*mode == OPTIONS)
+        checkMouseMode2(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, keyboardMode);
     else if(*mode == LOBBY)
         checkMouseMode3(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, keyboardMode);
     else if(*mode == JOIN_DEFAULT)
@@ -94,7 +97,22 @@ static void checkMouseMode1(SDL_Event *event, SDL_Point *currentMouseLocation, S
     }
     return;
 }
+//**************************************************************************
+//*                   MODE 2 (Options Screen)                              *
+//**************************************************************************
+static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode){
+    for(int i=0; i < modeMaxButtons[2]; i++){
+        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
+            if(event->type == SDL_MOUSEBUTTONDOWN){
+                if(i == 0){         // APPLY
+                    *mode = STARTUP;
 
+                }
+            }
+        }
+    }
+    return;
+}
 //**************************************************************************
 //*                   MODE 3 Lobby Screen                                  *
 //**************************************************************************
