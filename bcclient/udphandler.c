@@ -80,7 +80,6 @@ void unpackPacket(void){
     }
     ship[client.id].fuel = read & 0b111111111;                         // The first 9 bits of data-byte 97&98 are fuel, last 7 bits are ammo
     ship[client.id].ammo = (read >> 9) & 0b1111111;
-printf("MY FUEL IS %d\n", ship[client.id].fuel);
 
     for(bulletID = 0; (inPacket->data[99+(bulletID)*3] != 0xFF) && (bulletID < MAX_BULLETS); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){

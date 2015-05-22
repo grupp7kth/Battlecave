@@ -2,6 +2,7 @@
 
 static void setButtonsMode0(SDL_Rect buttonPlacement[]);
 static void setButtonsMode1(SDL_Rect buttonPlacement[]);
+static void setButtonsMode2(SDL_Rect buttonPlacement[]);
 static void setButtonsMode3(SDL_Rect buttonPlacement[]);
 static void setButtonsMode4(SDL_Rect buttonPlacement[]);
 static void setButtonsMode5(SDL_Rect buttonPlacement[]);
@@ -13,7 +14,7 @@ void setButtons(SDL_Rect buttonPlacement[], int *mode){
     else if(*mode == FIND_SERVERS)                          // Show Servers Screen
         setButtonsMode1(buttonPlacement);
     else if(*mode == OPTIONS)                               // Options Screen
-        printf("SET OPTIONS BUTTONS HERE\n");
+        setButtonsMode2(buttonPlacement);
     else if(*mode == LOBBY)                                 // Lobby Screen
         setButtonsMode3(buttonPlacement);
     else if(*mode == JOIN_DEFAULT)                          // Join Default Server Screen
@@ -54,6 +55,14 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     buttonPlacement[2].y = 4*(SCREENHEIGHT/6) + 150;
     buttonPlacement[2].h = 40;
     buttonPlacement[2].w = 352;
+    return;
+}
+
+static void setButtonsMode2(SDL_Rect buttonPlacement[]){ // 0 = Apply
+    buttonPlacement[0].x = 537;
+    buttonPlacement[0].y = 587;
+    buttonPlacement[0].h = 33;
+    buttonPlacement[0].w = 590;
     return;
 }
 

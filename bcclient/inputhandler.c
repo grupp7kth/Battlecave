@@ -60,7 +60,7 @@ static void checkMouseMode0(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     *quit = true;
                 }
                 else if(i == 1) // OPTIONS
-                    printf("OPTIONS\n");
+                    *mode = OPTIONS;
                 else{           // FIND SERVERS
                     *mode = FIND_SERVERS;
                 }

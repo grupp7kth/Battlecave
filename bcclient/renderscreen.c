@@ -36,6 +36,11 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
         setText(mode, gRenderer, select);
     }
+//********************** MODE 2 : OPTIONS SCREEN **************************
+    else if(*mode == OPTIONS){
+        SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
+        SDL_RenderCopy(gRenderer, mBlackOverlay, NULL, NULL);
+    }
 //********************** MODE 3 : LOBBY SCREEN ****************************
     else if(*mode == LOBBY){
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
