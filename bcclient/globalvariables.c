@@ -25,6 +25,10 @@ int textStringCurrent[11];              // Which index in the string are we curr
 
 char defaultIP[16];                     // The IP and port used to connect to the default server
 char defaultPort[6];
+bool namesBelowShipsEnabled;            // Show names below their ships while in game enabled
+bool fancyBackgroundEnabled;            // Far background behind the map while in game enabled
+bool musicEnabled;
+SDL_Rect checkBox;
 
 char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 bool playerReady[8];
@@ -59,8 +63,7 @@ int gameFreezeTime;                         // Used to disallow player's keypres
 int activeGameLength;                       // Choses which entry from the list below that's active in terms of game-length
 int gameLengthList[6] = {5, 10, 15,
                          20, 25, 30};
-int activeMaxSpeed;                         // Choses which entry from the list below that's active in terms of max-speed
-int maxSpeedList[5] = {3, 5, 7, 10, 15};
+int activeMaxSpeed;                         // Choses which setting that's active in terms of max-speed
 bool infiniteMomentum;
 int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};

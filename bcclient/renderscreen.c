@@ -24,7 +24,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     SDL_SetRenderDrawColor(gRenderer,48,0,0,255);
     SDL_RenderClear(gRenderer);
 
-    setButtons(buttonPlacement, mode);
+    setButtons(buttonPlacement, windowPlacement, mode);
 
 //********************** MODE 0 : STARTUP SCREEN ***************************
     if(*mode == STARTUP){
@@ -43,6 +43,22 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         SDL_RenderCopy(gRenderer, mBlackOverlay, NULL, NULL);
 
         SDL_RenderCopy(gRenderer, mOptionsWindow, NULL, &windowPlacement[3]);  // Shows a preview of the map
+
+        // Show the boxes checked if they are enabled
+        checkBox.x = windowPlacement[3].x + 175;
+        if(namesBelowShipsEnabled){
+            checkBox.y = windowPlacement[3].y + 152;
+            SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
+        }
+        if(fancyBackgroundEnabled){
+            checkBox.y = windowPlacement[3].y + 182;
+            SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
+        }
+        if(musicEnabled){
+            checkBox.y = windowPlacement[3].y + 209;
+            SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
+        }
+        setText(mode, gRenderer, select);
     }
 //********************** MODE 3 : LOBBY SCREEN ****************************
     else if(*mode == LOBBY){
@@ -82,7 +98,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
     else if(*mode == IN_GAME){
         // RENDER EVERYTHING GAME RELATED
         // Decide Map Background Placement
-                gameMapBackground.source.x = ship[viewportID].x - (GAME_AREA_WIDTH/2);
+        gameMapBackground.source.x = ship[viewportID].x - (GAME_AREA_WIDTH/2);
         gameMapBackground.source.y = ship[viewportID].y - (GAME_AREA_HEIGHT/2);
 
         if(ship[viewportID].x < GAME_AREA_WIDTH/2)
@@ -95,11 +111,12 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         else if(ship[viewportID].y > gameMapBackground.h - GAME_AREA_HEIGHT/2)
             gameMapBackground.source.y = gameMapBackground.h - GAME_AREA_HEIGHT;
 
-        // Render Low (Far) Layer Background
-        gameLowLayerBackground.source.x = gameMapBackground.source.x/3;
-        gameLowLayerBackground.source.y = gameMapBackground.source.y/3;
-        SDL_RenderCopy(gRenderer, gameLowLayerBackground.texture, &gameLowLayerBackground.source, &gameLowLayerBackground.dest);
-
+        // Render Low (Far) Layer Background if enabled
+        if(fancyBackgroundEnabled){
+            gameLowLayerBackground.source.x = gameMapBackground.source.x/3;
+            gameLowLayerBackground.source.y = gameMapBackground.source.y/3;
+            SDL_RenderCopy(gRenderer, gameLowLayerBackground.texture, &gameLowLayerBackground.source, &gameLowLayerBackground.dest);
+        }
         // Render Map Background
         SDL_RenderCopy(gRenderer, gameMapBackground.texture, &gameMapBackground.source, &gameMapBackground.dest);
 

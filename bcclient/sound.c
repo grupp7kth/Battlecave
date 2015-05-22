@@ -1,11 +1,11 @@
 #include "includes.h"
 
 void soundHandler(void){
-    if(Mix_PlayingMusic() == 0){
+    if(musicEnabled && Mix_PlayingMusic() == 0){
         // The following 3 lines is to counter a bug which sometimes skips songs
-        SDL_Delay(100);
-        if(Mix_PlayingMusic() > 0)
-            return;
+//        SDL_Delay(250);
+//        if(Mix_PlayingMusic() > 0)
+//            return;
 
         char songNames[5][25] = {{"Space Industry"},
                                  {"Saturn's Graveyard"},

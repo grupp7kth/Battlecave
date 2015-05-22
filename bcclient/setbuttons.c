@@ -2,19 +2,19 @@
 
 static void setButtonsMode0(SDL_Rect buttonPlacement[]);
 static void setButtonsMode1(SDL_Rect buttonPlacement[]);
-static void setButtonsMode2(SDL_Rect buttonPlacement[]);
+static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]);
 static void setButtonsMode3(SDL_Rect buttonPlacement[]);
 static void setButtonsMode4(SDL_Rect buttonPlacement[]);
 static void setButtonsMode5(SDL_Rect buttonPlacement[]);
 static void setButtonsMode6(SDL_Rect buttonPlacement[]);
 
-void setButtons(SDL_Rect buttonPlacement[], int *mode){
+void setButtons(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[], int *mode){
     if(*mode == STARTUP)                                    // Startup Screen
         setButtonsMode0(buttonPlacement);
     else if(*mode == FIND_SERVERS)                          // Show Servers Screen
         setButtonsMode1(buttonPlacement);
     else if(*mode == OPTIONS)                               // Options Screen
-        setButtonsMode2(buttonPlacement);
+        setButtonsMode2(buttonPlacement, windowPlacement);
     else if(*mode == LOBBY)                                 // Lobby Screen
         setButtonsMode3(buttonPlacement);
     else if(*mode == JOIN_DEFAULT)                          // Join Default Server Screen
@@ -58,11 +58,31 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     return;
 }
 
-static void setButtonsMode2(SDL_Rect buttonPlacement[]){ // 0 = Apply
-    buttonPlacement[0].x = SCREENWIDTH/2 - 49;
-    buttonPlacement[0].y = SCREENHEIGHT/2 + 16;
+static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Apply , 1 = Default IP , 2 = Default Port , 3 = Player Names , 4 = Fancy Background , 5 = Music Enabled
+    buttonPlacement[0].x = windowPlacement[3].x + 102;
+    buttonPlacement[0].y = windowPlacement[3].y + 237;
     buttonPlacement[0].h = 31;
     buttonPlacement[0].w = 100;
+    buttonPlacement[1].x = windowPlacement[3].x + 20;
+    buttonPlacement[1].y = windowPlacement[3].y + 34;
+    buttonPlacement[1].h = 37;
+    buttonPlacement[1].w = 260;
+    buttonPlacement[2].x = windowPlacement[3].x + 20;
+    buttonPlacement[2].y = windowPlacement[3].y + 97;
+    buttonPlacement[2].h = 37;
+    buttonPlacement[2].w = 260;
+    buttonPlacement[3].x = windowPlacement[3].x + 176;
+    buttonPlacement[3].y = windowPlacement[3].y + 152;
+    buttonPlacement[3].h = 15;
+    buttonPlacement[3].w = 15;
+    buttonPlacement[4].x = windowPlacement[3].x + 176;
+    buttonPlacement[4].y = windowPlacement[3].y + 182;
+    buttonPlacement[4].h = 15;
+    buttonPlacement[4].w = 15;
+    buttonPlacement[5].x = windowPlacement[3].x + 176;
+    buttonPlacement[5].y = windowPlacement[3].y + 209;
+    buttonPlacement[5].h = 15;
+    buttonPlacement[5].w = 15;
     return;
 }
 

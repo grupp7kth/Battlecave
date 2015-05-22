@@ -21,15 +21,13 @@ int main(int argc, char* args[]){
     setWindows(windowPlacement);
     clearTextStrings(11);
     //SDL_StartTextInput();
-    strcpy(defaultIP, "127.0.0.1");//193.10.39.101 = jungfrun TA BORT SEN
-    strcpy(defaultPort, "4444");
 
     while(!quit){
         while (SDL_PollEvent(&event))
             handleEvent(&event, buttonPlacement, &select, &mode, modeMaxButtons, &keyboardMode, &quit);
         renderScreen(&mode, &select, buttonPlacement, windowPlacement);
 
-        //soundHandler();
+        soundHandler();
         SDL_Delay(10);
     }
 
@@ -51,7 +49,7 @@ int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
 void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N have?
     modeMaxButtons[STARTUP]       =  3;
     modeMaxButtons[FIND_SERVERS]  =  3;
-    modeMaxButtons[OPTIONS]       =  1;
+    modeMaxButtons[OPTIONS]       =  6;
     modeMaxButtons[LOBBY]         = 16;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;
@@ -100,6 +98,41 @@ void init(void){
     powerupBar.h = 25;
 
     timedTextID = -1;           // Not active
+
+    // Load client settings from 'settings.txt' file
+    for(int i=0; i < 16; i++)
+        defaultIP[i] = '\0';
+    for(int i=0; i < 6; i++)
+        defaultPort[i] = '\0';
+
+    FILE *fp;
+    fp = fopen("settings.txt","r");
+    if(fp != NULL){
+        char tempStr[16];
+        int i;
+        for(i = 0; i <= 15 && tempStr[i-1] != '\n'; i++){ // Load default IP address
+            tempStr[i] = fgetc(fp);
+        }
+        tempStr[i-1] = '\0';
+        strcpy(defaultIP, tempStr);
+
+        for(i = 0; i <= 5 && tempStr[i-1] != '\n'; i++){ // Load default port
+            tempStr[i] = fgetc(fp);
+        }
+        tempStr[i-1] = '\0';
+        strcpy(defaultPort, tempStr);
+
+        namesBelowShipsEnabled = fgetc(fp) - 48;
+        fgetc(fp);                                      // Remove newline
+        fancyBackgroundEnabled = fgetc(fp) - 48;
+        fgetc(fp);                                      // Remove newline
+        musicEnabled = fgetc(fp) - 48;
+    }
+    fclose(fp);
+
+    checkBox.w = 15;
+    checkBox.h = 15;
+
     return;
 }
 

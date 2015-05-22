@@ -1,3 +1,10 @@
+0.80 :
+* The options screen is now implemented and functioning.
+    When the client is launched it loads its initial settings from the file 'settings.txt'.
+    Upon changing settings through the options screen and hitting 'apply' the settings will:
+	1) Be written to the 'settings.txt' file.
+	2) Be saved to the program's variables for the duration of the session.
+
 0.76 :
 * The client's fuel and ammo is now displayed.
 

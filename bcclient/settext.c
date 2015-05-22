@@ -5,6 +5,7 @@ SDL_Texture* mText = NULL;
 
 void setTextMode0(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
 void setTextMode1(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
+void setTextMode2(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select);
 void setTextMode4(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
@@ -20,6 +21,8 @@ void setText(int *mode, SDL_Renderer* gRenderer, int *select){
         setTextMode0(&textPlacement, gRenderer, select);
     else if(*mode == FIND_SERVERS)
         setTextMode1(&textPlacement, gRenderer, select);
+    else if(*mode == OPTIONS)
+        setTextMode2(&textPlacement, gRenderer);
     else if(*mode == LOBBY)
         setTextMode3(&textPlacement, gRenderer, select);
     else if(*mode == JOIN_DEFAULT)
@@ -90,6 +93,25 @@ void setTextMode1(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
     TTF_CloseFont(font);
 
     showClientVersion(textPlacement, gRenderer);
+    return;
+}
+
+void setTextMode2(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
+    TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 30);
+
+    textPlacement->x = SCREENWIDTH/2 - 116;
+    textPlacement->y = 174;
+    gTempTextMessage = TTF_RenderText_Solid(font, textString[ENTERING_IP], colorsRGB[TEXT_COLOR_TEAL]);
+    renderText(textPlacement, gRenderer);
+
+    textPlacement->y += 63;
+    gTempTextMessage = TTF_RenderText_Solid(font, textString[ENTERING_PORT], colorsRGB[TEXT_COLOR_TEAL]);
+    renderText(textPlacement, gRenderer);
+
+    TTF_CloseFont(font);
+
+    showClientVersion(textPlacement, gRenderer);
+    return;
 }
 
 void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select){
@@ -163,7 +185,7 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
 
     // Option 3 : Max Speed
     textPlacement->y += 58;
-    sprintf(tempOptStr, "%d", maxSpeedList[activeMaxSpeed]);
+    sprintf(tempOptStr, "%d", activeMaxSpeed+1);
     gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
     // Option 4 : Game Length
@@ -420,18 +442,19 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             timedTextID = -1;                               // If we've shown the text for its duration we turn if off
     }
 
-    // If the player has the option to show player-names below ships below
-    //if() OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-    font = TTF_OpenFont("resources/fonts/arial.ttf", 14);
-    for(int i=0; i < MAX_PLAYERS; i++){
-        if(ship[i].active && !ship[i].isDead &&  ship[i].placement.x < GAME_AREA_WIDTH){
-            textPlacement->x = ship[i].placement.x - 50 + SHIP_WIDTH/2;
-            textPlacement->y = ship[i].placement.y + 35;
-            gTempTextMessage = TTF_RenderText_Solid(font, playerName[i], colorsRGB[TEXT_COLOR_WHITE]);
-            renderTextCentered(textPlacement, gRenderer, 100, ship[i].placement.x - 50 + SHIP_WIDTH/2);      // Center the text below the player
+    // If the player has the option to show player-names below ships enabled
+    if(namesBelowShipsEnabled){
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 14);
+        for(int i=0; i < MAX_PLAYERS; i++){
+            if(ship[i].active && !ship[i].isDead &&  ship[i].placement.x < GAME_AREA_WIDTH){
+                textPlacement->x = ship[i].placement.x - 50 + SHIP_WIDTH/2;
+                textPlacement->y = ship[i].placement.y + 35;
+                gTempTextMessage = TTF_RenderText_Solid(font, playerName[i], colorsRGB[TEXT_COLOR_WHITE]);
+                renderTextCentered(textPlacement, gRenderer, 100, ship[i].placement.x - 50 + SHIP_WIDTH/2);      // Center the text below the player
+            }
         }
+        TTF_CloseFont(font);
     }
-    TTF_CloseFont(font);
 
     // Display the player's fuel and ammo in the bottom right corner of the game area. Only if the player's alive.
     if(!ship[client.id].isDead){

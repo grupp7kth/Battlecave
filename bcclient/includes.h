@@ -47,7 +47,7 @@ void closeRenderer(void);
 // ********************************    SETBUTTONS.C    ******************************************
 
 // setButtons - Determines which buttons are active and enters their placement information into 'buttonPlacement[]' depending on the mode
-void setButtons(SDL_Rect buttonPlacement[], int *mode);
+void setButtons(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[], int *mode);
 
 // ********************************    SETWINDOWS.C    ******************************************
 
@@ -167,6 +167,10 @@ extern int textStringCurrent[11];              // Which index in the string are 
 
 extern char defaultIP[16];                     // The IP and port used to connect to the default server
 extern char defaultPort[6];
+extern bool namesBelowShipsEnabled;            // Show names below their ships while in game enabled
+extern bool fancyBackgroundEnabled;            // Far background behind the map while in game enabled
+extern bool musicEnabled;
+extern SDL_Rect checkBox;
 
 extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
 extern bool playerReady[8];

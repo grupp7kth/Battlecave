@@ -62,8 +62,14 @@ static void checkMouseMode0(SDL_Event *event, SDL_Point *currentMouseLocation, S
                 if(i == 2){     // EXIT
                     *quit = true;
                 }
-                else if(i == 1) // OPTIONS
+                else if(i == 1){ // OPTIONS
+                    strcpy(textString[ENTERING_IP], defaultIP);
+                    textStringCurrent[ENTERING_IP] = strlen(defaultIP);
+                    strcpy(textString[ENTERING_PORT], defaultPort);
+                    textStringCurrent[ENTERING_PORT] = strlen(defaultPort);
                     *mode = OPTIONS;
+                    *select = ENTERING_IP;
+                }
                 else{           // FIND SERVERS
                     *mode = FIND_SERVERS;
                 }
@@ -104,9 +110,37 @@ static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, S
     for(int i=0; i < modeMaxButtons[2]; i++){
         if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
-                if(i == 0){         // APPLY
-                    *mode = STARTUP;
+                if(i == 5){                                     // MUSIC TOGGLE
+                    musicEnabled = !musicEnabled;
+                    if(!musicEnabled)
+                        Mix_HaltMusic();
+                }
+                else if(i == 4)                                 // FANCY BACKGROUND TOGGLE
+                    fancyBackgroundEnabled = !fancyBackgroundEnabled;
+                else if(i == 3)                                 // SHIP NAMES TOGGLE
+                    namesBelowShipsEnabled = !namesBelowShipsEnabled;
+                else if(i == 2)                                 // ENTERING PORT
+                    *select = ENTERING_PORT;
+                else if(i == 1)                                 // ENTERING IP
+                    *select = ENTERING_IP;
+                else{                                           // APPLY
+                    strcpy(defaultIP, textString[ENTERING_IP]);         // Save the settings to the current session
+                    strcpy(defaultPort, textString[ENTERING_PORT]);
 
+                    FILE *fp;                                           // Save the settings to the settings-file
+                    fp = fopen("settings.txt","w");
+                    fwrite(defaultIP, 1, strlen(defaultIP), fp);
+                    fputc('\n', fp);
+                    fwrite(defaultPort, 1, strlen(defaultPort), fp);
+                    fputc('\n', fp);
+                    fputc(namesBelowShipsEnabled+48, fp);
+                    fputc('\n', fp);
+                    fputc(fancyBackgroundEnabled+48, fp);
+                    fputc('\n', fp);
+                    fputc(musicEnabled+48, fp);
+                    fclose(fp);
+
+                    *mode = STARTUP;
                 }
             }
         }
@@ -152,7 +186,7 @@ static void checkMouseMode4(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     if(textString[ENTERING_NAME][0] != '\0')					// The player must enter a name
 						joinLobby(mode);
 				}
-                else                										  // Close
+                else                										    // Close
                     *mode = FIND_SERVERS;
             }
         }
@@ -260,6 +294,29 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
                 else
                     addCharToString(ENTERING_NAME, MAX_NAME_LENGTH, event);
 
+            }
+        }
+    }
+//******************* MODE : OPTIONS *************************************
+    else if(*mode == OPTIONS && event->type == SDL_KEYDOWN){
+        if(event->key.keysym.sym == SDLK_TAB){                      // Tab will change the window that the user is currently entering text to
+            (*select)++;
+            if(*select > 1)
+                *select = 0;
+        }
+        else{
+            if(*select == ENTERING_IP){
+                if(event->key.keysym.sym == SDLK_BACKSPACE)
+                    handleBackspace(ENTERING_IP);
+                else
+                    addCharToString(ENTERING_IP, MAX_IP_LENGTH, event);
+            }
+
+            else if(*select == ENTERING_PORT){
+                if(event->key.keysym.sym == SDLK_BACKSPACE)
+                        handleBackspace(ENTERING_PORT);
+                else
+                    addCharToString(ENTERING_PORT, MAX_PORT_LENGTH, event);
             }
         }
     }
