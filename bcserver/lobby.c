@@ -111,7 +111,6 @@ int Lobby(void * data) {
             }
         }
         else{
-
             printf("ClientID: %d has disconnected...\n",clientId);
             clearString(TCPsend);
             sprintf(TCPsend,PREAMBLE_DISC"%s has disconnected",clients[clientId].name);

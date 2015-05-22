@@ -265,7 +265,7 @@
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-1432240284 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
+1432297935 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	"includes.h"
@@ -300,7 +300,7 @@
 	<SDL.h>
 	"definitions.h"
 
-1432240107 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
+1432247142 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
 	"includes.h"
 
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\setbuttons.h
