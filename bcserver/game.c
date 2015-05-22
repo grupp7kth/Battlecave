@@ -275,12 +275,13 @@ void resetShip(Ship* skepp, int i) {
 	skepp->fuel=4000;
 }
 
-bool initGame(){
+bool initGame(char map[]){
     for (int i=0; i<MAX_CLIENTS; i++) {
 		ships[i].surface = NULL;
 		resetShip(&ships[i],i);
 	}
-    fetchMapData();
+    
+    fetchMapData(map);
 
 
     for(int i=0; i < MAX_BULLETS; i++)
@@ -351,9 +352,10 @@ void checkShipHealth(){
 	}
 }
 
-void fetchMapData(void){
+void fetchMapData(char map[]){
     char mapName[30] = {'\0'}, readNum[5] = {'\0'};
-    strcat(mapName, "cave");
+    strcat(mapName, "maps/");
+    strcat(mapName, map);
     strcat(mapName, ".bcmf");                           // BattleCave Map File
 
     FILE *fp;

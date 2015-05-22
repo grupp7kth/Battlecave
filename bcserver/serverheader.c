@@ -1,7 +1,8 @@
 #include "serverheader.h"
 
 bool init();
-bool initGame();
+bool initGame(char map[]);
+bool loadMedia(char map[]);
 void closeServer();
 void acceptConnection();
 int getClientId();
@@ -26,7 +27,7 @@ int getDelta(int p1, int p2);
 int getObjectDistance(int deltaX, int deltaY);
 float getObjectAngle(int deltaX, int deltaY);
 void removeBOT(int *id);
-void fetchMapData(void);
+void fetchMapData(char map[]);
 void checkShipHealth(void);
 void handlePowerupSpawns(void);
 void handlePowerupGains(void);

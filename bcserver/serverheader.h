@@ -46,6 +46,7 @@
 #define PREAMBLE_GAMEEND "="
 #define PREAMBLE_KILLED "}"
 #define PREAMBLE_POWERUP "+"
+#define PREAMBLE_MAPS ""
 #define POWERUP_MULTI3X 0
 #define POWERUP_MULTI2X 1
 #define POWERUP_BLACKHOLE 2
@@ -117,7 +118,8 @@ typedef struct{
 }PowerupSpawnPoint;
 
 extern bool init();
-extern bool initGame();
+extern bool initGame(char map[]);
+extern bool loadMedia(char map[]);
 extern void closeServer();
 extern void acceptConnection();
 extern int getClientId();
@@ -142,7 +144,7 @@ extern int getDelta(int p1, int p2);
 extern int getObjectDistance(int deltaX, int deltaY);
 extern float getObjectAngle(int deltaX, int deltaY);
 extern void removeBOT(int *id);
-extern void fetchMapData(void);
+extern void fetchMapData(char map[]);
 extern void checkShipHealth(void);
 extern void handlePowerupSpawns(void);
 extern void handlePowerupGains(void);

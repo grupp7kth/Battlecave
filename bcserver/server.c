@@ -27,7 +27,8 @@ int spamUDPpackets(void* data) {
 int main(int argc, char *argv[]) {
     int gameStartTime;
     int gameRunningTime;
-
+    char map[]={"cave"};
+    
     if (!init()) {
         printf("error initializing");
         return 1;
@@ -40,7 +41,8 @@ int main(int argc, char *argv[]) {
     printf("Waiting for connection...\n");
     while (true) {
         acceptConnection();
-        if(!initGame())puts("Failed to init game"); else puts("Game initialized");
+        if(!loadMedia(map)) printf("Init failed at step: 4\n");
+        if(!initGame(map))puts("Failed to init game"); else puts("Game initialized");
         packetOut = SDLNet_AllocPacket(940);
         packetID=0;
         createAndSendUDPPackets(ships, bullets);
@@ -147,9 +149,13 @@ int getClientId() {
     return -1;
 }
 
-bool loadMedia() {
-	background=IMG_Load(BACKGROUND_TEXTURE);
-	if (background==NULL) return false;
+bool loadMedia(char map[]) {
+    char mapName[20]={'\0'};
+    strcat(mapName, "maps/");
+    strcat(mapName, map);
+    strcat(mapName, ".png");
+    background=IMG_Load(mapName);
+    if (background==NULL) { puts("could not load background");return false;}
 
 	printf("Bakgrund W: %d, H: %d\n",background->w,background->h);
 	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(background->w * background->h));
@@ -239,7 +245,7 @@ bool init() {
     int initFlags = IMG_INIT_PNG;
     if (!(IMG_Init(initFlags) & initFlags)) printf("Init failed at step: 3\n");
 
-    if(!loadMedia()) printf("Init failed at step: 4\n");
+    //if(!loadMedia()) printf("Init failed at step: 4\n");
 
     udpSendSock = SDLNet_UDP_Open(4446);
     udpRecvSock = SDLNet_UDP_Open(4445);
