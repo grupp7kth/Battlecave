@@ -22,7 +22,10 @@ bool isInside(int x, int y, SDL_Rect* r);
 int udpListener(void* data);
 int fetchCPUname(void);
 void updateBots(void);
-void handleBot(int id);
+void handleBot(int *id);
+int botScanLine(int length, int angle, int stepSize, int *id);
+void goAggressive(int *id, int *closestDistance, int *closestType, int *closestAngle, float *netSpeed);
+float getNetSpeed(float xVel, float yVel);
 int getDelta(int p1, int p2);
 int getObjectDistance(int deltaX, int deltaY);
 float getObjectAngle(int deltaX, int deltaY);
@@ -39,7 +42,7 @@ void updateShip(Ship* ship);
 void addBullet(Ship* ship, int *id);
 int findFreeBullet(Bullet bullets[MAX_BULLETS]);
 void checkCollisions(Ship* skepp, Bullet* skotten);
-
+void getSpectatingViewport(int *id);
 
 UDPsocket udpSendSock, udpRecvSock;
 Client clients[MAX_CLIENTS];
@@ -67,7 +70,7 @@ int activeMaxSpeed = 1;                 // Choses which entry from the list belo
 float MaxSpeedList[5] = {1, 2, 3, 4, 5};
 int activeBulletInterval = 1;           // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {20, 40, 60};
-bool infiniteMomentum = false;
+bool infiniteMomentum = true;
 
 short numberOfPowerups;
 short activePowerupSpawns = 0;

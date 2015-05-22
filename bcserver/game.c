@@ -326,18 +326,13 @@ void checkShipHealth(){
 				bullets[freespot].source = i;
 //				printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
 			}
-			if (clients[i].playerType == PLAYER_TYPE_HUMAN) {
-				short attempts = 0;
-				do{ // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
-					clients[i].viewportID = rand() % 8;
-					attempts++;
-				} while((!clients[clients[i].viewportID].active || ships[clients[i].viewportID].isDead) && attempts < 50);
-				if(attempts >= 50)
-					clients[i].viewportID = i;
-			}
+			if (clients[i].playerType == PLAYER_TYPE_HUMAN)
+				getSpectatingViewport(&i);
 		}
 		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer > 0){
 			ships[i].deathTimer = RESPAWN_TIME_MS - (SDL_GetTicks() - ships[i].deathTimerStart);
+			if(ships[clients[i].viewportID].isDead && clients[i].playerType == PLAYER_TYPE_HUMAN)
+                getSpectatingViewport(&i);
 		}
 		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
 			int tempSpawnID = rand() % 8;
@@ -347,6 +342,18 @@ void checkShipHealth(){
 			clients[i].viewportID = i;          // When the player respawns his viewport will once again be his own
 		}
 	}
+}
+
+void getSpectatingViewport(int *id){
+    short attempts = 0;
+    do{ // When the player dies, their viewport will randomly change to the first match of id 0-7 that's elgible for spectating
+        clients[*id].viewportID = rand() % 8;
+        attempts++;
+    } while((!clients[clients[*id].viewportID].active || ships[clients[*id].viewportID].isDead) && attempts < 50);
+    if(attempts >= 50)
+        clients[*id].viewportID = *id;
+
+    return;
 }
 
 void fetchMapData(char map[]){
@@ -665,21 +672,24 @@ void moveBullets(Bullet bullets[MAX_BULLETS]){
 void updateBots(void){
     for(int i=0; i < MAX_CLIENTS; i++){
         if(clients[i].playerType == PLAYER_TYPE_BOT && !ships[i].isDead){
-            handleBot(i);
+            handleBot(&i);
         }
     }
     return;
 }
 
-void handleBot(int id){
+void handleBot(int *id){
+    float netSpeed = getNetSpeed(ships[*id].xVel, ships[*id].yVel);
+
+    // Get the closest object (enemy ship or active powerup)
     int closestDistance = 0, distance, deltaX, deltaY;
     float closestAngle = 0;
-    short closestType = 0;                      // 0 = Enemy ship , 1 = Powerup Spawn
+    short closestType = 0;                  // 0 = Enemy ship , 1 = Powerup Spawn
 
     for(int i=0; i < MAX_CLIENTS; i++){     // First determine the closest enemy ship
-        if(i != id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
-            deltaX = getDelta(ships[id].xPos, ships[i].xPos);
-            deltaY = getDelta(ships[id].yPos, ships[i].yPos);
+        if(i != *id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
+            deltaX = getDelta(ships[*id].xPos, ships[i].xPos);
+            deltaY = getDelta(ships[*id].yPos, ships[i].yPos);
             distance = getObjectDistance(deltaX, deltaY);
 
             if(closestDistance <= 0 || distance < closestDistance){
@@ -691,14 +701,14 @@ void handleBot(int id){
                     closestAngle += 90;
                 else
                     closestAngle += 270;
-                closestAngle = closestAngle - ships[id].angle;
+                closestAngle = closestAngle - ships[*id].angle;
             }
         }
     }
     for(int i=0; i < numberOfPowerups; i++){  // Secondly determine the closest powerup
         if(powerupSpawnPoint[i].isActive){
-            deltaX = getDelta(ships[id].xPos, powerupSpawnPoint[i].x);
-            deltaY = getDelta(ships[id].yPos, powerupSpawnPoint[i].y);
+            deltaX = getDelta(ships[*id].xPos, powerupSpawnPoint[i].x);
+            deltaY = getDelta(ships[*id].yPos, powerupSpawnPoint[i].y);
             distance = getObjectDistance(deltaX, deltaY);
 
 
@@ -711,46 +721,118 @@ void handleBot(int id){
                     closestAngle += 90;
                 else
                     closestAngle += 270;
-                closestAngle = closestAngle - ships[id].angle;
+                closestAngle = closestAngle - ships[*id].angle;
             }
         }
 
     }
 
-    if(closestDistance <= 0)
-        return;
+    //*******************************************************************
+    //     Initial Analyzing Done, Now Determine What Action to Take    *
+    //*******************************************************************
+    if(botScanLine((int)((netSpeed * 150) + 40), 180, 4, id) == 0)
+        goAggressive(id, &closestDistance, &closestType, &closestAngle, &netSpeed);
 
-    if((closestAngle > 2 && closestAngle <= 180) || closestAngle < -180)
-        ships[id].angleVel = 5;
-    else if((closestAngle < -2 && closestAngle >= -180 ) || closestAngle > 180)
-        ships[id].angleVel = -5;
-    else
-        ships[id].angleVel = 0;
-
-
-    if(abs(closestAngle) < 5){               // If we've facing our target
-        if(closestType == 0){                // If the target is an enemy ship
-            if(closestDistance <= 400)
-                ships[id].shooting = true;
+    else if(botScanLine((int)((netSpeed * 150) + 50), 180, 4, id) > 0){       // If there's ground close below the ship
+        if(ships[*id].angle <= 15 || ships[*id].angle >= 345){           // If facing up; decide whether to accelerate
+            if(ships[*id].yVel > -0.2 || netSpeed < .2)                    // If heading downwards, or upwards too slowly
+                ships[*id].acceleration = true;
             else
-                ships[id].shooting = false;
+                ships[*id].acceleration = false;
 
-            if(closestDistance > 300)
-                ships[id].acceleration = true;
+            // After stabilizing height form the ground it's time to start moving left or right...
+
+            // Determine which way has the farthest non-collision distance
+            bool left = true, right = true;
+            short i = 1;
+            do{
+                if(botScanLine(4*i, 270, 4, id) > 0)
+                    right = false;
+                else if(botScanLine(4*i, 90, 4, id) > 0)
+                    left = false;
+                i++;
+            } while(left == true && right == true);
+
+            if(left == true && (ships[*id].angle > 345 || ships[*id].angle <= 15))
+                ships[*id].angleVel = -5;
+            else if(right == true && (ships[*id].angle < 15 || ships[*id].angle >= 345))
+                ships[*id].angleVel = 5;
             else
-                ships[id].acceleration = false;
+                ships[*id].angleVel = 0;
         }
-        else{
-            if(closestDistance > 100)
-                ships[id].acceleration = true;
-            else
-                ships[id].acceleration = false;
+        else{                                                              // If not facing up; turn
+//            if(ships[*id].angle > 0 && ships[*id].angle <= 180)
+//                ships[*id].angleVel = 5;
+//            else
+//                ships[*id].angleVel = -5;
+
+            ships[*id].acceleration = false;
         }
     }
 
 
-    //printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", closestDistance);
     return;
+}
+
+float getNetSpeed(float xVel, float yVel){
+    return(sqrt(pow(xVel, 2) + pow(yVel, 2)));
+}
+
+int botScanLine(int length, int angle, int stepSize, int *id){
+    short xcoord, ycoord, deltaX, deltaY;
+    double angleCos, angleSin;
+    angleCos = cos((90+angle) * PI/180);
+    angleSin = sin((90+angle) * PI/180);
+
+    for(int i=0; i < length; i += stepSize){
+        xcoord = (int)ships[*id].xPos + (i * angleCos);
+        ycoord = (int)ships[*id].yPos - (i * angleSin);
+        if(backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]){
+            deltaX = getDelta((int)ships[*id].xPos, xcoord);
+            deltaY = getDelta((int)ships[*id].yPos, ycoord);
+            return getObjectDistance(deltaX, deltaY);
+        }
+    }
+    return 0;
+}
+
+void goAggressive(int *id, int *closestDistance, int *closestType, int *closestAngle, float *netSpeed){
+    if(closestDistance <= 0){
+        ships[*id].shooting = false;
+        return;
+    }
+    if((*closestAngle >= 5 && *closestAngle <= 180) || *closestAngle < -180)
+        ships[*id].angleVel = -5;
+    else if((*closestAngle <= -5 && *closestAngle >= -180 ) || *closestAngle > 180)
+        ships[*id].angleVel = 5;
+    else
+        ships[*id].angleVel = 0;
+
+
+    if(abs(*closestAngle) <= 5){               // If we've facing our target
+        if(*closestType == 0){                // If the target is an enemy ship
+            if(botScanLine(closestDistance, 180, 10, id) == 0) //if(*closestDistance <= 500)// && botScanLine(500, 180, 10, id) == 0)
+                ships[*id].shooting = true;
+            else
+                ships[*id].shooting = false;
+
+            if(*closestDistance > 300 || ships[*id].yVel > -0.2)
+                ships[*id].acceleration = true;
+            else
+                ships[*id].acceleration = false;
+        }
+        else{
+            if(*closestDistance > 5)
+                ships[*id].acceleration = true;
+            else
+                ships[*id].acceleration = false;
+
+            ships[*id].shooting = false;
+        }
+    }
+
+
+    //printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", *closestDistance);
 }
 
 int getDelta(int p1, int p2){
@@ -758,9 +840,9 @@ int getDelta(int p1, int p2){
 }
 
 int getObjectDistance(int deltaX, int deltaY){
-    int distance;
+    float distance;
     distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
-    return distance;
+    return (int)distance;
 }
 
 float getObjectAngle(int deltaX, int deltaY){

@@ -27,8 +27,8 @@ int spamUDPpackets(void* data) {
 int main(int argc, char *argv[]) {
     int gameStartTime;
     int gameRunningTime;
-    char map[]={"cave"};
-    
+    char map[]={"testmap"};
+
     if (!init()) {
         printf("error initializing");
         return 1;
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
             if(timeWarpIsActive && (SDL_GetTicks() - timeWarpStartTime) >= TIMEWARP_DURATION) // If timewarp is active and has run for its duration; turn it off
                 timeWarpIsActive = false;
-
+if(!ships[0].isDead) ships[0].health = 0; //**********************************************************************************
             updateShip(ships);
             moveBullets(bullets);
             checkCollisions(ships,bullets);
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
                 activeGameLength = 1;
                 activeMaxSpeed = 1;
                 activeBulletInterval = 1;
-                infiniteMomentum = false;
+                infiniteMomentum = true;
                 activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }
@@ -189,7 +189,7 @@ bool loadMedia(char map[]) {
 		ships[i].surface=IMG_Load(SHIP_TEXTURE);
 		if (ships[i].surface==NULL) return false;
 		pixelSize = ships[i].surface->pitch/ships[i].surface->w;
-		
+
 		printf("Sprajten: (%d;%d), pixelstorlek %d\n",ships[i].surface->w,ships[i].surface->h,pixelSize);
 		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
 			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
