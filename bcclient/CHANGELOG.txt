@@ -1,3 +1,6 @@
+0.76 :
+* The client's fuel and ammo is now displayed.
+
 0.75 :
 * Gravity added.
 * Fuel/Ammunition added. When running low the player has to land on a landingzone to restock on resources.
