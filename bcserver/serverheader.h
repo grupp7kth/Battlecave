@@ -180,7 +180,7 @@ extern int GameFreezeTime;
 extern int activeGameLength; // Choses which entry from the list below that's active in terms of game-length
 extern int gameLenghtList[6];
 extern int activeMaxSpeed; // Choses which entry from the list below that's active in terms of max-speed
-extern int MaxSpeedList[5];
+extern float MaxSpeedList[5];
 extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 extern bool infiniteMomentum;
