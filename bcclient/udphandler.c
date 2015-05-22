@@ -74,9 +74,17 @@ void unpackPacket(void){
     client.health = (inPacket->data[96] & 0b11111) * 5;   // The first 5 bits of this byte is the player's health divided by 5 (to use fewer bits)
     viewportID = (inPacket->data[96] >> 5) & 0b111;       // The last 3 bits is the viewport-id to use for the player
 
-    for(bulletID = 0; (inPacket->data[97+(bulletID)*3] != 0xFF) && (bulletID < 250); bulletID++){
+    for(i = 0, read = 0; i < 2; i++){
+        tempint = inPacket->data[97+i];
+        read = read | tempint << 8*i;
+    }
+    ship[client.id].fuel = read & 0b111111111;                         // The first 9 bits of data-byte 97&98 are fuel, last 7 bits are ammo
+    ship[client.id].ammo = (read >> 9) & 0b1111111;
+printf("MY FUEL IS %d\n", ship[client.id].fuel);
+
+    for(bulletID = 0; (inPacket->data[99+(bulletID)*3] != 0xFF) && (bulletID < MAX_BULLETS); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){
-			tempint = inPacket->data[97+(bulletID)*3+i];
+			tempint = inPacket->data[99+(bulletID)*3+i];
 			read = read | tempint << i*8;
 		}
 		bullet[bulletID].x = read & 0b11111111111;

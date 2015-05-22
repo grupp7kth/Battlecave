@@ -433,6 +433,28 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     }
     TTF_CloseFont(font);
 
+    // Display the player's fuel and ammo in the bottom right corner of the game area. Only if the player's alive.
+    if(!ship[client.id].isDead){
+        font = TTF_OpenFont("resources/fonts/arial.ttf", 22);
+        char tempString[11];
+        textPlacement->x = GAME_AREA_WIDTH - 130;
+        textPlacement->y = 650;
+        sprintf(tempString, "Fuel: %d%%", ship[client.id].fuel/4);
+        if(ship[client.id].fuel/4 < 15)
+            gTempTextMessage = TTF_RenderText_Solid(font, tempString, colorsRGB[TEXT_COLOR_RED]);
+        else
+            gTempTextMessage = TTF_RenderText_Solid(font, tempString, colorsRGB[TEXT_COLOR_ORANGE]);
+        renderText(textPlacement, gRenderer);
+
+        textPlacement->y += 30;
+        sprintf(tempString, "Ammo: %d", ship[client.id].ammo);
+        if(ship[client.id].ammo == 0)
+            gTempTextMessage = TTF_RenderText_Solid(font, tempString, colorsRGB[TEXT_COLOR_RED]);
+        else
+            gTempTextMessage = TTF_RenderText_Solid(font, tempString, colorsRGB[TEXT_COLOR_YELLOW]);
+        renderText(textPlacement, gRenderer);
+        TTF_CloseFont(font);
+    }
     return;
 }
 

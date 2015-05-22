@@ -103,7 +103,7 @@ typedef struct{
 	bool active, isDead;
 	SDL_Texture* texture;
 	SDL_Rect placement;
-    int score;          //**************************************************************************
+    int fuel, ammo;
 } Ship;
 extern Ship ship[MAX_PLAYERS];
 

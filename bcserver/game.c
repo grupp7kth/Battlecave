@@ -22,7 +22,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		if (!clients[i].active || skepp[i].isDead) continue;
 		angleCos = cos(skepp[i].angle*PI/180);
 		angleSin = sin(skepp[i].angle*PI/180);
-		
+
 		// Om skeppet inte har landat, kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
 		if (!skepp[i].landed) {
 			for (j=0; j<skepp[i].antalPixlar; j++) {
@@ -30,7 +30,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
 				if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
 					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<10 || skepp[i].angle>350)  && skepp[i].yVel <1) {
-						printf("Bounce yVel %f\n",skepp[i].yVel);	
+						printf("Bounce yVel %f\n",skepp[i].yVel);
 						skepp[i].xPos += skepp[i].xVel;
 						skepp[i].yPos -= skepp[i].yVel;
 						if (skepp[i].yVel < 0.2) {
@@ -96,7 +96,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				skepp[k].landed=false;
 				krock=false;
 				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
-				deltaX = skepp[i].xPos-skepp[k].xPos;	
+				deltaX = skepp[i].xPos-skepp[k].xPos;
 				deltaY = skepp[i].yPos-skepp[k].yPos;
 				totVelX = skepp[i].xVel-skepp[k].xVel;
 				totVelY = skepp[i].yVel-skepp[k].yVel;
@@ -139,8 +139,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
 
         if(clients[i].active && !ships[i].isDead){
             if (ships[i].acceleration && ships[i].fuel >0) {
-            	ships[i].fuel--;
-            	printf("Skepp %d br{nsle %d\n",i,ships[i].fuel);
+            	ships[i].fuel-=0.1;
                 ships[i].yVel-=sin(getRadians(ships[i].angle))*0.01;
                 ships[i].xVel-=cos(getRadians(ships[i].angle))*0.01;
                 if(ships[i].yVel > MaxSpeedList[activeMaxSpeed])
@@ -155,10 +154,9 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             if (!ships[i].landed) ships[i].yVel+=0.0015;
             else {
             	    ships[i].reloadTime++;
-            	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 4000) ships[i].fuel++;
+            	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 400) ships[i].fuel++;
             	    if (ships[i].reloadTime%20==0 && ships[i].ammo < 60) ships[i].ammo++;
-            	    printf("Skepp %d br{nsle %d ammo %d\n",i,ships[i].fuel,ships[i].ammo);
-            } 
+            }
             if (!infiniteMomentum) {
                 ships[i].yVel /= 1.002;
                 ships[i].xVel /= 1.002;
@@ -173,7 +171,6 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                     addBullet(&ships[i] , &i);
                     ships[i].bulletCooldown = ships[i].bulletIntervall;
                     ships[i].ammo--;
-                    printf("Skepp %d ammo %d\n",i,ships[i].ammo);
                 }
             }
             if(timeWarpIsActive){               // If time warp is active the ships move slower
@@ -272,7 +269,7 @@ void resetShip(Ship* skepp, int i) {
 	skepp->latestTag = i;
 	skepp->landed=false;
 	skepp->ammo=60;
-	skepp->fuel=4000;
+	skepp->fuel=400;
 }
 
 bool initGame(char map[]){
@@ -280,7 +277,7 @@ bool initGame(char map[]){
 		ships[i].surface = NULL;
 		resetShip(&ships[i],i);
 	}
-    
+
     fetchMapData(map);
 
 
@@ -450,7 +447,7 @@ void handlePowerupGains(void){
 
                         powerupSpawnPoint[j].isActive = false;
                         activePowerupSpawns--;
-                        
+
                         if(powerupSpawnPoint[j].type != POWERUP_TIMEWARP && powerupSpawnPoint[j].type != POWERUP_TELEPORT) // Timewarp is not bound to a player/ship, Teleport is instant and functions server-side only
                             ships[i].activePowerup = powerupSpawnPoint[j].type;
                         else
@@ -590,12 +587,16 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     // de relevanta skotten. Efter att den gjort det, ska den skicka UPD-paketet till den spelaren
     // och sen g|ra samma sak f|r n{sta spelare.
 
-    for (player=0; player<MAX_CLIENTS; player++) {
+    for (player=0; player<MAX_CLIENTS; player++){
         if (!clients[player].active)
             continue;
 
         tempint = ships[player].health/5 | clients[player].viewportID << 5;
         gameData[96] = tempint;                             // Make Health scale to 5 (Hp 0-100% is represented by 0-20) to use 5 bits of this byte, Remaining 3 bits of the byte will be the viewport ID for the client
+
+        tempint = (int)ships[player].fuel | ships[player].ammo << 9;    // Put the ship's fuel and ammo in two bytes
+        gameData[97] = tempint;
+        gameData[98] = tempint >> 8;
 
         // Calculate viewport:
         if (ships[clients[player].viewportID].xPos < GAME_AREA_WIDTH/2)
@@ -616,12 +617,12 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
                 tempint=0;
                 tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].source) << 21;
                 for (i=0; i<3; i++) {
-                    gameData[97+counter*3+i] = tempint >> i*8;
+                    gameData[99+counter*3+i] = tempint >> i*8;
                 }
                 counter++;
             }
         }
-        UDPpacketLength = 97+counter*3;
+        UDPpacketLength = 99+counter*3;
         gameData[UDPpacketLength++]=0xFF;
         packetOut->data = gameData;
         packetOut->len = UDPpacketLength;

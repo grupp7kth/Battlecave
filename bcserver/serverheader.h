@@ -91,11 +91,11 @@ typedef struct{
     SDL_Surface* surface;
     int bulletIntervall,bulletCooldown;
     double xPos,yPos,xVel,yVel;
-    double angle,angleVel;
+    double angle,angleVel, fuel;
     Uint8 health;
     bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed,landed;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
     int deathTimer,deathTimerStart;
-    short activePowerup, antalPixlar, latestTag, ammo, fuel;
+    short activePowerup, antalPixlar, latestTag, ammo;
     int powerupTimerStart, stunDurationStart, reloadTime;
     SDL_Point* pixlar;
 }Ship;
