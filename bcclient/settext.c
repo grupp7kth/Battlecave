@@ -424,13 +424,13 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
             textPlacement->y = 50;
 
             if(killedID == client.id && killerID == client.id)
-                sprintf(tempDeathStr, "You commited suicide!");
+                sprintf(tempDeathStr, "You died!");
             else if(killedID == client.id)
                 sprintf(tempDeathStr, "You were killed by %s!", playerName[killerID]);
             else if(killerID == client.id)
                 sprintf(tempDeathStr, "You killed %s!", playerName[killedID]);
             else if(killerID == killedID)
-                sprintf(tempDeathStr, "%s commited suicide!", playerName[killerID]);
+                sprintf(tempDeathStr, "%s blew up!", playerName[killerID]);
             else
                 sprintf(tempDeathStr, "%s killed %s!", playerName[killerID], playerName[killedID]);
 
