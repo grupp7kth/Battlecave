@@ -79,7 +79,7 @@ SDL_Color colorsRGB[14] = {{225, 225, 255},     // 0  = White
                            {255, 75, 75},       // 4  = Bright Red
                            {45, 198, 250},      // 5  = Teal
                            {255,0,0},           // 6  = Red        * Colors 6-13 are used to represent players with ID 0-7, respectively
-                           {0,0,255},           // 7  = Blue
+                           {45, 198, 250},           // 7  = Blue  0,0,255
                            {0,255,0},           // 8  = Green
                            {255,255,0},         // 9  = Yellow
                            {128,0,255},         // 10 = Purple
@@ -88,7 +88,7 @@ SDL_Color colorsRGB[14] = {{225, 225, 255},     // 0  = White
                            {128,64,0}};         // 13 = Brown
 
 Uint8 colorsPlayer[24] = {255,0,0,              //   0-2  = Red
-                          0,0,255,              //   3-5  = Blue
+                          45, 198, 250,         //   3-5  = Blue 0,0,255
                           0,255,0,              //   6-8  = Green
                           255,255,0,            //  9-11  = Yellow
                           128,0,255,            // 12-14 = Purple
