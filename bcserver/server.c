@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
             if(timeWarpIsActive && (SDL_GetTicks() - timeWarpStartTime) >= TIMEWARP_DURATION) // If timewarp is active and has run for its duration; turn it off
                 timeWarpIsActive = false;
-if(!ships[0].isDead) ships[0].health = 0; //**********************************************************************************
+//if(!ships[0].isDead) ships[0].health = 0;
             updateShip(ships);
             moveBullets(bullets);
             checkCollisions(ships,bullets);
