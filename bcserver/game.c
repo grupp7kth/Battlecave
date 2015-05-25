@@ -728,7 +728,6 @@ void handleBot(int *id){
     //*******************************************************************
     //     Initial Analyzing Done, Now Determine What Action to Take    *
     //*******************************************************************
-    //if(botScanLine((int)((netSpeed * 150) + 50), 180, 4, id) > 0){       // If there's ground close below the ship
 
     // We determine which degree we're heading (not facing!)
     float scanDegrees;
@@ -744,15 +743,16 @@ void handleBot(int *id){
     if(scanDegrees >= 360)
         scanDegrees -= 360;
 
-    //printf("SCANDEG= %d : ", (int)scanDegrees);//*****************************************
-    if(botScanLine((((int)netSpeed * 200) + 100), scanDegrees, 4, id) > 0){
-        goDefensive(id, &netSpeed, &scanDegrees);
-    }
-    else{
+    if(botScanLine((((int)netSpeed * 300) + 100), scanDegrees, 5, id) > 0)
+        goDefensive(id, &netSpeed, scanDegrees);
+    else if(botScanLine(100, scanDegrees+25, 5, id) > 0)  // Cone scanning to counter irregular
+        goDefensive(id, &netSpeed, scanDegrees+25);
+    else if(botScanLine(100, scanDegrees-25, 5, id) > 0)
+        goDefensive(id, &netSpeed, scanDegrees-25);
+    else
         goAggressive(id, &closestDistance, &closestType, &closestAngle, &netSpeed, &deltaX, &deltaY);
-        //printf("ID %d : Agressive!\n", *id); //*****************************************************************
-    }
 
+    handleBotShooting(id, &closestDistance, &closestType, &closestAngle);
     return;
 }
 
@@ -775,59 +775,23 @@ int botScanLine(int length, int angle, int stepSize, int *id){
             return getObjectDistance(deltaX, deltaY);
         }
     }
-    if(i >= length){
-        printf("Scanned from X/Y = %d/%d to X/Y = %d/%d (a=%d)\n", (int)ships[*id].xPos, (int)ships[*id].yPos, xcoord, ycoord, angle);
-    }
     return 0;
 }
 
-void goDefensive(int *id, float *netSpeed, float *scanDegrees){
-    int oppositeDegrees = 180 - (int)*scanDegrees;
-    if(oppositeDegrees < 0)
-        oppositeDegrees += 360;
+void goDefensive(int *id, float *netSpeed, float scanDegrees){
+    int scanDegreesInt = (int)scanDegrees;
+    int oppositeDegrees = 180 + scanDegreesInt;
+    if(oppositeDegrees >= 360)
+        oppositeDegrees -= 360;
 
-
-
-   // printf("DEG=%d MYDEG=%d\n", oppositeDegrees, (int)ships[*id].angle);
-
-//    if((int)ships[*id].angle >= (oppositeDegrees - 15) || (int)ships[*id].angle <= (oppositeDegrees + 15))
-    if(abs(ships[*id].angle - oppositeDegrees) <= 15){
+    if(abs((int)ships[*id].angle - oppositeDegrees) <= 15){
+        ships[*id].acceleration = true;
         ships[*id].angleVel = 0;
-
-    ships[*id].acceleration = true;
-//        if(oppositeDegrees >= 0 && oppositeDegrees < 90){           // Q1
-//            if(ships[*id].yVel >= 0 || ships[*id].xVel < 0 || *netSpeed < 0.1)
-//                ships[*id].acceleration = true;
-//            else
-//                ships[*id].acceleration = false;
-//        }
-//        else if(oppositeDegrees >= 90 && oppositeDegrees < 180){    // Q2
-//            if(ships[*id].yVel < 0 || ships[*id].xVel < 0 || *netSpeed < 0.1)
-//                ships[*id].acceleration = true;
-//            else
-//                ships[*id].acceleration = false;
-//        }
-//        else if(oppositeDegrees >= 180 && oppositeDegrees < 270){   // Q3
-//            if(ships[*id].yVel < 0 || ships[*id].xVel >= 0 || *netSpeed < 0.1)
-//                ships[*id].acceleration = true;
-//            else
-//                ships[*id].acceleration = false;
-//        }
-//        else{                                                       // Q4
-//            if(ships[*id].yVel >= 0 || ships[*id].xVel >= 0 || *netSpeed < 0.1)
-//                ships[*id].acceleration = true;
-//            else
-//                ships[*id].acceleration = false;
-//        }
-
-        //printf("       THROTTZ=%d, *netSpeed=%.1f\n", ships[*id].acceleration, *netSpeed);
     }
-
-
     else{                                                 // If not facing the right direction; turn
-//        if((ships[*id].angle - oppositeDegrees) > 180)
-//            ships[*id].angleVel = -5;
-//        else
+        if(ships[*id].angle >= oppositeDegrees && ships[*id].angle < (oppositeDegrees + 180))
+            ships[*id].angleVel = -5;
+        else
             ships[*id].angleVel = 5;
 
         ships[*id].acceleration = false;
@@ -836,7 +800,6 @@ void goDefensive(int *id, float *netSpeed, float *scanDegrees){
 }
 
 void goAggressive(int *id, int *closestDistance, int *closestType, int *closestAngle, float *netSpeed, int *deltaX, int *deltaY){
-    //printf("*closestType=%d *closestDistance=%d\n", *closestType, *closestDistance);//*****************************************************************
     if(*closestDistance <= 0){
         ships[*id].shooting = false;
         ships[*id].angleVel = 0;
@@ -850,47 +813,51 @@ void goAggressive(int *id, int *closestDistance, int *closestType, int *closestA
     else
         ships[*id].angleVel = 0;
 
-    if(abs(*closestAngle) <= 5){            // If we've facing our target
+    if(*closestDistance > 5 && botScanLine(150, (int)ships[*id].angle, 5, id) == 0){
+        if(*deltaY > 0 && ships[*id].yVel > -0.2){ //puts("1");
+            ships[*id].acceleration = true;
+        }
+        else if(*deltaX <= 0 && ships[*id].xVel <= 0 && ships[*id].yVel > -0.3){ //puts(" 2");
+            ships[*id].acceleration = true;
+        }
+        else if(*deltaX > 0 && ships[*id].xVel > 0 && ships[*id].yVel < 0.3){  //puts("  3");
+            ships[*id].acceleration = true;
+        }
+        else if(*netSpeed < 0.55){  //puts("    5");
+            ships[*id].acceleration = true;
+        }
+        else{  //puts("      6");
+            ships[*id].acceleration = false;
+        }
+    }
+    else{  //puts("         7");
+        ships[*id].acceleration = false;
+    }
+
+    return;
+}
+
+void handleBotShooting(int *id, int *closestDistance, int *closestType, int *closestAngle){
+   if(abs(*closestAngle) <= 5){             // If we've facing our target
         if(*closestType == 0){              // If the target is an enemy ship
-            if(botScanLine(*closestDistance, 180, 10, id) == 0)
+            if(botScanLine(*closestDistance, *closestAngle, 10, id) == 0)
                 ships[*id].shooting = true;
             else
                 ships[*id].shooting = false;
         }
         else
             ships[*id].shooting = false;
-
-        if(*closestDistance > 5){
-            if(ships[*id].yVel > -0.2){ //puts("1");
-                ships[*id].acceleration = true;
-            }
-            else if(*deltaX <= 0 && ships[*id].xVel <= 0){ //puts(" 2");
-                ships[*id].acceleration = true;
-            }
-            else if(*deltaX > 0 && ships[*id].xVel > 0){  //puts("  3");
-                ships[*id].acceleration = true;
-            }
-            else if(*deltaY > 0 && ships[*id].yVel > 0){// puts("   4");
-                ships[*id].acceleration = true;
-            }
-            else if(*netSpeed < 0.8){  //puts("    5");
-                ships[*id].acceleration = true;
-            }
-            else{ // puts("      6");
-                ships[*id].acceleration = false;
-            }
-        }
-        else{  //puts("         7");
-            ships[*id].acceleration = false;
-        }
-
     }
-//    else
-//        printf("ID:%d ---- %d\n", *id, abs(*closestAngle));
-
-
-    //printf("MY CLOSEST ENEMY WAS AT DISTANCE=%d\n", *closestDistance);
-    return;
+    else if(ships[*id].activePowerup == POWERUP_MULTI2X && (abs(*closestAngle) + 180) <= 5){ // If we have doubleshot and an enemy is behind us
+        if(*closestType == 0){
+            if(botScanLine(*closestDistance, *closestAngle+180, 10, id) == 0)
+                ships[*id].shooting = true;
+            else
+                ships[*id].shooting = false;
+        }
+        else
+            ships[*id].shooting = false;
+    }
 }
 
 int getDelta(int p1, int p2){
