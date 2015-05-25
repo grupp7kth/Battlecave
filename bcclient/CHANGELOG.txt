@@ -1,3 +1,6 @@
+0.81 :
+* Bots now attempt to avoid crashing into walls.
+
 0.80 :
 * The options screen is now implemented and functioning.
     When the client is launched it loads its initial settings from the file 'settings.txt'.
