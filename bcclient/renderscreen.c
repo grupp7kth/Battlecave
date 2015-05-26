@@ -294,7 +294,7 @@ void loadMedia(void){
     miniMap.mapPlacement.w = 240;
     miniMap.mapPlacement.h = 160;
 
-    gameMapBackground.texture = loadTexture("resources/images/cave.png");
+    gameMapBackground.texture = loadTexture("resources/images/bestmapworld.png");
     gameMapBackground.source.w = SCREENWIDTH-250;
     gameMapBackground.source.h = SCREENHEIGHT;
     gameMapBackground.dest.x = 0;
