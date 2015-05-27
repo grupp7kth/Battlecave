@@ -46,6 +46,7 @@ int timedTextStart;
 short timedTextID;
 short killerID, killedID;                   // killedID = ship that just got killed; killerID = the killer
 int playerScore[MAX_PLAYERS];               // Contains the players' current scores
+int playersInGame;
 
 bool throttle;
 bool right;
@@ -98,6 +99,6 @@ Uint8 colorsPlayer[24] = {255,0,0,              //   0-2  = Red
 
 char powerupNames[6][14] = {"Triple Shot",      // Contains all the powerup's names
                             "Double Shot",
-                            "Blackhole",
+                            "Health Pack",
                             "Time Warp","Double Damage",
                             "Teleport"};

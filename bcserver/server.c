@@ -27,7 +27,7 @@ int spamUDPpackets(void* data) {
 int main(int argc, char *argv[]) {
     int gameStartTime;
     int gameRunningTime;
-    char map[]={"testmap"};
+    char map[]={"bestmapworld"};
 
     if (!init()) {
         printf("error initializing");
@@ -65,7 +65,6 @@ int main(int argc, char *argv[]) {
 
             if(timeWarpIsActive && (SDL_GetTicks() - timeWarpStartTime) >= TIMEWARP_DURATION) // If timewarp is active and has run for its duration; turn it off
                 timeWarpIsActive = false;
-if(!ships[0].isDead) ships[0].health = 0; //**********************************************************************************
             updateShip(ships);
             moveBullets(bullets);
             checkCollisions(ships,bullets);
@@ -73,7 +72,6 @@ if(!ships[0].isDead) ships[0].health = 0; //************************************
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
             handleActivePowerups();         // Tests whether player's powerups run out
-//            createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){ // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);

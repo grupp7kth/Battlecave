@@ -1,3 +1,18 @@
+0.85 :
+* Bugs with players clipping through the map while landed have been fixed:
+    1) Players can no longer take damage while landed (since being shot displaces the struck ship slightly). 
+    2) Players now always stop shooting upon landing, thus no longer clipping through the map due to being slightly displaced backwards upon shooting.
+* Bots no longer attack landed players.
+
+0.84 :
+* Several scoreboard related bugfixes.
+
+0.83 :
+* Players should no longer have a chance of respawning inside other ships.
+
+0.82 :
+* 'Health Pack' powerup added.
+
 0.81 :
 * Bots now attempt to avoid crashing into walls.
 
