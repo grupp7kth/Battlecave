@@ -110,20 +110,22 @@ static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, S
     for(int i=0; i < modeMaxButtons[2]; i++){
         if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
-                if(i == 5){                                     // MUSIC TOGGLE
+                if(i == 6)                                           // Ship health-bars toggle
+                    healthBelowEnemyShipsEnabled = !healthBelowEnemyShipsEnabled;
+                else if(i == 5){                                     // Music toggle
                     musicEnabled = !musicEnabled;
                     if(!musicEnabled)
                         Mix_HaltMusic();
                 }
-                else if(i == 4)                                 // FANCY BACKGROUND TOGGLE
+                else if(i == 4)                                     // Fancy background toggle
                     fancyBackgroundEnabled = !fancyBackgroundEnabled;
-                else if(i == 3)                                 // SHIP NAMES TOGGLE
+                else if(i == 3)                                     // Ship names toggle
                     namesBelowShipsEnabled = !namesBelowShipsEnabled;
-                else if(i == 2)                                 // ENTERING PORT
+                else if(i == 2)                                     // Entering Port
                     *select = ENTERING_PORT;
-                else if(i == 1)                                 // ENTERING IP
+                else if(i == 1)                                     // Entering IP
                     *select = ENTERING_IP;
-                else{                                           // APPLY
+                else{                                               // Apply
                     strcpy(defaultIP, textString[ENTERING_IP]);         // Save the settings to the current session
                     strcpy(defaultPort, textString[ENTERING_PORT]);
 
@@ -138,6 +140,10 @@ static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     fputc(fancyBackgroundEnabled+48, fp);
                     fputc('\n', fp);
                     fputc(musicEnabled+48, fp);
+                    fputc('\n', fp);
+                    fputc(healthBelowEnemyShipsEnabled+48, fp);
+                    fputc('\n', fp);
+                    fputc(healthBelowOwnShipEnabled+48, fp);
                     fclose(fp);
 
                     *mode = STARTUP;

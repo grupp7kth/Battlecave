@@ -287,7 +287,6 @@ bool initGame(char map[]){
 
     fetchMapData(map);
 
-
     for(int i=0; i < MAX_BULLETS; i++)
         bullets[i].active = false;
 
@@ -297,6 +296,7 @@ bool initGame(char map[]){
         ships[i].isStunned = false;
         ships[i].isTeleporting = false;
         ships[i].teleportDisplacementPerformed = false;
+        ships[i].health = 100;
     }
 
     powerupSpawnTimerStart = POWERUP_SPAWNRATE;
@@ -594,11 +594,13 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     // Send ship info
     for (player=0; player<MAX_CLIENTS; player++) {
         tempint = 0;
-        tempint = (int)ships[player].xPos | (int)ships[player].yPos << 12 | (int)(ships[player].angle/6) << 24;
-        tempint = tempint | ships[player].isDead <<30 | clients[player].active << 31;
+        tempint = (int)ships[player].xPos | (int)ships[player].yPos << 12 | (ships[player].health / 5) << 24;       // Health is sent divided by 5 so it fits in 5 bits (0-20 represents 0-100% hp whens packaged)
+        tempint = tempint | ships[player].isDead << 29 | clients[player].active << 30 | (int)ships[player].angle << 31;
         for (i=0; i<4; i++) {
-            gameData[4+player*4+i] = tempint >> i*8;
+            gameData[4+player*5+i] = tempint >> i*8;
         }
+        tempint = 0;
+        gameData[4+player*5+4] = ((int)ships[player].angle >> 1) & 0b11111111;
     }
 
     // Send powerup info: (4 bytes per powerup * 15 powerups) ( each uses 28 bits currently)
@@ -606,7 +608,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         tempint = 0;
         tempint = (int)powerupSpawnPoint[i].x | (int)powerupSpawnPoint[i].y << 12 | (int)powerupSpawnPoint[i].isActive << 24 | (int)powerupSpawnPoint[i].type << 25;
         for (j=0; j<4; j++){
-            gameData[36+i*4+j] = tempint >> j*8;
+            gameData[44+i*4+j] = tempint >> j*8;
         }
     }
 
@@ -620,12 +622,13 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         if (!clients[player].active)
             continue;
 
-        tempint = ships[player].health/5 | clients[player].viewportID << 5;
-        gameData[96] = tempint;                             // Make Health scale to 5 (Hp 0-100% is represented by 0-20) to use 5 bits of this byte, Remaining 3 bits of the byte will be the viewport ID for the client
+        // Send the player's active viewport since it's variable (changes to spectate someone else upon death)
+        gameData[104] =  clients[player].viewportID;
 
-        tempint = (int)ships[player].fuel | ships[player].ammo << 9;    // Put the ship's fuel and ammo in two bytes
-        gameData[97] = tempint;
-        gameData[98] = tempint >> 8;
+        // Put the ship's fuel and ammo in two bytes
+        tempint = (int)ships[player].fuel | ships[player].ammo << 9;
+        gameData[105] = tempint;
+        gameData[106] = tempint >> 8;
 
         // Calculate viewport:
         if (ships[clients[player].viewportID].xPos < GAME_AREA_WIDTH/2)
@@ -646,12 +649,12 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
                 tempint=0;
                 tempint = (int)(bullets[secondary].xPos-viewport.x) | (int)(bullets[secondary].yPos-viewport.y) << 11 | (int)(bullets[secondary].source) << 21;
                 for (i=0; i<3; i++) {
-                    gameData[99+counter*3+i] = tempint >> i*8;
+                    gameData[107+counter*3+i] = tempint >> i*8;
                 }
                 counter++;
             }
         }
-        UDPpacketLength = 99+counter*3;
+        UDPpacketLength = 107+counter*3;
         gameData[UDPpacketLength++]=0xFF;
         packetOut->data = gameData;
         packetOut->len = UDPpacketLength;
@@ -732,7 +735,8 @@ void handleBot(int *id){
             distance = getObjectDistance(deltaX, deltaY);
 
 
-            if(closestDistance <= 0 || (distance * 2) < closestDistance){ // '* 2' because we want to heavily prioritize enemy ships over powerups
+            if((closestDistance <= 0 || (distance * 2) < closestDistance) && (powerupSpawnPoint[i].type != POWERUP_HEALTHPACK || ships[*id].health < 100)){ // '* 2' because we want to heavily prioritize enemy ships over powerups
+
                 closestDistance = distance;
                 closestType = 1;
 
@@ -765,9 +769,9 @@ void handleBot(int *id){
     if(scanDegrees >= 360)
         scanDegrees -= 360;
 
-    if(botScanLine((((int)netSpeed * 300) + 100), scanDegrees, 5, id) > 0)
+    if(botScanLine((int)((netSpeed * 300) + 100), scanDegrees, 5, id) > 0)
         goDefensive(id, &netSpeed, scanDegrees);
-    else if(botScanLine(100, scanDegrees+25, 5, id) > 0)  // Cone scanning to counter irregular
+    else if(botScanLine(100, scanDegrees+25, 5, id) > 0)  // Cone scanning to counter irregularities whilst turning
         goDefensive(id, &netSpeed, scanDegrees+25);
     else if(botScanLine(100, scanDegrees-25, 5, id) > 0)
         goDefensive(id, &netSpeed, scanDegrees-25);

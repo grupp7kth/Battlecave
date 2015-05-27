@@ -37,8 +37,8 @@ int UDPhandler(void){
 }
 
 void unpackPacket(void){
-    Uint32 read, i, j, tempint, bulletID;
-
+    Uint32 tempint, i, j, bulletID;
+    Uint64 read;
     // Read packet number
 	for (i = 0, read = 0; i < 4; i++){
 		tempint = inPacket->data[i];
@@ -48,21 +48,27 @@ void unpackPacket(void){
     // Read ship data
     for(int player = 0; player < MAX_PLAYERS; player++){
 		for(i = 0, read = 0; i < 4; i++){
-			tempint = inPacket->data[4+(4*player)+i];
+			tempint = inPacket->data[4+(5*player)+i];
 			read = read | tempint << i*8;
 		}
 		ship[player].x = read & 0b111111111111;
 		ship[player].y = (read >> 12) & 0b111111111111;
-		ship[player].angle = (read >> 24) & 0b111111;
-		ship[player].angle *= 6;
-		ship[player].isDead = (read >> 30) & 1;
-		ship[player].active = (read >> 31) & 1;
+		ship[player].health = (read >> 24) & 0b11111;       // Read all ships' health so that it can be visually displayed in the client if the user choses to
+		ship[player].health *= 5;                           // Health is sent divided by 5 so it fits in 5 bits (0-20 represents 0-100% hp whens packaged)
+		ship[player].isDead = (read >> 29) & 1;
+		ship[player].active = (read >> 30) & 1;
+
+        for(i = 0, read = 0; i < 2; i++){
+			tempint = inPacket->data[4+(5*player)+i+3];
+			read = read | tempint << i*8;
+		}
+		ship[player].angle = (read >> 7) & 0b111111111;
 	}
 
     // Read powerup data
     for(i = 0; i < MAX_ALLOWED_POWERUP_SPAWNPOINTS; i++){
         for(j = 0, read = 0; j < 4; j++){
-            tempint = inPacket->data[36+(4*i)+j];
+            tempint = inPacket->data[44+(4*i)+j];
             read = read | tempint << j*8;
         }
         powerupSpawnPoint[i].x = read & 0b111111111111;
@@ -71,19 +77,21 @@ void unpackPacket(void){
         powerupSpawnPoint[i].type = (read >> 25) & 0b111;
     }
 
-    client.health = (inPacket->data[96] & 0b11111) * 5;   // The first 5 bits of this byte is the player's health divided by 5 (to use fewer bits)
-    viewportID = (inPacket->data[96] >> 5) & 0b111;       // The last 3 bits is the viewport-id to use for the player
+    // Read the viewport-id to use for the player
+    viewportID = inPacket->data[104];
 
+    // Read fuel & ammo
     for(i = 0, read = 0; i < 2; i++){
-        tempint = inPacket->data[97+i];
+        tempint = inPacket->data[105+i];
         read = read | tempint << 8*i;
     }
     ship[client.id].fuel = read & 0b111111111;                         // The first 9 bits of data-byte 97&98 are fuel, last 7 bits are ammo
     ship[client.id].ammo = (read >> 9) & 0b1111111;
 
-    for(bulletID = 0; (inPacket->data[99+(bulletID)*3] != 0xFF) && (bulletID < MAX_BULLETS); bulletID++){
+    // Read bullets
+    for(bulletID = 0; (inPacket->data[107+(bulletID)*3] != 0xFF) && (bulletID < MAX_BULLETS); bulletID++){
 		for (i = 0, read = 0; i < 3; i++){
-			tempint = inPacket->data[99+(bulletID)*3+i];
+			tempint = inPacket->data[107+(bulletID)*3+i];
 			read = read | tempint << i*8;
 		}
 		bullet[bulletID].x = read & 0b11111111111;

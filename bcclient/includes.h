@@ -90,7 +90,6 @@ typedef struct{
     TCPsocket TCPSock;
     UDPsocket UDPRecvSock, UDPSendSock;
     Uint16 ServerRecvUDPPort;
-    short health;
     int deathTimer;
     int powerupTimerStart;
 	short activePowerup, shipAlpha;
@@ -103,7 +102,7 @@ typedef struct{
 	bool active, isDead;
 	SDL_Texture* texture;
 	SDL_Rect placement;
-    int fuel, ammo;
+    int fuel, ammo, health;
 } Ship;
 extern Ship ship[MAX_PLAYERS];
 
@@ -153,6 +152,13 @@ typedef struct{
 } PowerupSpawnPoint;
 extern PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
 
+typedef struct{
+    SDL_Rect framePlacement;
+    SDL_Texture* frameTexture;
+    SDL_Rect barPlacement;
+} BelowShipHealthBar;
+extern BelowShipHealthBar belowShipHealthBar;
+
 extern SDL_Rect healthBar;
 extern SDL_Rect powerupBar;
 
@@ -167,9 +173,11 @@ extern int textStringCurrent[11];              // Which index in the string are 
 
 extern char defaultIP[16];                     // The IP and port used to connect to the default server
 extern char defaultPort[6];
-extern bool namesBelowShipsEnabled;            // Show names below their ships while in game enabled
-extern bool fancyBackgroundEnabled;            // Far background behind the map while in game enabled
+extern bool namesBelowShipsEnabled;            // Show names below their ships game while in enabled
+extern bool fancyBackgroundEnabled;            // Far background behind the map game while in enabled
 extern bool musicEnabled;
+extern bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
+extern bool healthBelowOwnShipEnabled;
 extern SDL_Rect checkBox;
 
 extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];

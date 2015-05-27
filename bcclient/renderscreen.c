@@ -150,12 +150,26 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             ship[i].placement.x = ship[i].x - gameMapBackground.source.x - ship[i].w/2;
             ship[i].placement.y = ship[i].y - gameMapBackground.source.y - ship[i].h/2;
 
-            if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)                    // Decide whether the ship is within the game area of the window
+            if(ship[client.id].placement.x >= GAME_AREA_WIDTH/2)                            // Decide whether the ship is within the game area of the window
                 temp = ship[i].placement.x - ship[client.id].placement.x;
             else
                 temp = ship[i].placement.x - GAME_AREA_WIDTH/2;
-            if(temp < GAME_AREA_WIDTH/2)
-                SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE);
+            if(temp < GAME_AREA_WIDTH/2){
+                SDL_RenderCopyEx(gRenderer, ship[i].texture, NULL, &ship[i].placement, ship[i].angle, NULL, SDL_FLIP_NONE); // Render the actual ship
+
+                if((i != client.id && healthBelowEnemyShipsEnabled) || (i == client.id && healthBelowOwnShipEnabled)){ // If the options to show health bars below ships have been enabled through the options menu
+                    belowShipHealthBar.framePlacement.x = ship[i].placement.x - 5;
+                    if(namesBelowShipsEnabled)                                              // Make sure the players' name and HP-bar aren't stacked
+                        belowShipHealthBar.framePlacement.y = ship[i].placement.y + 55;
+                    else
+                        belowShipHealthBar.framePlacement.y = ship[i].placement.y + 35;
+                    belowShipHealthBar.barPlacement.x = belowShipHealthBar.framePlacement.x + 1;
+                    belowShipHealthBar.barPlacement.y = belowShipHealthBar.framePlacement.y + 1;
+                    belowShipHealthBar.barPlacement.w = ship[i].health * 0.3;
+                    SDL_RenderCopy(gRenderer, belowShipHealthBar.frameTexture, NULL, &belowShipHealthBar.framePlacement);
+                    SDL_RenderCopy(gRenderer, mHealthBar, NULL, &belowShipHealthBar.barPlacement);
+                }
+            }
         }
 
         // Render powerups
@@ -202,7 +216,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
 
         // RENDER EVERYTHING SIDEBAR RELATED
         // Health-bar
-        healthBar.w = 2*client.health;
+        healthBar.w = 2*ship[client.id].health;
         SDL_RenderCopy(gRenderer, mHealthBar, NULL, &healthBar);
         // Powerup-bar
         if(client.activePowerup == POWERUP_MULTI3X || client.activePowerup == POWERUP_MULTI2X || client.activePowerup == POWERUP_DOUBLEDAMAGE){ // Only these powerups have a duration on the powerup-bar
@@ -265,6 +279,8 @@ void loadMedia(void){
     mHealthBar = loadTexture("resources/images/healthbar.png");
     mPowerupBar = loadTexture("resources/images/powerupbar.png");
     mTimeWarpBar = loadTexture("resources/images/timewarpbar.png");
+
+    belowShipHealthBar.frameTexture = loadTexture("resources/images/healthframe.png");
 
     mPowerupIcon[0] = loadTexture("resources/images/tripleshoticon.png");  // There are 6 different powerups available currently
     mPowerupIcon[1] = loadTexture("resources/images/doubleshoticon.png");

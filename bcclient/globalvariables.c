@@ -11,6 +11,7 @@ GameLowLayerBackground gameLowLayerBackground;
 SideBar sideBar;
 MiniMap miniMap;
 PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
+BelowShipHealthBar belowShipHealthBar;
 
 SDL_Rect healthBar;
 SDL_Rect powerupBar;
@@ -25,9 +26,11 @@ int textStringCurrent[11];              // Which index in the string are we curr
 
 char defaultIP[16];                     // The IP and port used to connect to the default server
 char defaultPort[6];
-bool namesBelowShipsEnabled;            // Show names below their ships while in game enabled
-bool fancyBackgroundEnabled;            // Far background behind the map while in game enabled
+bool namesBelowShipsEnabled;            // Show names below their ships game while in enabled
+bool fancyBackgroundEnabled;            // Far background behind the map game while in enabled
 bool musicEnabled;
+bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
+bool healthBelowOwnShipEnabled;
 SDL_Rect checkBox;
 
 char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];

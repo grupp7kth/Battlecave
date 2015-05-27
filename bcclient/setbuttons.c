@@ -58,7 +58,7 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     return;
 }
 
-static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Apply , 1 = Default IP , 2 = Default Port , 3 = Player Names , 4 = Fancy Background , 5 = Music Enabled
+static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Apply , 1 = Default IP , 2 = Default Port , 3 = Player Names , 4 = Fancy Background , 5 = Music Enabled , 6 = Own Ship Health-Bar , 7 = Enemy Ship's Health-Bars
     buttonPlacement[0].x = windowPlacement[3].x + 102;
     buttonPlacement[0].y = windowPlacement[3].y + 237;
     buttonPlacement[0].h = 31;
@@ -83,6 +83,14 @@ static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement
     buttonPlacement[5].y = windowPlacement[3].y + 209;
     buttonPlacement[5].h = 15;
     buttonPlacement[5].w = 15;
+    buttonPlacement[6].x = windowPlacement[3].x + 176;
+    buttonPlacement[6].y = windowPlacement[3].y + 209;
+    buttonPlacement[6].h = 0;
+    buttonPlacement[6].w = 0;
+    buttonPlacement[7].x = windowPlacement[3].x + 176;
+    buttonPlacement[7].y = windowPlacement[3].y + 209;
+    buttonPlacement[7].h = 0;
+    buttonPlacement[7].w = 0;
     return;
 }
 

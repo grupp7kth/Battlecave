@@ -49,7 +49,7 @@ int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
 void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N have?
     modeMaxButtons[STARTUP]       =  3;
     modeMaxButtons[FIND_SERVERS]  =  3;
-    modeMaxButtons[OPTIONS]       =  6;
+    modeMaxButtons[OPTIONS]       =  8;
     modeMaxButtons[LOBBY]         = 16;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;
@@ -127,12 +127,19 @@ void init(void){
         fancyBackgroundEnabled = fgetc(fp) - 48;
         fgetc(fp);                                      // Remove newline
         musicEnabled = fgetc(fp) - 48;
+        fgetc(fp);                                      // Remove newline
+        healthBelowEnemyShipsEnabled = fgetc(fp) - 48;
+        fgetc(fp);                                      // Remove newline
+        healthBelowOwnShipEnabled = fgetc(fp) - 48;
     }
     fclose(fp);
 
     checkBox.w = 15;
     checkBox.h = 15;
 
+    belowShipHealthBar.framePlacement.w = 32;
+    belowShipHealthBar.framePlacement.h = 7;
+    belowShipHealthBar.barPlacement.h = 5;
     return;
 }
 

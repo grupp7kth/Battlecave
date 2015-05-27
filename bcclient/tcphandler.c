@@ -126,13 +126,12 @@ void handleGameStart(void){
     keyboardMode = PLAYING;
     clearTextStrings(11);
     gameFreezeTime = 4;
-    client.health = 100;
     client.deathTimer = 0;
     client.activePowerup = -1;
-    for(int i=0; i < MAX_PLAYERS; i++)       // Reset all players' scores
-        playerScore[i] = 0;
     playersInGame = 0;                       // Count how many players there are
     for(int i=0; i < MAX_PLAYERS; i++){
+        playerScore[i] = 0;                  // Reset all players' scores
+        ship[client.id].health = 100;        // To prevent potential flickering just as the game starts
         if(strlen(playerName[i]) > 0)
             playersInGame++;
     }

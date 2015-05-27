@@ -1,3 +1,7 @@
+0.86 :
+* Added an options to display health-bars below players' ships.
+* Bots no longer go for 'Health Pack' powerups if they have full health.
+
 0.85 :
 * Bugs with players clipping through the map while landed have been fixed:
     1) Players can no longer take damage while landed (since being shot displaces the struck ship slightly). 
