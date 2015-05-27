@@ -155,6 +155,10 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                     ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
             if (!ships[i].isLanded) ships[i].yVel+=0.0015;
+            if (ships[i].xVel!=0 || ships[i].yVel != 0) {
+            	    ships[i].landed=false;
+            	    ships[i].yVel+=0.0015;
+            }
             else {
             	    ships[i].reloadTime++;
             	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 400) ships[i].fuel++;
