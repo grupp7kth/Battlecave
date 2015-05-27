@@ -448,7 +448,7 @@ void handlePowerupSpawns(void){
         powerupSpawnTimerStart = SDL_GetTicks();            // Reset the timer for the next powerup spawn
 
         powerupSpawnPoint[powerupID].isActive = true;
-        powerupSpawnPoint[powerupID].type = POWERUP_HEALTHPACK;//= rand() % 6;     // 6 different powerups exist in the game
+        powerupSpawnPoint[powerupID].type = rand() % 6;     // 6 different powerups exist in the game
         activePowerupSpawns++;
         printf("PUT PWRUP ID=%d AT X:%d Y:%d (TYPE=%d)\n", powerupID, powerupSpawnPoint[powerupID].x, powerupSpawnPoint[powerupID].y, powerupSpawnPoint[powerupID].type);
     }
@@ -832,25 +832,19 @@ void goAggressive(int *id, int *closestDistance, int *closestType, int *closestA
         ships[*id].angleVel = 0;
 
     if(*closestDistance > 5 && botScanLine(150, (int)ships[*id].angle, 5, id) == 0){
-        if(*deltaY > 0 && ships[*id].yVel > -0.2){ //puts("1");
+        if(*deltaY > 0 && ships[*id].yVel > -0.2)
             ships[*id].acceleration = true;
-        }
-        else if(*deltaX <= 0 && ships[*id].xVel <= 0 && ships[*id].yVel > -0.3){ //puts(" 2");
+        else if(*deltaX <= 0 && ships[*id].xVel <= 0 && ships[*id].yVel > -0.3)
             ships[*id].acceleration = true;
-        }
-        else if(*deltaX > 0 && ships[*id].xVel > 0 && ships[*id].yVel < 0.3){  //puts("  3");
+        else if(*deltaX > 0 && ships[*id].xVel > 0 && ships[*id].yVel < 0.3)
             ships[*id].acceleration = true;
-        }
-        else if(*netSpeed < 0.55){  //puts("    5");
+        else if(*netSpeed < 0.55)
             ships[*id].acceleration = true;
-        }
-        else{  //puts("      6");
+        else
             ships[*id].acceleration = false;
-        }
     }
-    else{  //puts("         7");
+    else
         ships[*id].acceleration = false;
-    }
 
     return;
 }
@@ -866,16 +860,7 @@ void handleBotShooting(int *id, int *closestDistance, int *closestType, int *clo
         else
             ships[*id].shooting = false;
     }
-    else if(ships[*id].activePowerup == POWERUP_MULTI2X && (abs(*closestAngle) + 180) <= 5){ // If we have doubleshot and an enemy is behind us
-        if(*closestType == 0){
-            if(botScanLine(*closestDistance, *closestAngle+180, 10, id) == 0)
-                ships[*id].shooting = true;
-            else
-                ships[*id].shooting = false;
-        }
-        else
-            ships[*id].shooting = false;
-    }
+    return;
 }
 
 int getDelta(int p1, int p2){

@@ -72,7 +72,6 @@ int main(int argc, char *argv[]) {
             handlePowerupSpawns();          // Places the powerups on the map
             handlePowerupGains();           // Checks whether players aquire the placed powerups
             handleActivePowerups();         // Tests whether player's powerups run out
-//            createAndSendUDPPackets(ships, bullets);
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){ // *1000 for MS to S, *60 for Minutes
                 broadCast(PREAMBLE_GAMEEND);
