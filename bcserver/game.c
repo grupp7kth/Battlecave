@@ -1,5 +1,4 @@
 #include "serverheader.h"
-#define PI 3.14159265359
 
 double getRadians(int a) {
 	return (a+90)*3.14159265/180;
@@ -24,7 +23,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 		angleSin = sin(skepp[i].angle*PI/180);
 
 		// Om skeppet inte har landat, kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
-		if (!skepp[i].landed) {
+		if (!skepp[i].isLanded) {
 			for (j=0; j<skepp[i].antalPixlar; j++) {
 				xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 				ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
@@ -36,8 +35,12 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 						if (skepp[i].yVel < 0.2) {
 							printf("Ship %d touchdown",i);
 							skepp[i].reloadTime=0;
-							skepp[i].yVel=0;skepp[i].xVel=0;skepp[i].angle=0;skepp[i].angleVel=0;
-							skepp[i].landed=true;
+							skepp[i].yVel=0;
+							skepp[i].xVel=0;
+							skepp[i].angle=0;
+							skepp[i].angleVel=0;
+							skepp[i].shooting=false;
+							skepp[i].isLanded=true;
 						}
 						else {
 							skepp[i].yVel*=-0.5;
@@ -57,7 +60,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				for (j=0; j<skepp[i].antalPixlar; j++) {
 					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord) {
+					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord && !skepp[i].isLanded) {
 						skepp[i].health-=10*(1+(skepp[skotten[k].source].activePowerup==POWERUP_DOUBLEDAMAGE));
 						skepp[i].xVel+=skotten[k].xVel*0.1;
 						skepp[i].yVel+=skotten[k].yVel*0.1;
@@ -92,8 +95,8 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				}
 			}
 			if (krock) {
-				skepp[i].landed=false;
-				skepp[k].landed=false;
+				skepp[i].isLanded=false;
+				skepp[k].isLanded=false;
 				krock=false;
 				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
 				deltaX = skepp[i].xPos-skepp[k].xPos;
@@ -151,7 +154,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
                 else if(ships[i].xVel < -MaxSpeedList[activeMaxSpeed])
                     ships[i].xVel = -MaxSpeedList[activeMaxSpeed];
             }
-            if (!ships[i].landed) ships[i].yVel+=0.0015;
+            if (!ships[i].isLanded) ships[i].yVel+=0.0015;
             else {
             	    ships[i].reloadTime++;
             	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 400) ships[i].fuel++;
@@ -267,7 +270,7 @@ void resetShip(Ship* skepp, int i) {
 	skepp->deathTimer=0;
 	skepp->health=100;
 	skepp->latestTag = i;
-	skepp->landed=false;
+	skepp->isLanded=false;
 	skepp->ammo=60;
 	skepp->fuel=400;
 }
@@ -335,7 +338,19 @@ void checkShipHealth(){
                 getSpectatingViewport(&i);
 		}
 		else if(clients[i].active && ships[i].isDead && ships[i].deathTimer <= 0){
-			int tempSpawnID = rand() % 8;
+			bool isValidSpawnpoint;
+			int tempSpawnID, deltaX, deltaY;
+			do{
+                isValidSpawnpoint = true;
+                tempSpawnID = rand() % 8;
+                for(int i = 0; i < MAX_CLIENTS; i++){
+                    deltaX = getDelta(playerSpawnPoint[tempSpawnID].x, (int)ships[i].xPos);
+                    deltaY = getDelta(playerSpawnPoint[tempSpawnID].y, (int)ships[i].yPos);
+                    if(getObjectDistance(deltaX, deltaY) < 150)
+                        isValidSpawnpoint = false;
+                }
+			} while(!isValidSpawnpoint);
+
 			ships[i].xPos = playerSpawnPoint[tempSpawnID].x;
 			ships[i].yPos = playerSpawnPoint[tempSpawnID].y;
 			resetShip(&ships[i],i);
@@ -433,7 +448,7 @@ void handlePowerupSpawns(void){
         powerupSpawnTimerStart = SDL_GetTicks();            // Reset the timer for the next powerup spawn
 
         powerupSpawnPoint[powerupID].isActive = true;
-        powerupSpawnPoint[powerupID].type = rand() % 6;     // 6 different powerups exist in the game
+        powerupSpawnPoint[powerupID].type = POWERUP_HEALTHPACK;//= rand() % 6;     // 6 different powerups exist in the game
         activePowerupSpawns++;
         printf("PUT PWRUP ID=%d AT X:%d Y:%d (TYPE=%d)\n", powerupID, powerupSpawnPoint[powerupID].x, powerupSpawnPoint[powerupID].y, powerupSpawnPoint[powerupID].type);
     }
@@ -475,7 +490,10 @@ void handlePowerupGains(void){
                                 ships[i].yVel = 0;
                             }
                             else if(powerupSpawnPoint[j].type == POWERUP_MULTI3X || powerupSpawnPoint[j].type == POWERUP_MULTI2X || powerupSpawnPoint[j].type == POWERUP_DOUBLEDAMAGE){
-                                    ships[i].powerupTimerStart = SDL_GetTicks();                // If the power up is of a type which is timed, start the timer on 10 seconds
+                                ships[i].powerupTimerStart = SDL_GetTicks();                // If the power up is of a type which is timed, start the timer on 10 seconds
+                            }
+                            else if(powerupSpawnPoint[j].type == POWERUP_HEALTHPACK){
+                                ships[i].health = 100;
                             }
                             if(clients[i].playerType == PLAYER_TYPE_HUMAN)
                                 SDLNet_TCP_Send(clients[i].socket, TCPsend, strlen(TCPsend));   // Let human players know they've gained a powerup
@@ -523,17 +541,17 @@ int udpListener(void* data) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
                 printf("error packet/client conflict"); }
             key = packetIn->data[0];
-            if (((key & 3) == 1) && !ships[clientId].landed) ships[clientId].angleVel=1.5;
-	    else if (((key & 3) == 2) && !ships[clientId].landed) ships[clientId].angleVel=-1.5;
+            if (((key & 3) == 1) && !ships[clientId].isLanded) ships[clientId].angleVel=1.5;
+	    else if (((key & 3) == 2) && !ships[clientId].isLanded) ships[clientId].angleVel=-1.5;
             else ships[clientId].angleVel = 0;
 
             if ((key & 4) == 4) {
             	    ships[clientId].acceleration=true;
-            	    ships[clientId].landed=false;
+            	    ships[clientId].isLanded=false;
             }
             else ships[clientId].acceleration=false;
 
-            if (((key & 8) == 8) && !ships[clientId].landed) ships[clientId].shooting=true;
+            if (((key & 8) == 8) && !ships[clientId].isLanded) ships[clientId].shooting=true;
             else ships[clientId].shooting=false;
         }
 		SDL_Delay(5);
@@ -685,7 +703,7 @@ void handleBot(int *id){
     int closestDistance = 0, distance, deltaX, deltaY, closestAngle = 0, closestType = 0; // closestType: 0 = Enemy ship , 1 = Powerup Spawn
 
     for(int i=0; i < MAX_CLIENTS; i++){     // First determine the closest enemy ship
-        if(i != *id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting){
+        if(i != *id && clients[i].active && !ships[i].isDead && !ships[i].isTeleporting && !ships[i].isLanded){
             deltaX = getDelta(ships[*id].xPos, ships[i].xPos);
             deltaY = getDelta(ships[*id].yPos, ships[i].yPos);
             distance = getObjectDistance(deltaX, deltaY);

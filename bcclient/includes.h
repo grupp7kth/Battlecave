@@ -188,6 +188,7 @@ extern int timedTextStart;
 extern short timedTextID;
 extern short killerID, killedID;                   // killedID = ship that just got killed; killerID = the killer
 extern int playerScore[MAX_PLAYERS];               // Contains the players' current scores
+extern int playersInGame;
 
 extern bool throttle;
 extern bool right;

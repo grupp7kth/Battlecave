@@ -268,7 +268,7 @@ void loadMedia(void){
 
     mPowerupIcon[0] = loadTexture("resources/images/tripleshoticon.png");  // There are 6 different powerups available currently
     mPowerupIcon[1] = loadTexture("resources/images/doubleshoticon.png");
-    mPowerupIcon[2] = loadTexture("resources/images/blackholeicon.png");
+    mPowerupIcon[2] = loadTexture("resources/images/healthpackicon.png");
     mPowerupIcon[3] = loadTexture("resources/images/timewarpicon.png");
     mPowerupIcon[4] = loadTexture("resources/images/doubledamageicon.png");
     mPowerupIcon[5] = loadTexture("resources/images/teleporticon.png");

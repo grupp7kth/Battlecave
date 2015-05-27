@@ -131,6 +131,11 @@ void handleGameStart(void){
     client.activePowerup = -1;
     for(int i=0; i < MAX_PLAYERS; i++)       // Reset all players' scores
         playerScore[i] = 0;
+    playersInGame = 0;                       // Count how many players there are
+    for(int i=0; i < MAX_PLAYERS; i++){
+        if(strlen(playerName[i]) > 0)
+            playersInGame++;
+    }
     return;
 }
 

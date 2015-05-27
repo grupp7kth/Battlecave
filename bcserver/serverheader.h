@@ -49,7 +49,7 @@
 #define PREAMBLE_MAPS ""
 #define POWERUP_MULTI3X 0
 #define POWERUP_MULTI2X 1
-#define POWERUP_BLACKHOLE 2
+#define POWERUP_HEALTHPACK 2
 #define POWERUP_TIMEWARP 3
 #define POWERUP_DOUBLEDAMAGE 4
 #define POWERUP_TELEPORT 5
@@ -73,6 +73,7 @@
 #define BACKGROUND_NONBUMPCOLOUR 0
 #define BACKGROUND_BUMPMAP_LANDING_SPOT 2
 #define SHIP_NONBUMPCOLOUR 0
+#define PI 3.14159265359
 
 typedef struct{
     TCPsocket socket;
@@ -93,7 +94,7 @@ typedef struct{
     double xPos,yPos,xVel,yVel;
     double angle,angleVel, fuel;
     Uint8 health;
-    bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed,landed;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
+    bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed,isLanded;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
     int deathTimer,deathTimerStart;
     short activePowerup, antalPixlar, latestTag, ammo;
     int powerupTimerStart, stunDurationStart, reloadTime;

@@ -275,13 +275,11 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
         TTF_CloseFont(font);
     }
     // Render the players' scores
+
     // Sort all scores
     int tempScoreID[MAX_PLAYERS] = {0, 1, 2, 3, 4, 5, 6, 7}, temp;
 
     for(int i=0; i < MAX_PLAYERS-1; i++){
-        if(!ship[i].active)
-            break;
-
         for(int j=0; j < MAX_PLAYERS-i-1; j++){
             if(playerScore[tempScoreID[j]] < playerScore[tempScoreID[j+1]]){
                 temp = tempScoreID[j];
@@ -298,9 +296,9 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     textPlacement->x = GAME_AREA_WIDTH + 15;
     textPlacement->y = 55;
 
-    for(int i=0; i < MAX_PLAYERS; i++){
+    for(int i=0, currentEntry = 1; i < MAX_PLAYERS; i++){
         if(ship[i].active){
-            sprintf(tempScoreString, "%d. ", i+1);
+            sprintf(tempScoreString, "%d. ", currentEntry++);
             gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[TEXT_COLOR_TEAL]); // Add 6 to get to the player color span
             renderText(textPlacement, gRenderer);
             textPlacement->y += 32;
