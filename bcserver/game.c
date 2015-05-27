@@ -156,7 +156,7 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             }
             if (!ships[i].isLanded) ships[i].yVel+=0.0015;
             if (ships[i].xVel!=0 || ships[i].yVel != 0) {
-            	    ships[i].landed=false;
+            	    ships[i].isLanded=false;
             	    ships[i].yVel+=0.0015;
             }
             else {
