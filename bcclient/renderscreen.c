@@ -110,7 +110,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             gameMapBackground.source.y = 0;
         else if(ship[viewportID].y > gameMapBackground.h - GAME_AREA_HEIGHT/2)
             gameMapBackground.source.y = gameMapBackground.h - GAME_AREA_HEIGHT;
-
+    
         // Render Low (Far) Layer Background if enabled
         if(fancyBackgroundEnabled){
             gameLowLayerBackground.source.x = gameMapBackground.source.x/3;
@@ -324,10 +324,16 @@ void loadMedia(void){
     gameMapBackground.mapPreviewPlacement.h = 160;
 
     gameLowLayerBackground.texture = loadTexture("resources/images/ingamebackground.png");
+    if (gameLowLayerBackground.texture == NULL) {
+    	    printf("Background not loaded\n");
+    	    exit(1);
+    }
     gameLowLayerBackground.dest.x = 0;
     gameLowLayerBackground.dest.y = 0;
     gameLowLayerBackground.dest.w = GAME_AREA_WIDTH;
     gameLowLayerBackground.dest.h = GAME_AREA_HEIGHT;
+    gameLowLayerBackground.source.x = 0;
+    gameLowLayerBackground.source.y = 0;
     gameLowLayerBackground.source.w = GAME_AREA_WIDTH;
     gameLowLayerBackground.source.h = GAME_AREA_HEIGHT;
 
@@ -375,10 +381,16 @@ void initSDL(void){
 
 SDL_Texture* loadTexture(char* filename){
 	SDL_Surface* temp = IMG_Load(filename);
+	printf("Filename: %s\n",filename);
+	printf("W: %d, H: %d\n",temp->w,temp->h);
+	printf("Pitch: %d\n",temp->pitch);
+	int pixelSize = temp->pitch/temp->w;
+	printf("Det {r allts} %d bytes per pixel.\n",pixelSize);
 	if(temp == NULL){
 		printf("Failed to load image %s: %s\n",filename,IMG_GetError());
 	}
-	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
+	if (temp->w < 4000) SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
+	else puts("Image too big, no colour key").
 	SDL_Texture* returnTexture = SDL_CreateTextureFromSurface(gRenderer, temp);
 	if(returnTexture == NULL){
 		printf("Failed to convert the surface %s to a texture: %s\n",filename,IMG_GetError());

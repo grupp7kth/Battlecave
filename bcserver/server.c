@@ -148,11 +148,14 @@ int getClientId() {
 }
 
 bool loadMedia(char map[]) {
-    char mapName[20]={'\0'};
+    char mapName[50];
+    mapName[0] = '\0';
     strcat(mapName, "maps/");
     strcat(mapName, map);
     strcat(mapName, ".png");
+    printf("Trying to load media: %s",mapName);
     background=IMG_Load(mapName);
+    puts ("Loading media.");
     if (background==NULL) { puts("could not load background");return false;}
 
 	printf("Bakgrund W: %d, H: %d\n",background->w,background->h);
@@ -179,7 +182,7 @@ bool loadMedia(char map[]) {
 			backgroundBumpmap[i*(background->w)+j]=pixelResult!=BACKGROUND_NONBUMPCOLOUR;
 			if (pixelResult==(256*256*256-1)) {
 				backgroundBumpmap[i*(background->w)+j]=BACKGROUND_BUMPMAP_LANDING_SPOT;
-//				puts("Found some white.");
+				puts("Found some white.");
 			}
 		}
 	}
