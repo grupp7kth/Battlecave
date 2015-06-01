@@ -55,7 +55,6 @@ PowerupSpawnPoint powerupSpawnPoint[MAX_ALLOWED_POWERUP_SPAWNPOINTS];
 SDL_Surface* background;
 Uint8* backgroundBumpmap;
 
-//byt från globala!!
 UDPpacket *packetOut;
 Uint8 gameData[1000];
 int packetID;
@@ -72,7 +71,6 @@ int activeMaxSpeed = 1;                 // Choses which entry from the list belo
 float MaxSpeedList[5] = {1, 2, 3, 4, 5};
 int activeBulletInterval = 1;           // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {20, 40, 60};
-bool infiniteMomentum = true;
 
 short numberOfPowerups;
 short activePowerupSpawns = 0;

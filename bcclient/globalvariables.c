@@ -27,10 +27,10 @@ int textStringCurrent[11];              // Which index in the string are we curr
 char defaultIP[16];                     // The IP and port used to connect to the default server
 char defaultPort[6];
 bool namesBelowShipsEnabled;            // Show names below their ships game while in enabled
+bool healthBelowOwnShipEnabled;
+bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
 bool fancyBackgroundEnabled;            // Far background behind the map game while in enabled
 bool musicEnabled;
-bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
-bool healthBelowOwnShipEnabled;
 SDL_Rect checkBox;
 
 char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
@@ -47,8 +47,9 @@ int gameTimeRemaining;
 int deathTimerStart;
 int timedTextStart;
 short timedTextID;
-short killerID, killedID;                   // killedID = ship that just got killed; killerID = the killer
-int playerScore[MAX_PLAYERS];               // Contains the players' current scores
+short killerID, killedID;                             // killedID = ship that just got killed; killerID = the killer
+int playerScore[MAX_PLAYERS];                         // Contains the players' current scores
+int scoreID[MAX_PLAYERS] = {0, 1, 2, 3, 4, 5, 6, 7};  // The rankings of the players, by ID
 int playersInGame;
 
 bool throttle;
@@ -68,7 +69,6 @@ int activeGameLength;                       // Choses which entry from the list 
 int gameLengthList[6] = {5, 10, 15,
                          20, 25, 30};
 int activeMaxSpeed;                         // Choses which setting that's active in terms of max-speed
-bool infiniteMomentum;
 int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 int bulletIntervalList[3] = {5, 10, 15};
 

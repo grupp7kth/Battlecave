@@ -1,7 +1,7 @@
 #ifndef MODEDEFINITIONS
 #define MODEDEFINITIONS
 
-#define CLIENT_VERSION "v 0.86"
+#define CLIENT_VERSION "v 0.90"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -10,7 +10,7 @@
 #define SHIP_HEIGHT 31
 #define SHIP_WIDTH 23
 
-#define MAXBUTTONS 16
+#define MAXBUTTONS 14
 
 // The different modes that the client can be in. Determines what to render and how to interpret mouse clicks / keystrokes etc...
 #define STARTUP 0
@@ -20,6 +20,7 @@
 #define JOIN_DEFAULT 4
 #define JOIN_CUSTOM 5
 #define IN_GAME 6
+#define SCORE_SCREEN 7
 
 // Which mode the keyboard is currently in (0 could be used to suspend all game-play keys, and 1 could be used to parse ONLY buttons used for playing)
 #define NONE -1
@@ -46,7 +47,7 @@
 #define QUIT "false"
 #define GO  "true"
 
-// Codes that are sent at the begginning of tcp messages which indicate what the content is
+// Codes that are sent at the beginning of tcp messages which indicate what the content is
 #define PREAMBLE_CHAT '$'
 #define PREAMBLE_PLAYERS '@'
 #define PREAMBLE_READY '#'
@@ -74,9 +75,8 @@
 #define TELEPORT_DURATION 3000
 
 #define TOGGLE_BULLETINTERVAL 1
-#define TOGGLE_INFINITEMOMENTUM 2
-#define TOGGLE_MAXSPEED 3
-#define TOGGLE_GAMELENGTH 4
+#define TOGGLE_MAXSPEED 2
+#define TOGGLE_GAMELENGTH 3
 
 #define TEXT_COLOR_WHITE 0
 #define TEXT_COLOR_BRIGHTYELLOW 1

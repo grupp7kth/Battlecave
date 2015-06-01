@@ -174,10 +174,10 @@ extern int textStringCurrent[11];              // Which index in the string are 
 extern char defaultIP[16];                     // The IP and port used to connect to the default server
 extern char defaultPort[6];
 extern bool namesBelowShipsEnabled;            // Show names below their ships game while in enabled
+extern bool healthBelowOwnShipEnabled;
+extern bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
 extern bool fancyBackgroundEnabled;            // Far background behind the map game while in enabled
 extern bool musicEnabled;
-extern bool healthBelowEnemyShipsEnabled;      // Shows small health-bars below ships in game while enabled
-extern bool healthBelowOwnShipEnabled;
 extern SDL_Rect checkBox;
 
 extern char playerName[MAX_PLAYERS][MAX_NAME_LENGTH];
@@ -196,6 +196,7 @@ extern int timedTextStart;
 extern short timedTextID;
 extern short killerID, killedID;                   // killedID = ship that just got killed; killerID = the killer
 extern int playerScore[MAX_PLAYERS];               // Contains the players' current scores
+extern int scoreID[MAX_PLAYERS];                   // The rankings of the players, by ID
 extern int playersInGame;
 
 extern bool throttle;
@@ -215,7 +216,6 @@ extern int activeGameLength;                       // Choses which entry from th
 extern int gameLengthList[6];
 extern int activeMaxSpeed;                         // Choses which entry from the list below that's active in terms of max-speed
 extern int maxSpeedList[5];
-extern bool infiniteMomentum;
 extern int activeBulletInterval;                   // Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
 

@@ -74,6 +74,7 @@ int main(int argc, char *argv[]) {
             handleActivePowerups();         // Tests whether player's powerups run out
             gameRunningTime = SDL_GetTicks() - gameStartTime;
             if(gameRunningTime >= gameLenghtList[activeGameLength]*60000 || !ClientsAreReady()){ // *1000 for MS to S, *60 for Minutes
+                SDL_Delay(5000);
                 broadCast(PREAMBLE_GAMEEND);
                 gameIsActive = false;
                 for(int i=0; i < MAX_CLIENTS; i++){
@@ -85,7 +86,6 @@ int main(int argc, char *argv[]) {
                 activeGameLength = 1;
                 activeMaxSpeed = 1;
                 activeBulletInterval = 1;
-                infiniteMomentum = true;
                 activePowerupSpawns = 0;
                 puts("All clients gone, game reset");
             }

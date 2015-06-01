@@ -7,6 +7,7 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
 static void checkMouseMode4(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
 static void checkMouseMode5(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
 static void checkMouseMode6(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match, int *keyboardMode);
+static void checkMouseMode7(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match);
 static bool mouseOnButton(SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *i);
 
 void handleBackspace(int id);
@@ -42,7 +43,8 @@ void checkMouse(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
         checkMouseMode5(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, keyboardMode);
     else if(*mode == IN_GAME)
         checkMouseMode6(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match, keyboardMode);
-
+    else if(*mode == SCORE_SCREEN)
+        checkMouseMode7(event, &currentMouseLocation, buttonPlacement, select, mode, modeMaxButtons, &match);
 
     if((*mode == STARTUP || *mode == FIND_SERVERS || *mode == LOBBY) && !match)
         *select = -1;
@@ -110,22 +112,24 @@ static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, S
     for(int i=0; i < modeMaxButtons[2]; i++){
         if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
             if(event->type == SDL_MOUSEBUTTONDOWN){
-                if(i == 6)                                           // Ship health-bars toggle
+                if(i == 7)                                            // Entering IP
+                    *select = ENTERING_IP;
+                else if(i == 6)                                       // Entering Port
+                    *select = ENTERING_PORT;
+                else if(i == 5)                                       // Ship names toggle
+                    namesBelowShipsEnabled = !namesBelowShipsEnabled;
+                else if(i == 4)                                       // Ship heath-bar below own ship toggle
+                    healthBelowOwnShipEnabled = !healthBelowOwnShipEnabled;
+                else if(i == 3)                                       // Ship health-bars below enemy ships toggle
                     healthBelowEnemyShipsEnabled = !healthBelowEnemyShipsEnabled;
-                else if(i == 5){                                     // Music toggle
+                else if(i == 2)                                       // Fancy background toggle
+                    fancyBackgroundEnabled = !fancyBackgroundEnabled;
+                else if(i == 1){                                      // Music toggle
                     musicEnabled = !musicEnabled;
                     if(!musicEnabled)
                         Mix_HaltMusic();
                 }
-                else if(i == 4)                                     // Fancy background toggle
-                    fancyBackgroundEnabled = !fancyBackgroundEnabled;
-                else if(i == 3)                                     // Ship names toggle
-                    namesBelowShipsEnabled = !namesBelowShipsEnabled;
-                else if(i == 2)                                     // Entering Port
-                    *select = ENTERING_PORT;
-                else if(i == 1)                                     // Entering IP
-                    *select = ENTERING_IP;
-                else{                                               // Apply
+                else{                                                 // Apply
                     strcpy(defaultIP, textString[ENTERING_IP]);         // Save the settings to the current session
                     strcpy(defaultPort, textString[ENTERING_PORT]);
 
@@ -137,13 +141,13 @@ static void checkMouseMode2(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     fputc('\n', fp);
                     fputc(namesBelowShipsEnabled+48, fp);
                     fputc('\n', fp);
-                    fputc(fancyBackgroundEnabled+48, fp);
-                    fputc('\n', fp);
-                    fputc(musicEnabled+48, fp);
+                    fputc(healthBelowOwnShipEnabled+48, fp);
                     fputc('\n', fp);
                     fputc(healthBelowEnemyShipsEnabled+48, fp);
                     fputc('\n', fp);
-                    fputc(healthBelowOwnShipEnabled+48, fp);
+                    fputc(fancyBackgroundEnabled+48, fp);
+                    fputc('\n', fp);
+                    fputc(musicEnabled+48, fp);
                     fclose(fp);
 
                     *mode = STARTUP;
@@ -163,11 +167,12 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
             *match = true;
             if(event->type == SDL_MOUSEBUTTONDOWN){
                 *keyboardMode = ENTERING_TEXT;
-                if(i >= 11 && i <= 15){
-                    char tempStr[3] = {PREAMBLE_OPTIONS, i-11+48, '\0'};
+                if(i >= 11 && i <= 13){                               // Toggle game option
+                    char tempStr[3] = {PREAMBLE_OPTIONS, i-10+'0', '\0'};
                     SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
-                }
-                else if(i >=3 && i <= 11 && ((strcmp(playerName[i-3], "\0") == 0) || computerPlayerActive[i-3] == true)){
+                    printf("i=%d\n", i);
+                }                                                     // Toggle bot
+                else if(i >=3 && i < 11 && ((strcmp(playerName[i-3], "\0") == 0) || computerPlayerActive[i-3] == true)){
                     char tempStr[3] = {PREAMBLE_TOGGLEBOT, i-3, '\0'};
                     SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
                 }
@@ -240,12 +245,28 @@ static void checkMouseMode6(SDL_Event *event, SDL_Point *currentMouseLocation, S
     return;
 }
 //**************************************************************************
+//*                   MODE 7 (Score Screen)                                *
+//**************************************************************************
+static void checkMouseMode7(SDL_Event *event, SDL_Point *currentMouseLocation, SDL_Rect buttonPlacement[], int *select, int *mode, int modeMaxButtons[], bool *match){
+    for(int i=0; i < modeMaxButtons[7]; i++){
+        if(mouseOnButton(currentMouseLocation, buttonPlacement, &i)){ // Is the mouse on button 'i' ?
+            if(event->type == SDL_MOUSEBUTTONDOWN){
+                if(i == 0){         // Continue
+                    handleLeave();
+                }
+            }
+        }
+    }
+    return;
+}
+
+//**************************************************************************
 
 
 
 //**************************************************************************
 //                                                                         *
-//                          KeyPress Handling                              *
+//                          KeyPress Handling (Keyboard)                   *
 //                                                                         *
 //**************************************************************************
 
@@ -373,7 +394,7 @@ void handleBackspace(int id){
 }
 
 void addCharToString(int id, int maxLen, SDL_Event *event){
-    if(textStringCurrent[id] < maxLen-1){
+    if(textStringCurrent[id] < maxLen){
         textString[id][textStringCurrent[id]] = event->key.keysym.sym;
         textStringCurrent[id]++;
     }
@@ -454,7 +475,7 @@ int resolveIPPortFromStrings(void){
     }
 
     if(test < 0){
-        printf("IP ADDRESS RESOLVE FAILED\n");  // **************************************************************************************
+        printf("IP ADDRESS RESOLVE FAILED\n");
         return 0;
     }
     return 1;
@@ -477,8 +498,10 @@ void handleChatInput(SDL_Event* event){
 }
 
 void handleLeave(void){
-    isConnected = false;
-    SDLNet_TCP_Send(client.TCPSock, "-", strlen("-"));
+    if(isConnected){
+        isConnected = false;
+        SDLNet_TCP_Send(client.TCPSock, "-", strlen("-"));
+    }
     SDLNet_TCP_Close(client.TCPSock);
     SDLNet_UDP_Close(client.UDPRecvSock);
     SDLNet_UDP_Close(client.UDPSendSock);
@@ -489,7 +512,7 @@ void handleLeave(void){
     }
     clearAllPlayerNameStrings(8);
     clearTextStrings(11);
-    printf("LEFT; '-' sent to server, socket closed, ready statuses cleared, textstrings cleared, mode changed\n"); //*****************************************
+
     mode = FIND_SERVERS;
     return;
 }

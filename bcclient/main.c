@@ -8,11 +8,11 @@ void closeMixer(void);
 int main(int argc, char* args[]){
     bool quit = false;
     int select = -1;
-    int modeMaxButtons[7];
+    int modeMaxButtons[8];
 
     SDL_Event event;
     SDL_Rect buttonPlacement[MAXBUTTONS];   // Interactable buttons
-    SDL_Rect windowPlacement[4];            // Window backgrounds
+    SDL_Rect windowPlacement[5];            // Window backgrounds
 
     init();
     initSDL();
@@ -20,7 +20,6 @@ int main(int argc, char* args[]){
     initModeMaxButtons(modeMaxButtons);
     setWindows(windowPlacement);
     clearTextStrings(11);
-    //SDL_StartTextInput();
 
     while(!quit){
         while (SDL_PollEvent(&event))
@@ -50,10 +49,11 @@ void initModeMaxButtons(int modeMaxButtons[]){  // How many buttons does mode N 
     modeMaxButtons[STARTUP]       =  3;
     modeMaxButtons[FIND_SERVERS]  =  3;
     modeMaxButtons[OPTIONS]       =  8;
-    modeMaxButtons[LOBBY]         = 16;
+    modeMaxButtons[LOBBY]         = 14;
     modeMaxButtons[JOIN_DEFAULT]  =  2;
     modeMaxButtons[JOIN_CUSTOM]   =  5;
     modeMaxButtons[IN_GAME]       =  1;
+    modeMaxButtons[SCORE_SCREEN]  =  1;
     return;
 }
 
@@ -124,13 +124,13 @@ void init(void){
 
         namesBelowShipsEnabled = fgetc(fp) - 48;
         fgetc(fp);                                      // Remove newline
-        fancyBackgroundEnabled = fgetc(fp) - 48;
-        fgetc(fp);                                      // Remove newline
-        musicEnabled = fgetc(fp) - 48;
+        healthBelowOwnShipEnabled = fgetc(fp) - 48;
         fgetc(fp);                                      // Remove newline
         healthBelowEnemyShipsEnabled = fgetc(fp) - 48;
         fgetc(fp);                                      // Remove newline
-        healthBelowOwnShipEnabled = fgetc(fp) - 48;
+        fancyBackgroundEnabled = fgetc(fp) - 48;
+        fgetc(fp);                                      // Remove newline
+        musicEnabled = fgetc(fp) - 48;
     }
     fclose(fp);
 

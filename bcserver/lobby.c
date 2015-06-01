@@ -72,7 +72,6 @@ int Lobby(void * data) {
                 sprintf(TCPsend, "?%d", botID);
                 broadCast(TCPsend);
                 activePlayers();
-                printf("computerPlayerCount=%d\n", computerPlayerCount);//***********************************************
             }
             else if(TCPrecv[0] == PREAMBLE_OPTIONS){
                 if (TCPrecv[1]-48 == TOGGLE_BULLETINTERVAL) {
@@ -82,23 +81,18 @@ int Lobby(void * data) {
                     sprintf(TCPsend, "*1%d", activeBulletInterval);
                     broadCast(TCPsend);
                 }
-                else if (TCPrecv[1]-48 == TOGGLE_INFINITEMOMENTUM) {
-                    infiniteMomentum = !infiniteMomentum;
-                    sprintf(TCPsend, "*2%d", infiniteMomentum);
-                    broadCast(TCPsend);
-                }
                 else if (TCPrecv[1]-48 == TOGGLE_MAXSPEED) {
                     activeMaxSpeed++;
                     if(activeMaxSpeed>=5)
                         activeMaxSpeed=0;
-                    sprintf(TCPsend, "*3%d", activeMaxSpeed);
+                    sprintf(TCPsend, "*2%d", activeMaxSpeed);
                     broadCast(TCPsend);
                 }
                 else if (TCPrecv[1]-48 == TOGGLE_GAMELENGTH) {
                     activeGameLength++;
                     if(activeGameLength>=6)
                         activeGameLength=0;
-                    sprintf(TCPsend, "*4%d", activeGameLength);
+                    sprintf(TCPsend, "*3%d", activeGameLength);
                     broadCast(TCPsend);
                }
             }
@@ -138,19 +132,15 @@ int Lobby(void * data) {
 }
 
 void activePlayers() {
-
     char TCPsend[MAX_LENGTH];
     clearString(TCPsend);
     sprintf(TCPsend, "*1%d", activeBulletInterval);
     broadCast(TCPsend);
     clearString(TCPsend);
-    sprintf(TCPsend, "*2%d", infiniteMomentum);
+    sprintf(TCPsend, "*2%d", activeMaxSpeed);
     broadCast(TCPsend);
     clearString(TCPsend);
-    sprintf(TCPsend, "*3%d", activeMaxSpeed);
-    broadCast(TCPsend);
-    clearString(TCPsend);
-    sprintf(TCPsend, "*4%d", activeGameLength);
+    sprintf(TCPsend, "*3%d", activeGameLength);
     broadCast(TCPsend);
     clearString(TCPsend);
     for(int i=0; i<MAX_CLIENTS;i++)

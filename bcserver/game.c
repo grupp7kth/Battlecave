@@ -164,15 +164,6 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
             	    if (ships[i].reloadTime%1==0 && ships[i].fuel < 400) ships[i].fuel++;
             	    if (ships[i].reloadTime%20==0 && ships[i].ammo < 60) ships[i].ammo++;
             }
-            if (!infiniteMomentum) {
-                ships[i].yVel /= 1.002;
-                ships[i].xVel /= 1.002;
-
-                if(ships[i].yVel <= 0.2 && ships[i].yVel >= -0.2)
-                    ships[i].yVel = 0;
-                if(ships[i].xVel <= 0.2 && ships[i].xVel >= -0.2)
-                    ships[i].xVel = 0;
-            }
             if (ships[i].shooting) {
                 if (ships[i].bulletCooldown ==0 && ships[i].ammo>0) {
                     addBullet(&ships[i] , &i);

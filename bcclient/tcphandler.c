@@ -40,7 +40,7 @@ int TCPhandler(Client* client){
         else if(TCPTextIn[0] == PREAMBLE_GAMEFREEZE)
             handleFreezeTime(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_GAMEEND)
-            handleLeave();
+            handleGameEnd();
         else if(TCPTextIn[0] == PREAMBLE_OPTIONS)
             handleGameOptions(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_KILLED)
@@ -153,11 +153,15 @@ void handleFreezeTime(char TCPTextIn[]){
     return;
 }
 
+void handleGameEnd(void){
+    isConnected = false;
+    mode = SCORE_SCREEN;
+    return;
+}
+
 void handleGameOptions(char TCPTextIn[]){
     if(TCPTextIn[1]-48 == TOGGLE_BULLETINTERVAL)
         activeBulletInterval = TCPTextIn[2]-48;
-    else if(TCPTextIn[1]-48 == TOGGLE_INFINITEMOMENTUM)
-        infiniteMomentum = TCPTextIn[2]-48;
     else if(TCPTextIn[1]-48 == TOGGLE_MAXSPEED)
         activeMaxSpeed = TCPTextIn[2]-48;
     else if(TCPTextIn[1]-48 == TOGGLE_GAMELENGTH)

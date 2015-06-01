@@ -17,5 +17,9 @@ void setWindows(SDL_Rect windowPlacement[]){
     windowPlacement[3].y = SCREENHEIGHT/2 - 220;
     windowPlacement[3].h = 275;
     windowPlacement[3].w = 300;
+    windowPlacement[4].x = SCREENWIDTH/2 - 200;         // 4 = Score Screen
+    windowPlacement[4].y = SCREENHEIGHT/2 - 250;
+    windowPlacement[4].h = 550;
+    windowPlacement[4].w = 400;
     return;
 }

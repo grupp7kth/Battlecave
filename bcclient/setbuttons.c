@@ -7,6 +7,7 @@ static void setButtonsMode3(SDL_Rect buttonPlacement[]);
 static void setButtonsMode4(SDL_Rect buttonPlacement[]);
 static void setButtonsMode5(SDL_Rect buttonPlacement[]);
 static void setButtonsMode6(SDL_Rect buttonPlacement[]);
+static void setButtonsMode7(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]);
 
 void setButtons(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[], int *mode){
     if(*mode == STARTUP)                                    // Startup Screen
@@ -21,8 +22,10 @@ void setButtons(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[], int *mod
         setButtonsMode4(buttonPlacement);
     else if(*mode == JOIN_CUSTOM)                           // Join Custom Server Screen
         setButtonsMode5(buttonPlacement);
-    else if(*mode == IN_GAME)
+    else if(*mode == IN_GAME)                               // In a game
         setButtonsMode6(buttonPlacement);
+    else if(*mode == SCORE_SCREEN)                          // Viewing score after a game
+        setButtonsMode7(buttonPlacement, windowPlacement);
     return;
     }
 
@@ -58,43 +61,43 @@ static void setButtonsMode1(SDL_Rect buttonPlacement[]){ // 0 = Default Server ,
     return;
 }
 
-static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Apply , 1 = Default IP , 2 = Default Port , 3 = Player Names , 4 = Fancy Background , 5 = Music Enabled , 6 = Own Ship Health-Bar , 7 = Enemy Ship's Health-Bars
-    buttonPlacement[0].x = windowPlacement[3].x + 102;
-    buttonPlacement[0].y = windowPlacement[3].y + 237;
+static void setButtonsMode2(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Apply , 1 = Music enable , 2 = Fancy Background , 3 = Enemy Ship's Health-Bars , 4 = Own Ship Health-Bar , 5 = Player Names , 6 = Default Port , 7 = Default IP
+    buttonPlacement[0].x = windowPlacement[3].x + 100;
+    buttonPlacement[0].y = windowPlacement[3].y + 235;
     buttonPlacement[0].h = 31;
     buttonPlacement[0].w = 100;
-    buttonPlacement[1].x = windowPlacement[3].x + 20;
-    buttonPlacement[1].y = windowPlacement[3].y + 34;
-    buttonPlacement[1].h = 37;
-    buttonPlacement[1].w = 260;
-    buttonPlacement[2].x = windowPlacement[3].x + 20;
-    buttonPlacement[2].y = windowPlacement[3].y + 97;
-    buttonPlacement[2].h = 37;
-    buttonPlacement[2].w = 260;
-    buttonPlacement[3].x = windowPlacement[3].x + 176;
-    buttonPlacement[3].y = windowPlacement[3].y + 152;
+    buttonPlacement[1].x = windowPlacement[3].x + 220;
+    buttonPlacement[1].y = windowPlacement[3].y + 210;
+    buttonPlacement[1].h = 15;
+    buttonPlacement[1].w = 15;
+    buttonPlacement[2].x = windowPlacement[3].x + 220;
+    buttonPlacement[2].y = windowPlacement[3].y + 192;
+    buttonPlacement[2].h = 15;
+    buttonPlacement[2].w = 15;
+    buttonPlacement[3].x = windowPlacement[3].x + 220;
+    buttonPlacement[3].y = windowPlacement[3].y + 174;
     buttonPlacement[3].h = 15;
     buttonPlacement[3].w = 15;
-    buttonPlacement[4].x = windowPlacement[3].x + 176;
-    buttonPlacement[4].y = windowPlacement[3].y + 182;
+    buttonPlacement[4].x = windowPlacement[3].x + 220;
+    buttonPlacement[4].y = windowPlacement[3].y + 156;
     buttonPlacement[4].h = 15;
     buttonPlacement[4].w = 15;
-    buttonPlacement[5].x = windowPlacement[3].x + 176;
-    buttonPlacement[5].y = windowPlacement[3].y + 209;
+    buttonPlacement[5].x = windowPlacement[3].x + 220;
+    buttonPlacement[5].y = windowPlacement[3].y + 138;
     buttonPlacement[5].h = 15;
     buttonPlacement[5].w = 15;
-    buttonPlacement[6].x = windowPlacement[3].x + 176;
-    buttonPlacement[6].y = windowPlacement[3].y + 209;
-    buttonPlacement[6].h = 0;
-    buttonPlacement[6].w = 0;
-    buttonPlacement[7].x = windowPlacement[3].x + 176;
-    buttonPlacement[7].y = windowPlacement[3].y + 209;
-    buttonPlacement[7].h = 0;
-    buttonPlacement[7].w = 0;
+    buttonPlacement[6].x = windowPlacement[3].x + 20;
+    buttonPlacement[6].y = windowPlacement[3].y + 97;
+    buttonPlacement[6].h = 37;
+    buttonPlacement[6].w = 260;
+    buttonPlacement[7].x = windowPlacement[3].x + 20;
+    buttonPlacement[7].y = windowPlacement[3].y + 34;
+    buttonPlacement[7].h = 37;
+    buttonPlacement[7].w = 260;
     return;
 }
 
-static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Message Field , 1 = Leave , 2 = Start Game , 3-10 = Player Boxes , 11-16 = Option Boxes
+static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Message Field , 1 = Leave , 2 = Start Game , 3-10 = Player Boxes , 11-13 = Option Boxes
     buttonPlacement[0].x = 537;
     buttonPlacement[0].y = 587;
     buttonPlacement[0].h = 33;
@@ -114,10 +117,10 @@ static void setButtonsMode3(SDL_Rect buttonPlacement[]){ // 0 = Write Chat Messa
         buttonPlacement[i+3].h = 45;
         buttonPlacement[i+3].w = 300;
     }
-    // Option Boxes 1-5 :
-    for(int i = 0; i < 5; i++){
+    // Option Boxes 1-3 :
+    for(int i = 0; i <= 3; i++){
         buttonPlacement[i+11].x = 537;
-        buttonPlacement[i+11].y = 118 + i*58;
+        buttonPlacement[i+11].y = 234 + i*58;
         buttonPlacement[i+11].h = 45;
         buttonPlacement[i+11].w = 310;
     }
@@ -165,5 +168,13 @@ static void setButtonsMode6(SDL_Rect buttonPlacement[]){ // 0 = Leave
     buttonPlacement[0].y = 666;
     buttonPlacement[0].h = 40;
     buttonPlacement[0].w = 110;
+    return;
+}
+
+static void setButtonsMode7(SDL_Rect buttonPlacement[], SDL_Rect windowPlacement[]){ // 0 = Continue
+    buttonPlacement[0].x = windowPlacement[4].x + 100;
+    buttonPlacement[0].y = windowPlacement[4].y + 507;
+    buttonPlacement[0].h = 30;
+    buttonPlacement[0].w = 200;
     return;
 }

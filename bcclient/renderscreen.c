@@ -7,6 +7,7 @@ SDL_Texture* mBlackOverlay = NULL;
 SDL_Texture* mOptionsWindow = NULL;
 SDL_Texture* mIPPortWindow = NULL;
 SDL_Texture* mLobbyWindow = NULL;
+SDL_Texture* mScoreWindow = NULL;
 SDL_Texture* mReady = NULL;
 SDL_Texture* mNameWindow = NULL;
 SDL_Texture* mHealthBar = NULL;
@@ -42,20 +43,28 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
         SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
         SDL_RenderCopy(gRenderer, mBlackOverlay, NULL, NULL);
 
-        SDL_RenderCopy(gRenderer, mOptionsWindow, NULL, &windowPlacement[3]);  // Shows a preview of the map
+        SDL_RenderCopy(gRenderer, mOptionsWindow, NULL, &windowPlacement[3]);  // Shows the options window background
 
         // Show the boxes checked if they are enabled
-        checkBox.x = windowPlacement[3].x + 175;
+        checkBox.x = windowPlacement[3].x + 220;
         if(namesBelowShipsEnabled){
-            checkBox.y = windowPlacement[3].y + 152;
+            checkBox.y = windowPlacement[3].y + 138;
+            SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
+        }
+        if(healthBelowOwnShipEnabled){
+            checkBox.y = windowPlacement[3].y + 156;
+            SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
+        }
+        if(healthBelowEnemyShipsEnabled){
+            checkBox.y = windowPlacement[3].y + 174;
             SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
         }
         if(fancyBackgroundEnabled){
-            checkBox.y = windowPlacement[3].y + 182;
+            checkBox.y = windowPlacement[3].y + 192;
             SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
         }
         if(musicEnabled){
-            checkBox.y = windowPlacement[3].y + 209;
+            checkBox.y = windowPlacement[3].y + 210;
             SDL_RenderCopy(gRenderer, mReady, NULL, &checkBox);
         }
         setText(mode, gRenderer, select);
@@ -110,7 +119,7 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             gameMapBackground.source.y = 0;
         else if(ship[viewportID].y > gameMapBackground.h - GAME_AREA_HEIGHT/2)
             gameMapBackground.source.y = gameMapBackground.h - GAME_AREA_HEIGHT;
-    
+
         // Render Low (Far) Layer Background if enabled
         if(fancyBackgroundEnabled){
             gameLowLayerBackground.source.x = gameMapBackground.source.x/3;
@@ -250,13 +259,23 @@ void renderScreen(int *mode, int *select, SDL_Rect buttonPlacement[], SDL_Rect w
             }
         }
 
-
-
-
         // RENDER ALL TEXT
         setText(mode, gRenderer, select);
     }
+//*********************** MODE 7 : Score Screen *****************************
+    else if(*mode == SCORE_SCREEN){
+        SDL_RenderCopy(gRenderer, mBackground, NULL, NULL);
+        SDL_RenderCopy(gRenderer, mBlackOverlay, NULL, NULL);
 
+        SDL_RenderCopy(gRenderer, mScoreWindow, NULL, &windowPlacement[4]);  // Shows the score-screen background window
+
+        // Show a picture of the winning ship
+        ship[scoreID[0]].placement.x = windowPlacement[4].x + 182;
+        ship[scoreID[0]].placement.y = windowPlacement[4].y + 90;
+        SDL_RenderCopy(gRenderer, ship[scoreID[0]].texture, NULL, &ship[scoreID[0]].placement);
+
+        setText(mode, gRenderer, select);
+    }
 //***************************************************************************
 
     SDL_RenderPresent(gRenderer);
@@ -275,6 +294,7 @@ void loadMedia(void){
     mIPPortWindow = loadTexture("resources/images/ipportwindow.png");
     mNameWindow = loadTexture("resources/images/namewindow.png");
     mLobbyWindow = loadTexture("resources/images/lobbybackground.png");
+    mScoreWindow = loadTexture("resources/images/scorewindow.png");
     mReady = loadTexture("resources/images/ready.png");
     mHealthBar = loadTexture("resources/images/healthbar.png");
     mPowerupBar = loadTexture("resources/images/powerupbar.png");
@@ -324,16 +344,11 @@ void loadMedia(void){
     gameMapBackground.mapPreviewPlacement.h = 160;
 
     gameLowLayerBackground.texture = loadTexture("resources/images/ingamebackground.png");
-    if (gameLowLayerBackground.texture == NULL) {
-    	    printf("Background not loaded\n");
-    	    exit(1);
-    }
+
     gameLowLayerBackground.dest.x = 0;
     gameLowLayerBackground.dest.y = 0;
     gameLowLayerBackground.dest.w = GAME_AREA_WIDTH;
     gameLowLayerBackground.dest.h = GAME_AREA_HEIGHT;
-    gameLowLayerBackground.source.x = 0;
-    gameLowLayerBackground.source.y = 0;
     gameLowLayerBackground.source.w = GAME_AREA_WIDTH;
     gameLowLayerBackground.source.h = GAME_AREA_HEIGHT;
 
@@ -381,16 +396,12 @@ void initSDL(void){
 
 SDL_Texture* loadTexture(char* filename){
 	SDL_Surface* temp = IMG_Load(filename);
-	printf("Filename: %s\n",filename);
-	printf("W: %d, H: %d\n",temp->w,temp->h);
-	printf("Pitch: %d\n",temp->pitch);
-	int pixelSize = temp->pitch/temp->w;
-	printf("Det {r allts} %d bytes per pixel.\n",pixelSize);
 	if(temp == NULL){
 		printf("Failed to load image %s: %s\n",filename,IMG_GetError());
 	}
-	if (temp->w < 4000) SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
-	else puts("Image too big, no colour key");
+	if (temp->w < 4000)
+        SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
+
 	SDL_Texture* returnTexture = SDL_CreateTextureFromSurface(gRenderer, temp);
 	if(returnTexture == NULL){
 		printf("Failed to convert the surface %s to a texture: %s\n",filename,IMG_GetError());

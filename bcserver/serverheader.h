@@ -65,9 +65,8 @@
 #define PLAYER_TYPE_HUMAN 0
 #define PLAYER_TYPE_BOT 1
 #define TOGGLE_BULLETINTERVAL 1
-#define TOGGLE_INFINITEMOMENTUM 2
-#define TOGGLE_MAXSPEED 3
-#define TOGGLE_GAMELENGTH 4
+#define TOGGLE_MAXSPEED 2
+#define TOGGLE_GAMELENGTH 3
 #define MAX_HEALTH 100
 #define RESPAWN_TIME_MS 10000
 #define BACKGROUND_NONBUMPCOLOUR 0
@@ -190,7 +189,6 @@ extern int activeMaxSpeed; // Choses which entry from the list below that's acti
 extern float MaxSpeedList[5];
 extern int activeBulletInterval;// Choses which entry from the list below that's active in terms of bullet-interval
 extern int bulletIntervalList[3];
-extern bool infiniteMomentum;
 
 extern short numberOfPowerups;
 extern short activePowerupSpawns;

@@ -10,6 +10,7 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
 void setTextMode4(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
+void setTextMode7(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
 void renderTextCentered(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int width, int padding);
 void showClientVersion(SDL_Rect *textPlacement, SDL_Renderer* gRenderer);
@@ -31,6 +32,8 @@ void setText(int *mode, SDL_Renderer* gRenderer, int *select){
         setTextMode5(&textPlacement, gRenderer);
     else if(*mode ==  IN_GAME)
         setTextMode6(&textPlacement, gRenderer);
+    else if(*mode == SCORE_SCREEN)
+        setTextMode7(&textPlacement, gRenderer);
 
     return;
 }
@@ -167,28 +170,21 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
 
     textPlacement->y = 127;
     textPlacement->x = 770;
-    // -- RESERVED FOR GAME OPTION ID=0 --
+    // -- RESERVED FOR GAME OPTION , BUTTON ID=0 --
+    textPlacement->y += 58;
+    // -- RESERVED FOR GAME OPTION , BUTTON ID=1 --
 
     // Option 1 : Bullet Interval
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", bulletIntervalList[activeBulletInterval]);
     gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
-
-    // Option 2 : Infinite Momentum
-    textPlacement->y += 58;
-    if(infiniteMomentum)
-        gTempTextMessage = TTF_RenderText_Solid(font, "ON", colorsRGB[TEXT_COLOR_BRIGHTGREEN]);
-    else
-        gTempTextMessage = TTF_RenderText_Solid(font, "OFF", colorsRGB[TEXT_COLOR_BRIGHTRED]);
-    renderText(textPlacement, gRenderer);
-
-    // Option 3 : Max Speed
+    // Option 2 : Max Speed
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", activeMaxSpeed+1);
     gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);
-    // Option 4 : Game Length
+    // Option 3 : Game Length
     textPlacement->y += 58;
     sprintf(tempOptStr, "%d", gameLengthList[activeGameLength]);
     gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
@@ -277,14 +273,14 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     // Render the players' scores
 
     // Sort all scores
-    int tempScoreID[MAX_PLAYERS] = {0, 1, 2, 3, 4, 5, 6, 7}, temp;
+    int temp;
 
     for(int i=0; i < MAX_PLAYERS-1; i++){
         for(int j=0; j < MAX_PLAYERS-i-1; j++){
-            if(playerScore[tempScoreID[j]] < playerScore[tempScoreID[j+1]]){
-                temp = tempScoreID[j];
-                tempScoreID[j] = tempScoreID[j+1];
-                tempScoreID[j+1] = temp;
+            if(playerScore[scoreID[j]] < playerScore[scoreID[j+1]]){
+                temp = scoreID[j];
+                scoreID[j] = scoreID[j+1];
+                scoreID[j+1] = temp;
             }
         }
     }
@@ -308,19 +304,19 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     textPlacement->x = GAME_AREA_WIDTH + 35;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
-        if(ship[tempScoreID[i]].active){
-            sprintf(tempScoreString, "%s", playerName[tempScoreID[i]]);
-            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[tempScoreID[i]+6]); // Add 6 to get to the player color span
+        if(ship[scoreID[i]].active){
+            sprintf(tempScoreString, "%s", playerName[scoreID[i]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[scoreID[i]+6]); // Add 6 to get to the player color span
             renderText(textPlacement, gRenderer);
             textPlacement->y += 32;
         }
     }
-    // ...Then the score, colored by player ID
+    // ...Then the score. These are all the same color.
     textPlacement->x = GAME_AREA_WIDTH + 185;
     textPlacement->y = 55;
     for(int i=0; i < MAX_PLAYERS; i++){
-        if(ship[tempScoreID[i]].active){
-            sprintf(tempScoreString, "%d", playerScore[tempScoreID[i]]);
+        if(ship[scoreID[i]].active){
+            sprintf(tempScoreString, "%d", playerScore[scoreID[i]]);
             gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[TEXT_COLOR_YELLOW]);
             renderText(textPlacement, gRenderer);
             textPlacement->y += 32;
@@ -479,6 +475,47 @@ void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     return;
 }
 
+void setTextMode7(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
+    // Present the scores
+    char tempScoreString[50];
+    // First show the player's ranking. These are all the same color.
+    TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 24);
+    textPlacement->x = 490;
+    textPlacement->y = 300;
+
+    for(int i=0, currentEntry = 1; i < MAX_PLAYERS; i++){
+        if(ship[i].active){
+            sprintf(tempScoreString, "%d. ", currentEntry++);
+            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[TEXT_COLOR_TEAL]); // Add 6 to get to the player color span
+            renderText(textPlacement, gRenderer);
+            textPlacement->y += 38;
+        }
+    }
+    // ...Then the names, colored by player ID...
+    textPlacement->x = 520;
+    textPlacement->y = 300;
+    for(int i=0; i < MAX_PLAYERS; i++){
+        if(ship[scoreID[i]].active){
+            sprintf(tempScoreString, "%s", playerName[scoreID[i]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[scoreID[i]+6]); // Add 6 to get to the player color span
+            renderText(textPlacement, gRenderer);
+            textPlacement->y += 38;
+        }
+    }
+    // ...Then the score. These are all the same color.
+    textPlacement->x = 750;
+    textPlacement->y = 300;
+    for(int i=0; i < MAX_PLAYERS; i++){
+        if(ship[scoreID[i]].active){
+            sprintf(tempScoreString, "%d", playerScore[scoreID[i]]);
+            gTempTextMessage = TTF_RenderText_Solid(font, tempScoreString, colorsRGB[TEXT_COLOR_YELLOW]);
+            renderText(textPlacement, gRenderer);
+            textPlacement->y += 38;
+        }
+    }
+    TTF_CloseFont(font);
+    return;
+}
 
 void renderText(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
     mText = SDL_CreateTextureFromSurface(gRenderer, gTempTextMessage);
