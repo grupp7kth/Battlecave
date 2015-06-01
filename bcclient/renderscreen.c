@@ -390,7 +390,7 @@ SDL_Texture* loadTexture(char* filename){
 		printf("Failed to load image %s: %s\n",filename,IMG_GetError());
 	}
 	if (temp->w < 4000) SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format,0,0,0));
-	else puts("Image too big, no colour key").
+	else puts("Image too big, no colour key");
 	SDL_Texture* returnTexture = SDL_CreateTextureFromSurface(gRenderer, temp);
 	if(returnTexture == NULL){
 		printf("Failed to convert the surface %s to a texture: %s\n",filename,IMG_GetError());
