@@ -9,6 +9,7 @@ void handleFreezeTime(char TCPTextIn[]);
 void handleGameOptions(char TCPTextIn[]);
 void handleDeath(char TCPTextIn[]);
 void handlePowerup(char TCPTextIn[]);
+void handleGameEnd(void);
 void shiftString(char string[], int steps);
 
 int TCPhandler(Client* client){
@@ -153,7 +154,7 @@ void handleFreezeTime(char TCPTextIn[]){
     return;
 }
 
-void handleGameEnd(void){
+void handleGameEnd(){
     isConnected = false;
     mode = SCORE_SCREEN;
     return;

@@ -28,7 +28,7 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 				xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
 				ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
 				if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
-					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<10 || skepp[i].angle>350)  && skepp[i].yVel <1) {
+					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<15 || skepp[i].angle>345)  && skepp[i].yVel <1) {
 						printf("Bounce yVel %f\n",skepp[i].yVel);
 						skepp[i].xPos += skepp[i].xVel;
 						skepp[i].yPos -= skepp[i].yVel;
@@ -143,8 +143,8 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
         if(clients[i].active && !ships[i].isDead){
             if (ships[i].acceleration && ships[i].fuel >0) {
             	ships[i].fuel-=0.1;
-                ships[i].yVel-=sin(getRadians(ships[i].angle))*0.01;
-                ships[i].xVel-=cos(getRadians(ships[i].angle))*0.01;
+                ships[i].yVel-=sin(getRadians(ships[i].angle))*0.015;
+                ships[i].xVel-=cos(getRadians(ships[i].angle))*0.015;
                 if(ships[i].yVel > MaxSpeedList[activeMaxSpeed])
                     ships[i].yVel = MaxSpeedList[activeMaxSpeed];
                 else if(ships[i].yVel < -MaxSpeedList[activeMaxSpeed])
