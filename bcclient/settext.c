@@ -226,17 +226,19 @@ void setTextMode5(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
 }
 
 void setTextMode6(SDL_Rect *textPlacement, SDL_Renderer* gRenderer){
-    TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 20);
-
     // Chat messages (0 upper, 4 lower)
+    int tempCurrentTicks = SDL_GetTicks();
+    TTF_Font* font = TTF_OpenFont("resources/fonts/arial.ttf", 20);
     textPlacement->y = 500;
     for(int i=0; i < 5; i ++){
-        textPlacement->x = 20;
-        gTempTextMessage = TTF_RenderText_Solid(font, textString[i], colorsRGB[textStringColor[i]]);
-        renderText(textPlacement, gRenderer);
-        textPlacement->x += textPlacement->w;
-        gTempTextMessage = TTF_RenderText_Solid(font, textString[i+6], colorsRGB[TEXT_COLOR_WHITE]);
-        renderText(textPlacement, gRenderer);
+        if(tempCurrentTicks < (chatMessageRecvTime[i] + CHATMSG_DISPLAY_TIME)){
+            textPlacement->x = 20;
+            gTempTextMessage = TTF_RenderText_Solid(font, textString[i], colorsRGB[textStringColor[i]]);
+            renderText(textPlacement, gRenderer);
+            textPlacement->x += textPlacement->w;
+            gTempTextMessage = TTF_RenderText_Solid(font, textString[i+6], colorsRGB[TEXT_COLOR_WHITE]);
+            renderText(textPlacement, gRenderer);
+        }
         textPlacement->y += 33;
     }
 

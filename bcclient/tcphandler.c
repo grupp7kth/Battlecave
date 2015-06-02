@@ -75,6 +75,7 @@ void handleChat(char TCPTextIn[]){
         clearTextString(i+6);
         strcpy(textString[i], textString[i+1]);
         strcpy(textString[i+6], textString[i+7]);
+        chatMessageRecvTime[i] = chatMessageRecvTime[i+1];
         textStringColor[i] = textStringColor[i+1];
     }
 
@@ -87,6 +88,7 @@ void handleChat(char TCPTextIn[]){
     }
     strcpy(textString[10], TCPTextIn);
     textStringColor[4] = tempColor;
+    chatMessageRecvTime[4] = SDL_GetTicks();
     return;
 }
 

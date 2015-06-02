@@ -1,6 +1,9 @@
 1.00 :
 * Release!
 
+0.91 :
+* Chat messages now dissapear after a while during gameplay to clean the screen up a bit.
+
 0.90 :
 * Post-game score screen added.
 

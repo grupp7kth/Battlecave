@@ -108,7 +108,6 @@ extern Ship ship[MAX_PLAYERS];
 
 typedef struct{
 	int x, y;
-	short type;         // *************************************************************************
 	short source;
 } Bullet;
 extern Bullet bullet[MAX_BULLETS];
@@ -170,6 +169,7 @@ extern bool isConnected;                       // True when connected to a lobby
 extern char textString[11][STRINGLENGTH];      // Used for both chat messages and for example IP addresses and ports
 extern int textStringColor[11];                // Decides colors for text messages
 extern int textStringCurrent[11];              // Which index in the string are we currently addressing?
+extern int chatMessageRecvTime[5];             // Used to track when a chat message is received so that they can stop being displayed after a while to make the game screen less cluttered
 
 extern char defaultIP[16];                     // The IP and port used to connect to the default server
 extern char defaultPort[6];

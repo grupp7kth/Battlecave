@@ -23,6 +23,7 @@ bool isConnected;                       // True when connected to a lobby or gam
 char textString[11][STRINGLENGTH];      // Used for both chat messages and for example IP addresses and ports
 int textStringColor[11];                // Decides colors for text messages
 int textStringCurrent[11];              // Which index in the string are we currently addressing?
+int chatMessageRecvTime[5];             // Used to track when a chat message is received so that they can stop being displayed after a while to make the game screen less cluttered
 
 char defaultIP[16];                     // The IP and port used to connect to the default server
 char defaultPort[6];

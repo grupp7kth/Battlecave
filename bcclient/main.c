@@ -39,7 +39,7 @@ int handleEvent(SDL_Event *event, SDL_Rect buttonPlacement[], int *select, int *
         *quit = true;
     else if(event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEMOTION)
         checkMouse(event, buttonPlacement, select, mode, modeMaxButtons, keyboardMode, quit);
-    else if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) //|| event->type == SDL_TEXTINPUT)
+    else if(event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
         checkKeypress(event, mode, select);
     return 0;
 }
@@ -139,6 +139,9 @@ void init(void){
     belowShipHealthBar.framePlacement.w = 32;
     belowShipHealthBar.framePlacement.h = 7;
     belowShipHealthBar.barPlacement.h = 5;
+
+    for(int i=0; i < 5; i++)
+        chatMessageRecvTime[i] = 0;
     return;
 }
 
