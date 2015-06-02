@@ -1,3 +1,6 @@
+1.00 :
+* Release!
+
 0.90 :
 * Post-game score screen added.
 
