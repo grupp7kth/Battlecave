@@ -13,116 +13,112 @@ int IdFromPort(Uint32 ip) {
 	return -1;
 }
 
-void checkCollisions(Ship* skepp, Bullet* skotten) {
-	// F|rst kolla varje skepp
+void checkCollisions(Ship* ship, Bullet* bullet) {
+	// Check every ship first
 	int i, j, k, l, xcoord, ycoord, xcoord2, ycoord2;
 	double angleCos, angleSin, angleCos2, angleSin2;
 	for (i=0; i<MAX_CLIENTS; i++) {
-		if (!clients[i].active || skepp[i].isDead) continue;
-		angleCos = cos(skepp[i].angle*PI/180);
-		angleSin = sin(skepp[i].angle*PI/180);
+		if (!clients[i].active || ship[i].isDead) continue;
+		angleCos = cos(ship[i].angle*PI/180);
+		angleSin = sin(ship[i].angle*PI/180);
 
-		// Om skeppet inte har landat, kolla position f|r varje krockbar pixel i skeppet och kolla krock mot bakgrunden.
-		if (!skepp[i].isLanded) {
-			for (j=0; j<skepp[i].antalPixlar; j++) {
-				xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-				ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
+		//If the ship has not yet landed, check every collision pixel in the ship and check collision against the background
+		if (!ship[i].isLanded) {
+			for (j=0; j<ship[i].pixelCount; j++) {
+				xcoord = (int)ship[i].xPos+(angleCos*ship[i].pixels[j].x-angleSin*ship[i].pixels[j].y);
+				ycoord = (int)ship[i].yPos+(angleSin*ship[i].pixels[j].x+angleCos*ship[i].pixels[j].y);
 				if (backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)]) {
-					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (skepp[i].angle<15 || skepp[i].angle>345)  && skepp[i].yVel <1) {
-						printf("Bounce yVel %f\n",skepp[i].yVel);
-						skepp[i].xPos += skepp[i].xVel;
-						skepp[i].yPos -= skepp[i].yVel;
-						if (skepp[i].yVel < 0.2) {
-							printf("Ship %d touchdown",i);
-							skepp[i].reloadTime=0;
-							skepp[i].yVel=0;
-							skepp[i].xVel=0;
-							skepp[i].angle=0;
-							skepp[i].angleVel=0;
-							skepp[i].shooting=false;
-							skepp[i].isLanded=true;
+					if ((backgroundBumpmap[(ycoord*STAGE_WIDTH+xcoord)] == 2) && (ship[i].angle<15 || ship[i].angle>345)  && ship[i].yVel <1) {
+						ship[i].xPos += ship[i].xVel;
+						ship[i].yPos -= ship[i].yVel;
+						if (ship[i].yVel < 0.2) {
+							ship[i].reloadTime=0;
+							ship[i].yVel=0;
+							ship[i].xVel=0;
+							ship[i].angle=0;
+							ship[i].angleVel=0;
+							ship[i].shooting=false;
+							ship[i].isLanded=true;
 						}
 						else {
-							skepp[i].yVel*=-0.5;
-							skepp[i].xVel*=0.5;
+							ship[i].yVel*=-0.5;
+							ship[i].xVel*=0.5;
 						}
 						break;
 					}
-					else skepp[i].health=0;
+					else ship[i].health=0;
 				}
 			}
 		}
-		// Kolla avst}ndet till varje skott; om mindre {n 15, kolla pixelkrock.
+		//Check the distance to every bullet; if less than 15, check collision
 		for (k=0; k<MAX_BULLETS; k++) {
-			if (!skotten[k].active) continue;
-			double distance = sqrt(pow(skotten[k].xPos-ships[i].xPos,2)+pow(skotten[k].yPos-ships[i].yPos,2));
+			if (!bullet[k].active) continue;
+			double distance = sqrt(pow(bullet[k].xPos-ships[i].xPos,2)+pow(bullet[k].yPos-ships[i].yPos,2));
 			if (distance < 15) {
-				for (j=0; j<skepp[i].antalPixlar; j++) {
-					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-					if ((int)skotten[k].xPos == xcoord && (int)skotten[k].yPos == ycoord && !skepp[i].isLanded) {
-						skepp[i].health-=10*(1+(skepp[skotten[k].source].activePowerup==POWERUP_DOUBLEDAMAGE));
-						skepp[i].xVel+=skotten[k].xVel*0.1;
-						skepp[i].yVel+=skotten[k].yVel*0.1;
-						skotten[k].active = false;
-						skepp[i].latestTag = skotten[k].source;
+				for (j=0; j<ship[i].pixelCount; j++) {
+					xcoord = (int)ship[i].xPos+(angleCos*ship[i].pixels[j].x-angleSin*ship[i].pixels[j].y);
+					ycoord = (int)ship[i].yPos+(angleSin*ship[i].pixels[j].x+angleCos*ship[i].pixels[j].y);
+					if ((int)bullet[k].xPos == xcoord && (int)bullet[k].yPos == ycoord && !ship[i].isLanded) {
+						ship[i].health-=10*(1+(ship[bullet[k].source].activePowerup==POWERUP_DOUBLEDAMAGE));
+						ship[i].xVel+=bullet[k].xVel*0.1;
+						ship[i].yVel+=bullet[k].yVel*0.1;
+						bullet[k].active = false;
+						ship[i].latestTag = bullet[k].source;
 						break;
 					}
 				}
 			}
 		}
-		// Kolla avst}ndet till varje |vrigt skepp, om mindre {n 30, kolla pixelkrock.
-		bool krock;
+		//Check the distance to every other ship; if less than 30, check for a collision
+		bool collision;
 		for (k=i+1; k<MAX_CLIENTS; k++) {
-			if (!clients[k].active || skepp[k].isDead) continue;
-			double distance = sqrt(pow(skepp[k].xPos-ships[i].xPos,2)+pow(skepp[k].yPos-ships[i].yPos,2));
-			krock=false;
+			if (!clients[k].active || ship[k].isDead) continue;
+			double distance = sqrt(pow(ship[k].xPos-ships[i].xPos,2)+pow(ship[k].yPos-ships[i].yPos,2));
+			collision=false;
 			if (distance < 30) {
-				angleCos2 = cos(skepp[k].angle*PI/180);
-				angleSin2 = sin(skepp[k].angle*PI/180);
-				for (j=0; j<skepp[i].antalPixlar; j++) {
-					xcoord = (int)skepp[i].xPos+(angleCos*skepp[i].pixlar[j].x-angleSin*skepp[i].pixlar[j].y);
-					ycoord = (int)skepp[i].yPos+(angleSin*skepp[i].pixlar[j].x+angleCos*skepp[i].pixlar[j].y);
-					for (l=0; l<skepp[k].antalPixlar; l++) {
-						xcoord2 = (int)skepp[k].xPos+(angleCos2*skepp[k].pixlar[l].x-angleSin2*skepp[k].pixlar[l].y);
-						ycoord2 = (int)skepp[k].yPos+(angleSin2*skepp[k].pixlar[l].x+angleCos2*skepp[k].pixlar[l].y);
+				angleCos2 = cos(ship[k].angle*PI/180);
+				angleSin2 = sin(ship[k].angle*PI/180);
+				for (j=0; j<ship[i].pixelCount; j++) {
+					xcoord = (int)ship[i].xPos+(angleCos*ship[i].pixels[j].x-angleSin*ship[i].pixels[j].y);
+					ycoord = (int)ship[i].yPos+(angleSin*ship[i].pixels[j].x+angleCos*ship[i].pixels[j].y);
+					for (l=0; l<ship[k].pixelCount; l++) {
+						xcoord2 = (int)ship[k].xPos+(angleCos2*ship[k].pixels[l].x-angleSin2*ship[k].pixels[l].y);
+						ycoord2 = (int)ship[k].yPos+(angleSin2*ship[k].pixels[l].x+angleCos2*ship[k].pixels[l].y);
 						if (xcoord2 == xcoord && ycoord2 == ycoord) {
-							krock = true;
+							collision = true;
 							break;
 						}
 					}
-					if (krock) break;
+					if (collision) break;
 				}
 			}
-			if (krock) {
-				skepp[i].isLanded=false;
-				skepp[k].isLanded=false;
-				krock=false;
+			if (collision) {
+				ship[i].isLanded=false;
+				ship[k].isLanded=false;
+				collision=false;
 				double deltaX,deltaY,totVelX,totVelY,deltaR,weightConstant,bX,bY;
-				deltaX = skepp[i].xPos-skepp[k].xPos;
-				deltaY = skepp[i].yPos-skepp[k].yPos;
-				totVelX = skepp[i].xVel-skepp[k].xVel;
-				totVelY = skepp[i].yVel-skepp[k].yVel;
+				deltaX = ship[i].xPos-ship[k].xPos;
+				deltaY = ship[i].yPos-ship[k].yPos;
+				totVelX = ship[i].xVel-ship[k].xVel;
+				totVelY = ship[i].yVel-ship[k].yVel;
 				int subjectWeight, objectWeight;
 				deltaR=1;
 				if (deltaX!=0) deltaR = deltaY/deltaX;
-				// subjectWeight = ship[i].weight;
-				// objectWeight = ship[k].weight;
 				subjectWeight = 1;
 				objectWeight = 1;
 				weightConstant = 2/(subjectWeight+objectWeight);
 				bX = ((totVelX+totVelY*deltaR)/(1+pow(deltaR,2)));
 				bY = bX*deltaR;
-				skepp[i].xVel = totVelX-weightConstant*objectWeight*bX + skepp[k].xVel;
-				skepp[i].yVel = totVelY-weightConstant*objectWeight*bY + skepp[k].yVel;
-				skepp[k].xVel = weightConstant*subjectWeight*bX + skepp[k].xVel;
-				skepp[k].yVel = weightConstant*subjectWeight*bY + skepp[k].yVel;
-				skepp[i].latestTag=k;
-				skepp[k].latestTag=i;
+				ship[i].xVel = totVelX-weightConstant*objectWeight*bX + ship[k].xVel;
+				ship[i].yVel = totVelY-weightConstant*objectWeight*bY + ship[k].yVel;
+				ship[k].xVel = weightConstant*subjectWeight*bX + ship[k].xVel;
+				ship[k].yVel = weightConstant*subjectWeight*bY + ship[k].yVel;
+				ship[i].latestTag=k;
+				ship[k].latestTag=i;
 			}
 		}
 	}
-	// Kolla om skotten krockar med bakgrunden
+	//Check if a bullet collides with the background
 	for (i=0; i<MAX_BULLETS; i++) {
 		if (bullets[i].active) {
 			if (backgroundBumpmap[(int)bullets[i].yPos*STAGE_WIDTH+(int)bullets[i].xPos]) {
@@ -132,8 +128,8 @@ void checkCollisions(Ship* skepp, Bullet* skotten) {
 	}
 }
 
-/** uppdaterar ett skepps position baserat p} hastighet.
- @var skeppet: Det skepp som ska uppdateras.
+/** Updates a ships position based on its velocity
+ @var ships: The ship that will update
  */
 void updateShip(Ship ships[MAX_CLIENTS]) {
     for (int i=0; i<MAX_CLIENTS; i++){
@@ -193,9 +189,8 @@ void updateShip(Ship ships[MAX_CLIENTS]) {
     }
 }
 
-/** L{gger till ett skott i spelet och r{knar ut dess hastighet.
- * Fult nog {r arrayen 'serverSkott' global.
- @var skeppet: Det serverShip som just skjutit.
+/** Adds a bullet and calculates its velocity
+ @var ship: the ship that fired the bullet
  */
 
 void addBullet(Ship* ship, int *id){
@@ -240,9 +235,9 @@ void addBullet(Ship* ship, int *id){
     }
 
 }
-/** Hittar en ledig plats i arrayen av skott
- @var skotten: Arrayen av skott f|r spelet.
- @return: ett ID som motsvarar en ledig position i arrayen.
+/** Finds a free spot in the bullet array
+ @var bullets: the array of bullets
+ @return: an ID that corresponds with an unoccupied spot in the bullet array
  */
 int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
     int i;
@@ -252,22 +247,22 @@ int findFreeBullet(Bullet bullets[MAX_BULLETS]) {
     return -1;
 }
 
-void resetShip(Ship* skepp, int i) {
-	skepp->xVel=0;
-	skepp->yVel=0;
-	skepp->bulletIntervall = bulletIntervalList[activeBulletInterval];
-	skepp->bulletCooldown = 0;
-	skepp->angleVel = 0;
-	skepp->angle = 0;
-	skepp->acceleration = false;
-	skepp->shooting = false;
-	skepp->isDead = false;
-	skepp->deathTimer=0;
-	skepp->health=100;
-	skepp->latestTag = i;
-	skepp->isLanded=false;
-	skepp->ammo=60;
-	skepp->fuel=400;
+void resetShip(Ship* ship, int i) {
+	ship->xVel=0;
+	ship->yVel=0;
+	ship->bulletIntervall = bulletIntervalList[activeBulletInterval];
+	ship->bulletCooldown = 0;
+	ship->angleVel = 0;
+	ship->angle = 0;
+	ship->acceleration = false;
+	ship->shooting = false;
+	ship->isDead = false;
+	ship->deathTimer=0;
+	ship->health=100;
+	ship->latestTag = i;
+	ship->isLanded=false;
+	ship->ammo=60;
+	ship->fuel=400;
 }
 
 bool initGame(char map[]){
@@ -302,7 +297,6 @@ void checkShipHealth(){
 			sendMessage[2]=ships[i].latestTag+'0';
 			sendMessage[3]='\0';
 			broadCast(sendMessage);
-//			SDLNet_TCP_Send(clients[i].socket,PREAMBLE_KILLED,sizeof(PREAMBLE_KILLED));
 			ships[i].deathTimer=RESPAWN_TIME_MS;
 			ships[i].deathTimerStart = SDL_GetTicks();
 			ships[i].isDead = true;
@@ -322,7 +316,6 @@ void checkShipHealth(){
 				bullets[freespot].yVel = - sin(j)*1.6;
 				bullets[freespot].active = true;
 				bullets[freespot].source = i;
-//				printf("Adding bullet %d on (%d;%d)\n",freespot,(int)bullets[freespot].xPos,(int)bullets[freespot].yPos);
 			}
 			if (clients[i].playerType == PLAYER_TYPE_HUMAN)
 				getSpectatingViewport(&i);
@@ -445,7 +438,6 @@ void handlePowerupSpawns(void){
         powerupSpawnPoint[powerupID].isActive = true;
         powerupSpawnPoint[powerupID].type = rand() % 6;     // 6 different powerups exist in the game
         activePowerupSpawns++;
-        printf("PUT PWRUP ID=%d AT X:%d Y:%d (TYPE=%d)\n", powerupID, powerupSpawnPoint[powerupID].x, powerupSpawnPoint[powerupID].y, powerupSpawnPoint[powerupID].type);
     }
     return;
 }
@@ -530,7 +522,7 @@ int udpListener(void* data) {
 	UDPpacket *packetIn;
 	packetIn = SDLNet_AllocPacket(16);
 	short clientId=0, key=0;
-	puts("udplistener startad.");
+	puts("the UDP listener has started.");
     while (gameIsActive) {
         if (SDLNet_UDP_Recv(udpRecvSock,packetIn)) {
             if ((clientId = IdFromPort(packetIn->address.host)) < 0 ) {
@@ -551,23 +543,23 @@ int udpListener(void* data) {
         }
 		SDL_Delay(5);
 	}
+	SDLNet_FreePacket(packetIn);
 	return 0;
 }
 
-/** skapar en en Uint8-array (dataToClient) av alla skeppspositioner och skottpositioner.
- * Denna skr{ddarsys f|r varje klient, eftersom den bara skickar de skottpositioner
- * som klienten ska se p} sin sk{rm. Rent konkret inneh}ller varje paket:
- * Byte 0-3 (4 bytes) en int som {r en tidsangivelse (paketnumrering).
- * Byte 4-35 (32 bytes) information om det skeppen (4 bytes * 8 skepp).
- * Byte 36- (max -935) Upp till 300 positioner (3 bytes var).
- *	Alla dessa {r skottpositioner f|r klientens sk{rm, plus 4 kontrollbitar per skott.
- *	Metoden kontrollerar vilka skott som ska vara med p} spelarens sk{rm, och skickar positionen
- *	endast f|r detta skott.
- *	Efter sista relevanta skottet skickar den en byte '11111111' som markerar slutet.
- *	Arrayen {r allts} 937 bytes stor (0-936).
- * Fult nog {r dataToClient global f|r tillf{llet.
- @var skeppen: en serverShip-array av de skepp som finns i spelet.
- @var skotten: en serverBullet-array av de skott som finns i spelet.
+/** Creates an Uint8 array (gameData) of all ships' positions and bullets'
+ * It will be tailord for every client, because it only sends the bullet
+ * positions the client will be able to see
+ * every packet will include
+ * Byte 0-3 (4 bytes) an int that will act as a timestamp (PacketID)
+ * Byte 4-35 (32 bytes) information about the ships(4 bytes * 8 ships).
+ * Byte 36- (max -857) Up to 250 bullet positions(3 bytes var).
+ * All this is for bullet positions that the client will be able to see plus 4 control bits per bullet
+ * the method checks if a bullet is on a client's screen and sends the position for this bullet
+ * after the last relevant bullet position the array contains one byte '11111111' that will mark the end of the packet.
+ * the array is 857 bytes long (0-856)
+ @var ships: The array of the ships in the game
+ @var bullets:the bullet array of all the bullets
  */
 void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     SDL_Rect viewport;
@@ -603,11 +595,12 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
         }
     }
 
-    // Nu har metoden lagt in informationen om paketnummer och alla skepp. Denna information {r
-    // densamma f|r ALLA spelare. Nu {r det dags att filtrera vilka skott som ska skickas med.
-    // D{rf|r k|r vi en ny player-loop, d{r den kollar spelarens position, och skickar med
-    // de relevanta skotten. Efter att den gjort det, ska den skicka UPD-paketet till den spelaren
-    // och sen g|ra samma sak f|r n{sta spelare.
+    // the function have now included the information of the packet number and all the ships
+	// this information is the same for all clients
+	// Now the function will determine which of the bullets all the individual clients will be able to see
+    // that's why a new player-loop will execute, where it checks the client's ship's positon, and calculates
+    // all the relevant bullets
+    // after this is done the packet will be sent to the client and will do the same for every other active client
 
     for (player=0; player<MAX_CLIENTS; player++){
         if (!clients[player].active)
@@ -633,7 +626,7 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
             viewport.y=STAGE_HEIGHT-GAME_AREA_HEIGHT;
         else viewport.y=ships[clients[player].viewportID].yPos-GAME_AREA_HEIGHT/2;
 
-        // Viewporten {r nu utr{knad. Dags att g} igenom skott-arrayen och kolla vilka skott som ska skickas.
+        // The viewport is now calculated. it's now time to check which bullet to send
 
         for (secondary=0, counter=0; secondary<MAX_BULLETS; secondary++) {
             if (bullets[secondary].active && isInside((int)bullets[secondary].xPos, (int)bullets[secondary].yPos, &viewport)) {
@@ -655,8 +648,8 @@ void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]) {
     }
 }
 
-/** uppdaterar alla skotts positioner. St{nger av dem om de hamnar utanf|r spelf{ltet.
- @var skotten: den array av serverBullet som ska uppdateras.
+/** Updates all bullet positions
+ @var bullets: the bullet array which is updated
  */
 void moveBullets(Bullet bullets[MAX_BULLETS]){
     int i;
@@ -669,9 +662,6 @@ void moveBullets(Bullet bullets[MAX_BULLETS]){
             else{
                 bullets[i].xPos += bullets[i].xVel;
                 bullets[i].yPos += bullets[i].yVel;
-            }
-            if (bullets[i].xPos > STAGE_WIDTH || bullets[i].xPos < 0 || bullets[i].yPos<0 || bullets[i].yPos>STAGE_HEIGHT) {
-                bullets[i].active=false;
             }
         }
     }

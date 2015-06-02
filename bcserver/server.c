@@ -3,7 +3,7 @@
 IPaddress serverIP;
 TCPsocket TCPsock;
 
-void itoa(int n, char s[],int bas) { // Fr}n Kerninghan & Ritchie
+void itoa(int n, char s[],int bas) { // from Kerninghan & Ritchie
 	int c,i,j;
 	i=0;
 	do s[i++]=n%bas+'0'; while ((n/=bas)>0);
@@ -17,7 +17,6 @@ void itoa(int n, char s[],int bas) { // Fr}n Kerninghan & Ritchie
 
 int spamUDPpackets(void* data) {
 	while (gameIsActive) {
-//		puts("Sending UDP.");
 		createAndSendUDPPackets(ships, bullets);
 		SDL_Delay(33);
 	}
@@ -43,7 +42,7 @@ int main(int argc, char *argv[]) {
         acceptConnection();
         if(!loadMedia(map)) printf("Init failed at step: 4\n");
         if(!initGame(map))puts("Failed to init game"); else puts("Game initialized");
-        packetOut = SDLNet_AllocPacket(940);
+        packetOut = SDLNet_AllocPacket(860);
         packetID=0;
         createAndSendUDPPackets(ships, bullets);
         char gameCounter[MAX_LENGTH];
@@ -116,19 +115,15 @@ void acceptConnection() {
             }
         }
         if(ClientsAreReady() && humanPlayerCount > 0) {
-            printf("starting in 3...\n");
             broadCast("$4starting in 3...");
             SDL_Delay(1000);
             if(ClientsAreReady() && humanPlayerCount > 0) {
-                printf("starting in 2...\n");
                 broadCast("$4starting in 2...");
                 SDL_Delay(1000);
                 if(ClientsAreReady() && humanPlayerCount > 0) {
-                    printf("starting in 1...\n");
                     broadCast("$4starting in 1...");
                     SDL_Delay(1000);
                     if (ClientsAreReady() && humanPlayerCount > 0) {
-                        printf("!GO\n");
                         broadCast("!GO");
                         break;
                     }
@@ -157,32 +152,23 @@ bool loadMedia(char map[]) {
     background=IMG_Load(mapName);
     puts ("Loading media.");
     if (background==NULL) { puts("could not load background");return false;}
-
-	printf("Bakgrund W: %d, H: %d\n",background->w,background->h);
-	printf("Jag mallokar %lu bytes.\n",sizeof(Uint8)*(background->w * background->h));
 	backgroundBumpmap = malloc(sizeof(Uint8)*(background->w * background->h));
-	printf("Pitch: %d\n",background->pitch);
 	int pixelSize = background->pitch/background->w;
-	printf("Det {r allts} %d bytes per pixel.\n",pixelSize);
 	int i,j,k;
 	Uint32 pixelResult;
-	Uint8* pixlar = (Uint8*)background->pixels;
+	Uint8* pixels = (Uint8*)background->pixels;
 	char* binary;
 	binary=malloc(33);
 	for (i=0; i<background->h; i++) {
 		for (j=0; j<background->w;j++) {
 			pixelResult = 0;
 			for (k=0; k<3; k++) {
-//				printf("%d:",pixlar[(i*(background->w)+j)*pixelSize+k]);
-				pixelResult = pixelResult | pixlar[(i*(background->w)+j)*pixelSize+k] << k*8;
+				pixelResult = pixelResult | pixels[(i*(background->w)+j)*pixelSize+k] << k*8;
 			}
-//			puts("");
 			itoa(pixelResult,binary,2);
-//			printf("Pixel: %d (%s)\n",pixelResult,binary);
 			backgroundBumpmap[i*(background->w)+j]=pixelResult!=BACKGROUND_NONBUMPCOLOUR;
 			if (pixelResult==(256*256*256-1)) {
 				backgroundBumpmap[i*(background->w)+j]=BACKGROUND_BUMPMAP_LANDING_SPOT;
-				puts("Found some white.");
 			}
 		}
 	}
@@ -191,44 +177,38 @@ bool loadMedia(char map[]) {
 		if (ships[i].surface==NULL) return false;
 		pixelSize = ships[i].surface->pitch/ships[i].surface->w;
 
-		printf("Sprajten: (%d;%d), pixelstorlek %d\n",ships[i].surface->w,ships[i].surface->h,pixelSize);
 		if (ships[i].surface->w%2!=1 || ships[i].surface->h%2!=1) {
-			puts("Sprajten hade ett j{mnt antal pixlar i bredd eller h|jd!");
+			puts("Sprite's width and heigth was equal!");
 			exit(1);
 		}
-		SDL_Point mittpunkt;
-		mittpunkt.x = ships[i].surface->w/2;
-		mittpunkt.y = ships[i].surface->h/2;
-//		printf("Mittpunkten {r (%d:%d)\n",mittpunkt.x,mittpunkt.y);
-//		printf("Pitch: %d\n",laddadyta->pitch);
-		//Kolla hur m}nga krockbara pixlar som finns i spriten.
+		SDL_Point centerPoint;
+		centerPoint.x = ships[i].surface->w/2;
+		centerPoint.y = ships[i].surface->h/2;
+		//checks how many collision pixels there is in the sprite
 		int j,k,l,counter;
-		Uint8* pixlar = (Uint8*)ships[i].surface->pixels;
-		// Leta upp krockbara pixlar i ytan, och malloca pixlar efter det.
+		Uint8* pixels = (Uint8*)ships[i].surface->pixels;
+		// Finds collision pixels and mallocs
 		for (j=0,counter=0; j<ships[i].surface->h; j++) {
 			for (k=0; k<ships[i].surface->w;k++) {
 				pixelResult = 0;
 				for (l=0; l<3; l++) {
-					// LOL FOR THIS!
-					pixelResult = pixlar[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
+					pixelResult = pixels[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
 				}
 				if (pixelResult!=SHIP_NONBUMPCOLOUR) counter++;
 			}
 		}
-		printf("Hittade %d krockbara pixlar i spriten, mallocar.\n",counter);
-		ships[i].pixlar = malloc(sizeof(SDL_Point)*counter);
-//		Ge alla krockbara pixlar ett x och y-v{rde i f|rh}llande till sprajtens origo.
-		ships[i].antalPixlar = counter;
+		ships[i].pixels = malloc(sizeof(SDL_Point)*counter);
+//		Gives all collision pixels a valuse relative to the sprite's origin
+		ships[i].pixelCount = counter;
 		for (j=0,counter=0; j<ships[i].surface->h; j++) {
 			for (k=0; k<ships[i].surface->w;k++) {
 				pixelResult = 0;
 				for (l=0; l<3; l++) {
-					// LOL FOR THIS!
-					pixelResult = pixlar[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
+					pixelResult = pixels[(j*(ships[i].surface->w)+k)*pixelSize+l] << l*8;
 				}
 				if (pixelResult!=SHIP_NONBUMPCOLOUR) {
-					ships[i].pixlar[counter].x = k-mittpunkt.x;
-					ships[i].pixlar[counter].y = j-mittpunkt.y;
+					ships[i].pixels[counter].x = k-centerPoint.x;
+					ships[i].pixels[counter].y = j-centerPoint.y;
 					counter++;
 				}
 			}
@@ -245,8 +225,6 @@ bool init() {
 
     int initFlags = IMG_INIT_PNG;
     if (!(IMG_Init(initFlags) & initFlags)) printf("Init failed at step: 3\n");
-
-    //if(!loadMedia()) printf("Init failed at step: 4\n");
 
     udpSendSock = SDLNet_UDP_Open(4446);
     udpRecvSock = SDLNet_UDP_Open(4445);
@@ -278,6 +256,7 @@ void closeServer() {
     SDLNet_TCP_Close(TCPsock);
     SDLNet_UDP_Close(udpSendSock);
     SDLNet_UDP_Close(udpRecvSock);
+    SDLNet_FreePacket(packetOut);
     SDL_Quit();
     IMG_Quit();
 }

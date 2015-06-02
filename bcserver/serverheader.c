@@ -56,7 +56,7 @@ SDL_Surface* background;
 Uint8* backgroundBumpmap;
 
 UDPpacket *packetOut;
-Uint8 gameData[1000];
+Uint8 gameData[860];
 int packetID;
 bool gameIsActive;
 bool computerPlayerActive[MAX_CLIENTS];

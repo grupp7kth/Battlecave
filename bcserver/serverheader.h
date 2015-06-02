@@ -95,9 +95,9 @@ typedef struct{
     Uint8 health;
     bool acceleration,shooting, isDead, isStunned, isTeleporting, teleportDisplacementPerformed,isLanded;    // isTeleporting is for the whole teleport process, teleportDisplacementPerformed is the actual displacement
     int deathTimer,deathTimerStart;
-    short activePowerup, antalPixlar, latestTag, ammo;
+    short activePowerup, pixelCount, latestTag, ammo;
     int powerupTimerStart, stunDurationStart, reloadTime;
-    SDL_Point* pixlar;
+    SDL_Point* pixels;
 }Ship;
 
 typedef struct{
@@ -155,7 +155,6 @@ extern void handlePowerupSpawns(void);
 extern void handlePowerupGains(void);
 extern void handleActivePowerups(void);
 extern void getSpectatingViewport(int *id);
-//------------ game.c --------------------------------------------------------------
 extern void createAndSendUDPPackets(Ship ships[8],Bullet bullets[MAX_BULLETS]);
 extern void moveBullets(Bullet bullets[MAX_BULLETS]);
 extern void moveShips(Ship ships[MAX_CLIENTS]);
@@ -175,7 +174,7 @@ extern SDL_Surface* background;
 extern Uint8* backgroundBumpmap;
 
 extern UDPpacket *packetOut;
-extern Uint8 gameData[1000];
+extern Uint8 gameData[860];
 extern int packetID;
 extern bool gameIsActive;
 extern bool computerPlayerActive[MAX_CLIENTS];
