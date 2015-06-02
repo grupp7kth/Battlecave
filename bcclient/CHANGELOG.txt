@@ -148,7 +148,7 @@
 * Fixed a bug where names appeared incorrectly when players leave and rejoin a lobby.
 
 0.12 : 
-* Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
+* Tons of bugfixes for the techniques implemented in 0.11, for both lobby- and ingame-mode.
 
 0.11 : 
 * Each player now has a color assigned to them, this color is linked to their ID assigned by the server. 
