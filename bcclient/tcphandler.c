@@ -177,7 +177,7 @@ void handleDeath(char TCPTextIn[]){
 	    client.deathTimer = 10000;
 	    deathTimerStart = SDL_GetTicks();
     }
-    if(killedID != killerID)            // Increase the killer's score only if they didnt kill themselves
+    if(killedID != killerID)            // Increase the killer's score only if they didn't kill themselves
         playerScore[killerID]++;
     timedTextStart = SDL_GetTicks();
     timedTextID = 6;
