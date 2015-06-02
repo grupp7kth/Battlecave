@@ -7,7 +7,7 @@ int UDPhandler(void){
     outPacket = SDLNet_AllocPacket(16);
     outPacket->address.port = client.ServerRecvUDPPort;
     outPacket->address.host = SDLNet_TCP_GetPeerAddress(client.TCPSock)->host;
-    inPacket = SDLNet_AllocPacket(940);
+    inPacket = SDLNet_AllocPacket(860);
 
     for(;;){
         if(mode == IN_GAME){

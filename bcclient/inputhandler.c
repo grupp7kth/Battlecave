@@ -177,11 +177,11 @@ static void checkMouseMode3(SDL_Event *event, SDL_Point *currentMouseLocation, S
                     SDLNet_TCP_Send(client.TCPSock, tempStr, strlen(tempStr));
                 }
 
-                else if(i == 2)             // Ready
+                else if(i == 2)                                       // Ready
                     SDLNet_TCP_Send(client.TCPSock, "#", strlen("#"));
-                else if(i == 1){            // Leave
+                else if(i == 1){                                      // Leave
                     handleLeave();
-                }                           // (ELSE: Enter Chat Message Window Pressed)
+                }                                                     // (ELSE: Enter Chat Message Window Pressed)
             }
         }
     }
@@ -271,8 +271,6 @@ static void checkMouseMode7(SDL_Event *event, SDL_Point *currentMouseLocation, S
 //**************************************************************************
 
 void checkKeypress(SDL_Event *event, int *mode, int *select){
-//    if(*keyboardMode < 0)
-//        return;
 
 //******************* MODE : JOIN DEFAULT SERVER *****************************
     if(*mode == JOIN_DEFAULT && event->type == SDL_KEYDOWN){
@@ -348,7 +346,7 @@ void checkKeypress(SDL_Event *event, int *mode, int *select){
         }
     }
 //******************* MODE : IN LOBBY ************************************
-    else if(*mode == LOBBY && event->type == SDL_KEYDOWN){ // If we're in a lobby
+    else if(*mode == LOBBY && event->type == SDL_KEYDOWN){ // If in a lobby
         handleChatInput(event);
     }
 //******************* MODE : IN GAME *************************************
@@ -421,7 +419,6 @@ void joinLobby(int *mode){
     client.TCPSock = SDLNet_TCP_Open(&ip);
     if(client.TCPSock == NULL){
         printf("TCP Open Failure: %s\n", SDLNet_GetError());
-        //exit(EXIT_FAILURE);
         return;
     }
     // Send the name the user entered to the server
@@ -482,9 +479,9 @@ int resolveIPPortFromStrings(void){
 }
 
 void handleChatInput(SDL_Event* event){
-    if(event->key.keysym.sym == SDLK_BACKSPACE)
+    if(event->key.keysym.sym == SDLK_BACKSPACE)     // If the user wants to remove a character
         handleBackspace(PLAYER_MESSAGE_WRITE);
-    else if(event->key.keysym.sym == SDLK_RETURN){
+    else if(event->key.keysym.sym == SDLK_RETURN){  // If the user wants to send the message
         if(strlen(textString[PLAYER_MESSAGE_WRITE]) > 0){
             SDLNet_TCP_Send(client.TCPSock, textString[PLAYER_MESSAGE_WRITE], STRINGLENGTH);
             clearTextString(PLAYER_MESSAGE_WRITE);
@@ -492,12 +489,13 @@ void handleChatInput(SDL_Event* event){
                 keyboardMode = PLAYING;
         }
     }
-    else
+    else                                            // If the user is adding a character
         addCharToString(PLAYER_MESSAGE_WRITE, 40, event);
     return;
 }
 
 void handleLeave(void){
+    // When leaving a lobby or leaving the game through the 'leave'-button or pressing continue on the score screen
     if(isConnected){
         isConnected = false;
         SDLNet_TCP_Send(client.TCPSock, "-", strlen("-"));

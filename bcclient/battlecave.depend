@@ -265,12 +265,12 @@
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\clearstrings.h
 	"definitions.h"
 
-1433183532 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
+1433265863 c:\users\johan\documents\github\battlecave\bcclient\definitions.h
 
 1431350818 c:\users\johan\documents\github\battlecave\bcclient\globalvariables.h
 	"includes.h"
 
-1433182443 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
+1433264673 source:c:\users\johan\documents\github\battlecave\bcclient\globalvariables.c
 	"includes.h"
 
 1433183622 source:c:\users\johan\documents\github\battlecave\bcclient\inputhandler.c
@@ -287,7 +287,7 @@
 	<SDL_net.h>
 	"globalvariables.h"
 
-1433180955 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
+1433264849 source:c:\users\johan\documents\github\battlecave\bcclient\main.c
 	"includes.h"
 
 1431351533 c:\users\johan\documents\github\battlecave\bcclient\renderscreen.h
@@ -300,7 +300,7 @@
 	<SDL.h>
 	"definitions.h"
 
-1433182978 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
+1433264363 source:c:\users\johan\documents\github\battlecave\bcclient\renderscreen.c
 	"includes.h"
 
 1430923204 c:\users\johan\documents\github\battlecave\bcclient\setbuttons.h
@@ -308,13 +308,13 @@
 1433181760 source:c:\users\johan\documents\github\battlecave\bcclient\setbuttons.c
 	"includes.h"
 
-1433183401 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
+1433264588 source:c:\users\johan\documents\github\battlecave\bcclient\settext.c
 	"includes.h"
 
 1433181840 source:c:\users\johan\documents\github\battlecave\bcclient\setwindows.c
 	"includes.h"
 
-1433180574 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
+1433264363 source:c:\users\johan\documents\github\battlecave\bcclient\tcphandler.c
 	"includes.h"
 
 1432749038 source:c:\users\johan\documents\github\battlecave\bcclient\udphandler.c
@@ -337,6 +337,6 @@
 	<string.h>
 	"definitions.h"
 
-1432725265 source:c:\users\johan\documents\github\battlecave\bcclient\sound.c
+1433264493 source:c:\users\johan\documents\github\battlecave\bcclient\sound.c
 	"includes.h"
 

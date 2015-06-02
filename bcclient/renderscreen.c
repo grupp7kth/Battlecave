@@ -411,13 +411,29 @@ SDL_Texture* loadTexture(char* filename){
 }
 
 void closeRenderer(void){
+    // Free memory before exiting
     SDL_DestroyTexture(mBackground);
     SDL_DestroyTexture(mBlackOverlay);
+    SDL_DestroyTexture(mOptionsWindow);
     SDL_DestroyTexture(mIPPortWindow);
+    SDL_DestroyTexture(mNameWindow);
     SDL_DestroyTexture(mLobbyWindow);
+    SDL_DestroyTexture(mScoreWindow);
+    SDL_DestroyTexture(mReady);
+    SDL_DestroyTexture(mHealthBar);
+    SDL_DestroyTexture(mPowerupBar);
+    SDL_DestroyTexture(mTimeWarpBar);
+    SDL_DestroyTexture(belowShipHealthBar.frameTexture);
+    for(int i=0; i < 6; i++)
+        SDL_DestroyTexture(mPowerupIcon[i]);
+    SDL_DestroyTexture(sideBar.texture);
+    for(int i=0; i < MAX_PLAYERS; i++){
+        SDL_DestroyTexture(miniMap.playerTexture[i]);
+        SDL_DestroyTexture(ship[i].texture);
+    }
+    SDL_DestroyTexture(miniMap.powerupTexture);
+    SDL_DestroyTexture(gameMapBackground.texture);
+    SDL_DestroyTexture(gameLowLayerBackground.texture);
     SDL_DestroyWindow(gWindow);
-    //closeRenderResources();
-    //closeNetResources(); //SDLNet_Quit();
-    //SDL_StopTextInput();
     return;
 }

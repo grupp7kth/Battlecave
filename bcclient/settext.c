@@ -167,15 +167,10 @@ void setTextMode3(SDL_Rect *textPlacement, SDL_Renderer* gRenderer, int *select)
     }
     // Options
     char tempOptStr[3];
-
-    textPlacement->y = 127;
+    textPlacement->y = 243;
     textPlacement->x = 770;
-    // -- RESERVED FOR GAME OPTION , BUTTON ID=0 --
-    textPlacement->y += 58;
-    // -- RESERVED FOR GAME OPTION , BUTTON ID=1 --
 
     // Option 1 : Bullet Interval
-    textPlacement->y += 58;
     sprintf(tempOptStr, "%d", bulletIntervalList[activeBulletInterval]);
     gTempTextMessage = TTF_RenderText_Solid(font, tempOptStr, colorsRGB[TEXT_COLOR_TEAL]);
     renderText(textPlacement, gRenderer);

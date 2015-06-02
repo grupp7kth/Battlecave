@@ -21,13 +21,10 @@ int TCPhandler(Client* client){
 
     for(;;){
         connectionCheck = SDLNet_TCP_Recv(me->TCPSock, TCPTextIn, STRINGLENGTH);
-        if(!connectionCheck){
-            printf("Client ID: %d has disconnected!\n", client->id); // *******************************************************************************'
+        if(!connectionCheck)
             SDLNet_TCP_Close(me->TCPSock);
-        }
 
-        puts(TCPTextIn); //*********************************************************************************************************
-
+        // Determine the message's information by its preamble
         if(TCPTextIn[0] == PREAMBLE_CHAT)
             handleChat(TCPTextIn);
         else if(TCPTextIn[0] == PREAMBLE_PLAYERS)
@@ -72,30 +69,16 @@ void handleChat(char TCPTextIn[]){
     tempColor = TCPTextIn[1] - 48;
     shiftString(TCPTextIn, 2);
 
-    clearTextString(0);
-    clearTextString(6);
-    strcpy(textString[0], textString[1]);
-    strcpy(textString[6], textString[7]);
-    textStringColor[0] = textStringColor[1];
+    // Move previous chat messages up to make room for the new one at the bottom
+    for(int i=0; i < 4; i++){
+        clearTextString(i);
+        clearTextString(i+6);
+        strcpy(textString[i], textString[i+1]);
+        strcpy(textString[i+6], textString[i+7]);
+        textStringColor[i] = textStringColor[i+1];
+    }
 
-    clearTextString(1);
-    clearTextString(7);
-    strcpy(textString[1], textString[2]);
-    strcpy(textString[7], textString[8]);
-    textStringColor[1] = textStringColor[2];
-
-    clearTextString(2);
-    clearTextString(8);
-    strcpy(textString[2], textString[3]);
-    strcpy(textString[8], textString[9]);
-    textStringColor[2] = textStringColor[3];
-
-    clearTextString(3);
-    clearTextString(9);
-    strcpy(textString[3], textString[4]);
-    strcpy(textString[9], textString[10]);
-    textStringColor[3] = textStringColor[4];
-
+    // Fetch and place the new message
     clearTextString(4);
     clearTextString(10);
     for(int i=0; TCPTextIn[0] != ':' && i <= STRINGLENGTH; i++){
@@ -108,6 +91,7 @@ void handleChat(char TCPTextIn[]){
 }
 
 void handleNames(char TCPTextIn[]){
+    // Receiving the names of the player's in the lobby upon joining and when someone else joins/leaves
     int id;
     id = TCPTextIn[1] - 48;
     shiftString(TCPTextIn, 2);
@@ -117,12 +101,13 @@ void handleNames(char TCPTextIn[]){
 }
 
 void handleReady(char TCPTextIn[]){
+    // Changing of people's ready statuses in a lobby
     playerReady[TCPTextIn[1]-48] = (TCPTextIn[2] - 48);
     return;
 }
 
 void handleGameStart(void){
-    printf("ATTEMPTING TO START GAME...\n"); //********************************************************************************
+    // When all players in a lobby are ready and the game starts
     mode = IN_GAME;
     keyboardMode = PLAYING;
     clearTextStrings(11);
@@ -140,14 +125,16 @@ void handleGameStart(void){
 }
 
 void handleBots(char TCPTextIn[]){
+    // Change the active bot status on IDs
     computerPlayerActive[TCPTextIn[1]-48] = !computerPlayerActive[TCPTextIn[1]-48];
 
-//    for(int i=0; i<8;i++) //*************************************************************************************
+//    for(int i=0; i<8;i++)
 //        printf("STATUS %d: %d\n", i, computerPlayerActive[i]);
     return;
 }
 
 void handleFreezeTime(char TCPTextIn[]){
+    // Freeze time which occurs before the game starts while in game
     gameFreezeTime--;
     if(gameFreezeTime == -1)
         gameTimeStart = SDL_GetTicks();
@@ -155,12 +142,14 @@ void handleFreezeTime(char TCPTextIn[]){
 }
 
 void handleGameEnd(){
+    // If the player stays until the game is over (countdown has run out)
     isConnected = false;
     mode = SCORE_SCREEN;
     return;
 }
 
 void handleGameOptions(char TCPTextIn[]){
+    // The options that are changeable from the lobby screen by the players
     if(TCPTextIn[1]-48 == TOGGLE_BULLETINTERVAL)
         activeBulletInterval = TCPTextIn[2]-48;
     else if(TCPTextIn[1]-48 == TOGGLE_MAXSPEED)
@@ -171,6 +160,7 @@ void handleGameOptions(char TCPTextIn[]){
 }
 
 void handleDeath(char TCPTextIn[]){
+    // When the player dies in game
 	killedID = TCPTextIn[1] - 48;
 	killerID = TCPTextIn[2] - 48;
     if (killedID == client.id){
@@ -185,6 +175,7 @@ void handleDeath(char TCPTextIn[]){
 }
 
 void handlePowerup(char TCPTextIn[]){
+    // When the player gains a powerup in game
     if(TCPTextIn[1]-48 == POWERUP_TIMEWARP){
         timeWarpStart = SDL_GetTicks();
         timeWarpIsActive = true;

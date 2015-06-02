@@ -9,7 +9,6 @@ int main(int argc, char* args[]){
     bool quit = false;
     int select = -1;
     int modeMaxButtons[8];
-
     SDL_Event event;
     SDL_Rect buttonPlacement[MAXBUTTONS];   // Interactable buttons
     SDL_Rect windowPlacement[5];            // Window backgrounds
