@@ -1,0 +1,159 @@
+1.00 :
+* Release!
+
+0.91 :
+* Chat messages now dissapear after a while during gameplay to clean the screen up a bit.
+
+0.90 :
+* Post-game score screen added.
+
+0.88 :
+* Removed the excess options "Infinite Momentum" and another unused button during the lobby screen.
+
+0.87 :
+* The options-screen is now fully configured and the new settings are working properly.
+
+0.86 :
+* Added an options to display health-bars below players' ships.
+* Bots no longer go for 'Health Pack' powerups if they have full health.
+
+0.85 :
+* Bugs with players clipping through the map while landed have been fixed:
+    1) Players can no longer take damage while landed (since being shot displaces the struck ship slightly). 
+    2) Players now always stop shooting upon landing, thus no longer clipping through the map due to being slightly displaced backwards upon shooting.
+* Bots no longer attack landed players.
+
+0.84 :
+* Several scoreboard related bugfixes.
+
+0.83 :
+* Players should no longer have a chance of respawning inside other ships.
+
+0.82 :
+* 'Health Pack' powerup added.
+
+0.81 :
+* Bots now attempt to avoid crashing into walls.
+
+0.80 :
+* The options screen is now implemented and functioning.
+    When the client is launched it loads its initial settings from the file 'settings.txt'.
+    Upon changing settings through the options screen and hitting 'apply' the settings will:
+	1) Be written to the 'settings.txt' file.
+	2) Be saved to the program's variables for the duration of the session.
+
+0.76 :
+* The client's fuel and ammo is now displayed.
+
+0.75 :
+* Gravity added.
+* Fuel/Ammunition added. When running low the player has to land on a landingzone to restock on resources.
+
+0.74 :
+* Far distance backdrop added.
+
+0.73 :
+* There's now support for an option to show players' names below their ships. Will be implemented with the options screen.
+
+0.72 :
+* Users can no longer join a lobby without entering a name.
+
+0.71 :
+* The client now displays current score.
+* Minor adjustments.
+
+0.70 :
+* Pixel collision implemented.
+
+0.63 :
+* Bots now attempt to aquire powerups in addition to kill enemies.
+
+0.62 : 
+* The teleport powerup no longer displaces the player instantly, instead it fades the ship out, moves it and then fades it back in.
+    The ship will be invulnerable while teleporting.
+
+0.61 :
+* Individual powerup durations is now displayer in the side-bar.
+* Powerups no longer spawn if a player is too close to the spawnpoint (mainly to prevent bugs).
+* TimeWarp, Double Bullet, Triple Bullet & Teleport work seemingly perfectly at this point.
+
+0.60 :
+* Powerups added. 
+    Currently TimeWarp and Teleport works almost flawlessly.
+    Powerup spawn-loactions are read from the BattleCave Map File.
+* Available powerups show up on the minimap.
+
+0.51 :
+* All music now fades in slighty to combat an SDL_Mixer bug causing unwanted lound noise at the start of playback of a song.
+* Potentially fixed a bug which makes sound.c sometimes skip a song.
+* The server no longer crashes if a player dies and there's no other player alive to spectate.
+* Misc. minor tweaks.
+
+0.50 :
+* Implemented health and respawn systems. When a player reaches 0 health they'll remain dead for 10 seconds.
+    While dead the player will spectate a living player.
+    When 10 seconds have passed the player will respawn at a random spawnpoint from the 8 spawnpoints read from the BattleCave Map File.
+
+0.48 :
+* All bullets now have a source, which decide their color when rendered.
+* Added a timer that counts down the remaining time of the current game.
+
+0.47 :
+* Added music to the game.
+
+0.46 :
+* Added Game-Options that can be toggled through the lobby.
+
+0.45 :
+* All (.png) maps now require a BattleCave Map File (.bcmf) containing spawn locations for all ships (and later on spawn locations for powerups) so that they can differ between maps.
+
+0.44 : 
+* Added End-Game support. The game now ends after a set ammount of seconds and boots all players and readies itself to start a new game.
+
+0.43 : 
+* Added freeze-time for 3 seconds before a game starts. 
+  During the freeze-time, players and bots are unable to control their ships. 
+  The freeze time is represented by a graphic countdown.
+
+0.42 :
+* Added the minimap feature.
+
+0.41 :
+* Added support for the 'LEAVE' button during gameplay.
+
+0.40 :
+* All ships are now colored, based on their ID as previously excercised in the lobby and chats.
+* Shrunk the game area on the screen to make room for new features, moved all centres etc accordingly.
+
+0.30 :
+* CPU players have been added to the game. Click an empty player-box while in a lobby to add/remove them.
+    The bots currently face their closest opponent and then accelerate or fire based on the distance to the opponent.
+* Fixed a bug where the server would sometimes send a 'READY_PREAMBLE' as a chat message.
+* There's now a max speed for ships, and if a player is not accelerating they will be decelerating.
+* A few functions have been made more effective by reducing overhead.
+
+0.21 :
+* All ports used are now absolute (4444-4448) in order to allow for port-forwarding and more importantly: internet play.
+* A ton of bugfixes server-side to fix bullet placements, address matching etc.
+
+0.20 :
+* The client now handles gameplay, it recieves and draws ships and bullets.
+
+0.14 : 
+* New background picture added; text and buttons moved to accomodate.
+* Implementation of handling for incomming UDP packets started.
+
+0.13 : 
+* The client no longer spams empty messages if the user holds down RETURN.
+* Fixed a bug where names appeared incorrectly when players leave and rejoin a lobby.
+
+0.12 : 
+* Tons of bugfixes for the techniques implemented in 0.61, for both lobby- and ingame-mode.
+
+0.11 : 
+* Each player now has a color assigned to them, this color is linked to their ID assigned by the server. 
+    The colors are displayed by their messages while chatting and on their name-slots in the lobby screen.
+
+0.10 : 
+* Added UDP support, implemented keypress tarnsmissions from clients to server.
+* Added chat support in-game (Still needs artwork to go with it).
