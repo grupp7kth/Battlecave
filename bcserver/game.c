@@ -369,18 +369,18 @@ void fetchMapData(char map[]){
     fp = fopen(mapName,"r");
     if(fp != NULL){
         for(int i=0; i < MAX_CLIENTS; i++){             // Fetch all player's spawn points from the file
-            for(int j=0; readNum[j-1] != '.' && j < 5; j++){
+            for(int j=0; readNum[j-1] != '.'; j++){
                 readNum[j] = fgetc(fp);
             }
             playerSpawnPoint[i].x = atoi(readNum);
             ships[i].xPos = playerSpawnPoint[i].x;
-            for(int j=0; readNum[j-1] != '\n' && j < 5; j++){
+            for(int j=0; readNum[j-1] != '\n'; j++){
                 readNum[j] = fgetc(fp);
             }
             playerSpawnPoint[i].y = atoi(readNum);
             ships[i].yPos = playerSpawnPoint[i].y;
         }
-        for(int i=0; readNum[i-1] != '\n' && i < 5; i++){
+        for(int i=0; readNum[i-1] != '\n'; i++){
             readNum[i] = fgetc(fp);
         }
         numberOfPowerups = atoi(readNum);               // Get how many total powerups the map has from the file
@@ -397,11 +397,11 @@ void fetchMapData(char map[]){
         }
 
         for(int i=0; i < numberOfPowerups; i++){        // Set the powerup's spawn points from the file
-            for(int j=0; readNum[j-1] != '.' && j < 5; j++){
+            for(int j=0; readNum[j-1] != '.'; j++){
                 readNum[j] = fgetc(fp);
             }
             powerupSpawnPoint[i].x = atoi(readNum);
-            for(int j=0; readNum[j-1] != '\n' && j < 5; j++){
+            for(int j=0; readNum[j-1] != '\n'; j++){
                 readNum[j] = fgetc(fp);
             }
             powerupSpawnPoint[i].y = atoi(readNum);
